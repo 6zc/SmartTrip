@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Platform} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 
 const CustomCallout = props => {
@@ -51,9 +51,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   bubble: {
-    width: 200,
-    height:43,
+    height: Platform.OS === 'ios' ? 43 : 70,
+    // height:43,
     flexDsirection: 'column',
+    justifyContent: Platform.OS === 'ios' ? '':'center',
     backgroundColor: '#ffffff',
   },
   amount: {

@@ -25,13 +25,13 @@ const Map = props => {
     longitudeDelta: LONGITUDE_DELTA,
   };
 
-  console.log(humidity[0],uvindex)
-
   useEffect(() => {
-    setLatitude(getCord(curStation).latitude);
-    setLongitude(getCord(curStation).longitude);
+    const {latitude,longitude} = getCord(curStation)
+    setLatitude(latitude);
+    setLongitude(longitude);
     if(refs[curStation]){
-      refs[curStation].showCallout()
+      // console.log(refs[curStation])
+      setTimeout(() => refs[curStation].showCallout(), 0);
     }
   },[props.curStation]);
 
@@ -44,7 +44,6 @@ const Map = props => {
         region={region}
         minZoomLevel={9}
         maxZoomLevel={15}
-        // followsUserLocation={true}
         zoomTapEnabled={false}>
         {stationList.map(marker => (
           getCord(marker.place) ?
@@ -82,11 +81,11 @@ const Map = props => {
       <View style={styles.tips}>
         {uvindex.length ?
           <View style={styles.tipLeft}>
-            <FontAwesome style={styles.icons} name={'moon'} size={18} />
+            <FontAwesome style={styles.icons} name={'sun'} size={18} />
             <Text style={styles.tip}>{' UV Index: ' + uvindex[0].value+ '/10'}</Text>
           </View> : 
           <View style={styles.tipLeft}>
-            <FontAwesome style={styles.icons} name={'sun'} size={18} />
+            <FontAwesome style={styles.icons} name={'moon'} size={18} />
             <Text style={styles.tip}>{' UV Index: 0/10'}</Text>
           </View>
         }
@@ -145,7 +144,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderColor: '#eeeeee',
     borderWidth: 0.5,
-    
   },
   celsius: {
     fontSize: 12,
@@ -159,6 +157,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignSelf: 'flex-start',
     alignItems: 'center',
+  },
+  customView:{
+    // height:60
   },
   container: {
     ...StyleSheet.absoluteFillObject,

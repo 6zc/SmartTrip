@@ -25,10 +25,9 @@ const App = () => {
       try {
         let response = await fetch('http://47.94.208.98:8080/homepage');
         let responseJson = await response.json();
-        console.log(responseJson)
         setStationList(responseJson.temperature.data)
         setHumidity(responseJson.humidity ? responseJson.humidity.data : [])
-        setUvindex(responseJson.uvindex ? responseJson.uvindex.data : [])
+        setUvindex(responseJson.uvindx ? responseJson.uvindx.data : [])
       } catch (error) {
         console.error(error);
       }

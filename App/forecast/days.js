@@ -81,6 +81,8 @@ export default class Days extends Component {
   };
 
   renderTopicItems = ({item, index}) => {
+    const datelist = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+
     var iconIndex = 1;
     if(item.iconDay =='100'){
       iconIndex = 0;
@@ -91,9 +93,11 @@ export default class Days extends Component {
     } else if(item.iconDay>='300'){
       iconIndex = 8;
     } 
+
+    
     return (
       <View style={Styles.item}>
-        <Text style={Styles.week}>{item.fxDate}</Text>
+        <Text style={Styles.week}>{item.fxDate?.slice(5, 10)+'       '+datelist[new Date(item.fxDate).getDay()]}</Text>
         <View style={Styles.wea}>
           <Image
             style={Styles.icon}
@@ -127,7 +131,7 @@ export default class Days extends Component {
 const Styles = StyleSheet.create({
   container: {
     height: 336,
-    backgroundColor: '#87CEFA',
+    backgroundColor: '#fff',
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#ddd',

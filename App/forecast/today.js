@@ -83,17 +83,17 @@ export default class Today extends Component {
               <Text style={Styles.unit}>℃</Text>
             </View>
             <Text style={Styles.air}>
-              {weather.aqiDetail}&nbsp;&nbsp;{weather.aqi}
+              Feels like: &nbsp;{weather.aqi}
             </Text>
           </View>
         </View>
         <View style={Styles.date}>
           <Text style={Styles.left}>
-            Humidity:&nbsp;{weather.humidity}&nbsp;&nbsp;&nbsp; Time:&nbsp;
-            {weather.temperature_time.slice(0, 10)}
+            Humidity:&nbsp;{weather.humidity}%&nbsp;&nbsp;&nbsp; Time:&nbsp;
+            {weather.temperature_time.slice(5, 10)}
           </Text>
           <Text style={Styles.scope}>
-            {weather.wind_direction}&nbsp;&nbsp;{weather.wind_power}
+            Wind:&nbsp;{weather.wind_direction}&nbsp;&nbsp;{weather.wind_power}
           </Text>
         </View>
       </View>
@@ -142,7 +142,7 @@ const Styles = StyleSheet.create({
     color: '#fff',
   },
   air: {
-    marginTop: 10,
+    marginTop: 4,
     fontSize: 16,
     color: '#fff',
     backgroundColor: '#0004',
