@@ -27,7 +27,7 @@ const App = () => {
         let responseJson = await response.json();
         setStationList(responseJson.temperature.data)
         setHumidity(responseJson.humidity ? responseJson.humidity.data : [])
-        setUvindex(responseJson.uvindx ? responseJson.uvindx.data : [])
+        setUvindex(responseJson.uvindex ? responseJson.uvindex.data : [])
       } catch (error) {
         console.error(error);
       }
