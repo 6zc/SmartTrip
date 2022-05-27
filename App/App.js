@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-
 import {NavigationContainer} from '@react-navigation/native';
 import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import SearchBar from './top_searchbar/top_searchbar';
 import MapWrapper from './map/map';
-// import Today from './forecast/today';
-// import Hours from './forecast/hours';
-// import Days from './forecast/days';
+import MainPage from './main/main';
 import { LogBox } from "react-native";
 
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
@@ -35,15 +32,11 @@ const App = () => {
     fetchData()
   },[])
 
-  // const Forecast = props => {
-  //   return (
-  //     <View style={styles.today}>
-  //       <Today />
-  //       <Hours />
-  //       <Days />
-  //     </View>
-  //   );
-  // };
+  const Main = props => {
+    return (
+      <MainPage></MainPage>
+    )
+  }
 
   // Declare your page component
   const Map = props => {
@@ -86,12 +79,12 @@ const App = () => {
           }}
         />
         <Tabs.Screen
-          name="Forecast"
-          component={Map}
+          name="Main"
+          component={Main}
           options={{
             tabBarIcon: ({focused, color, size}) => (
               <AIcon
-                name="cloud"
+                name="home"
                 size={34}
                 color={focused ? color : '#4da4dd'}
                 focused={focused}
