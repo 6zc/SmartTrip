@@ -7,9 +7,9 @@ import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import SearchBar from './top_searchbar/top_searchbar';
 import MapWrapper from './map/map';
-import Today from './forecast/today';
-import Hours from './forecast/hours';
-import Days from './forecast/days';
+// import Today from './forecast/today';
+// import Hours from './forecast/hours';
+// import Days from './forecast/days';
 import { LogBox } from "react-native";
 
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
@@ -35,16 +35,17 @@ const App = () => {
     fetchData()
   },[])
 
-  const Forecast = props => {
-    return (
-      <View style={styles.today}>
-        <Today />
-        <Hours />
-        <Days />
-      </View>
-    );
-  };
+  // const Forecast = props => {
+  //   return (
+  //     <View style={styles.today}>
+  //       <Today />
+  //       <Hours />
+  //       <Days />
+  //     </View>
+  //   );
+  // };
 
+  // Declare your page component
   const Map = props => {
     return (
       <View>
@@ -60,7 +61,6 @@ const App = () => {
       </View>
     );
   };
-
   return (
     <NavigationContainer>
       <Tabs.Navigator
@@ -87,7 +87,7 @@ const App = () => {
         />
         <Tabs.Screen
           name="Forecast"
-          component={Forecast}
+          component={Map}
           options={{
             tabBarIcon: ({focused, color, size}) => (
               <AIcon
