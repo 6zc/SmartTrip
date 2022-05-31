@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, FlatList, Text} from 'react-native';
+import {StyleSheet, View, FlatList, Animated} from 'react-native';
 import SearchBar from "react-native-dynamic-search-bar";
-import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { BlurView } from "@react-native-community/blur";
+import ResultItem from './result_item';
 
 
 const searchbar = props => {
-  const {itemList} = props
+  const {itemList, navigation} = props
   const [queryText, setQueryText] = useState('')
   const [dataSource, setDataSource] = useState(itemList)
   const [dataBackup, setDataBackup] = useState(itemList)
@@ -25,21 +26,12 @@ const searchbar = props => {
 
   const renderItems = item => {
     return(
-      <View style={styles.item}>
-        <Text>{'PLACES'}</Text>
-      </View>
+      <ResultItem />
     )
   }
 
   return (
     <View style={styles.container}>
-      {showList?
-        <BlurView
-          style={styles.blur}
-          blurType="light"
-          blurAmount={10}
-          reducedTransparencyFallbackColor="white"/> : null
-      }
       <SearchBar
         style={styles.bar}
         fontSize={19}
@@ -47,7 +39,6 @@ const searchbar = props => {
         iconColor="#c6c6c6"
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
-        // backgroundColor="#353d5e"
         placeholder="Search here"
         onFocus={()=>setShowList(true)}
         onBlur={()=>setShowList(false)}
@@ -60,19 +51,33 @@ const searchbar = props => {
         onPress={() => setShowList(true)}
       />
       {showList?
-        <FlatList
-          contentContainerStyle={styles.contentContainer}
-          style={styles.flatlist}
-          data={dataSource}
-          renderItem={renderItems}
-        />
-        : null
+        <View style={styles.wrapper}>
+          <BlurView
+            style={styles.blur}
+            blurType="light"
+            blurAmount={10}
+            reducedTransparencyFallbackColor="white"/>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.contentContainer}
+            style={styles.flatlist}
+            data={dataSource}
+            renderItem={renderItems}/>
+        </View> : null
       }
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    top:45,
+    width:430,
+    height:720,
+    alignItems: 'center',
+    position: 'absolute',
+    // justifyContent:'center',
+  },
   flatlist: {
     top:60,
     width: 350,
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   blur: {
-    top:-10,
+    top:-50,
     width: 430,
     height:800,
     position: 'absolute',
@@ -88,7 +93,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: 'center',
-
   },
   item: {
     backgroundColor: '#ffffff',

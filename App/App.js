@@ -48,6 +48,7 @@ const App = () => {
     return (
       <View>
         <DynamicSearchBar
+          navigation={props.navigation}
           itemList={stationList}
           setCurStation={setCurStation}
           curStation={curStation}/>
