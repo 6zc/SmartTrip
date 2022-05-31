@@ -2,15 +2,17 @@
 	Log in Page
 */
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 //import type(Node) from 'react'
 import {StyleSheet, View, Text, Dimensions, Image, TextInput, Button} from 'react-native';
 
 var {width, height, scale} = Dimensions.get('window');
 const LoginPage = props => {
 
-	const holder1 = useState('Please input user name')
-	const holder2 = useState('Please input password')	
+	const actRef = useRef(null);
+	const pwdRef = useRef(null)
+	const holder1 = 'Please input user name'
+	const holder2 = 'Please input password'	
 	return(
 	<View style={style.container}>
 		<Image source={require('./assets/avatar-default.jpg')} style={style.havatar}/>
