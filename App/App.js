@@ -4,10 +4,14 @@ import {NavigationContainer} from '@react-navigation/native';
 import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
-import SearchBar from './top_searchbar/top_searchbar';
+// import SearchBar from './top_searchbar/top_searchbar';
+import DynamicSearchBar from './top_searchbar/dynamic_search_bar'
 import MapWrapper from './map/map';
 import MainPage from './main/main';
 import { LogBox } from "react-native";
+
+EIcon.loadFont();
+AIcon.loadFont();
 
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 const Tabs = AnimatedTabBarNavigator();
@@ -40,13 +44,15 @@ const App = () => {
 
   // Declare your page component
   const Map = props => {
+    console.log(props)
     return (
       <View>
-        <SearchBar 
-          stationList={stationList} 
+        <DynamicSearchBar
+          itemList={stationList}
           setCurStation={setCurStation}
           curStation={curStation}/>
-        <MapWrapper 
+        <MapWrapper
+          navigation={props.navigation}
           stationList={stationList}
           curStation={curStation}
           humidity={humidity}
