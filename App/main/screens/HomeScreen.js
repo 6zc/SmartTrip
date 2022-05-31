@@ -120,7 +120,7 @@ class HomeScreen extends React.Component {
 								<TouchableOpacity style={{ position: "absolute", top: 0, left: 20 }}>
 									<Avatar />
 								</TouchableOpacity>
-								<Title>Welcome back,</Title>
+								<Title>Welcome back, </Title>
 								<Name>{this.props.name}</Name>
 								<NotificationIcon style={{ position: "absolute", right: 20, top: 5 }}></NotificationIcon>
 							</TitleBar>
