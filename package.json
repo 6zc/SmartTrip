@@ -14,7 +14,10 @@
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^5.9.8",
+    "apollo-boost": "^0.4.9",
+    "graphql": "^16.5.0",
     "react": "17.0.2",
+    "react-apollo": "^3.1.5",
     "react-dom": "17.0.2",
     "react-native": "0.67.4",
     "react-native-animated-nav-tab-bar": "^3.1.8",
@@ -29,6 +32,7 @@
     "react-native-svg": "^12.3.0",
     "react-native-vector-icons": "^9.1.0",
     "react-native-web": "0.17.7",
+    "react-navigation-stack": "^2.10.4",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
     "styled-components": "^4.4.1"
