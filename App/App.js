@@ -4,11 +4,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
+import User from 'react-native-vector-icons/Entypo'
 import SearchBar from './top_searchbar/top_searchbar';
 import MapWrapper from './map/map';
 import MainPage from './main/main';
 import { LogBox } from "react-native";
-
+import LoginPage from './Personal/main'
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 const Tabs = AnimatedTabBarNavigator();
 const App = () => {
@@ -37,7 +38,12 @@ const App = () => {
       <MainPage></MainPage>
     )
   }
-
+  //
+  const Login = props => {
+    return (
+      <Login></Login>
+    )
+  }
   // Declare your page component
   const Map = props => {
     return (
@@ -85,6 +91,20 @@ const App = () => {
             tabBarIcon: ({focused, color, size}) => (
               <AIcon
                 name="home"
+                size={34}
+                color={focused ? color : '#4da4dd'}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Login"
+          component={LoginPage}
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <User
+                name="user"
                 size={34}
                 color={focused ? color : '#4da4dd'}
                 focused={focused}
