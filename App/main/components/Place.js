@@ -1,20 +1,54 @@
 import React from "react";
 import styled from "styled-components";
+import { Dimensions } from "react-native";
 
-const Place = props => (
-	<Container>
-		<Cover>
-			<Image source={props.image} />
-			<Logo source={props.logo} resizeMode="contain" />
-			<Subtitle>{props.subtitle}</Subtitle>
-			<Title>{props.title}</Title>
-		</Cover>
-		<Content>
-			<Caption>{props.caption}</Caption>
-			<Name>{props.author}</Name>
-		</Content>
-	</Container>
-);
+const screenWidth = Dimensions.get("window").width;
+
+// match screen sizes
+function getPlaceWidth(screenWidth) {
+	var cardWidth = screenWidth - 40;
+	// for tablets
+	if (screenWidth >= 768) {
+		cardWidth = (screenWidth - 60) / 2;
+	}
+	if (screenWidth >= 1024) {
+		cardWidth = (screenWidth - 80) / 3;
+	}
+	return cardWidth;
+}
+
+class Place extends React.Component {
+	state = {
+		cardWidth: getPlaceWidth(screenWidth),
+	};
+
+	componentDidMount() {
+		Dimensions.addEventListener("change", this.adaptLayout);
+	}
+
+	adaptLayout = dimensions => {
+		this.setState({
+			cardWidth: getPlaceWidth(dimensions.window.width),
+		});
+	};
+
+	render() {
+		return (
+			<Container style={{ width: this.state.cardWidth }}>
+				<Cover>
+					<Image source={this.props.image} />
+					<Logo source={this.props.logo} resizeMode="contain" />
+					<Subtitle>{this.props.subtitle}</Subtitle>
+					<Title>{this.props.title}</Title>
+				</Cover>
+				<Content>
+					<Caption>{this.props.caption}</Caption>
+					<Name>{this.props.author}</Name>
+				</Content>
+			</Container>
+		);
+	}
+}
 
 export default Place;
 
@@ -22,7 +56,7 @@ const Container = styled.View`
 	width: 335px;
 	height: 335px;
 	background: white;
-	margin: 10px 20px;
+	margin: 10px 10px;
 	border-radius: 14px;
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 `;

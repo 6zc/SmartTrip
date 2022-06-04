@@ -1,11 +1,11 @@
 // import { setStatusBarStyle } from "expo-status-bar";
-import { ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
+import { Platform, ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
 import styled from "styled-components";
 import Card from "../components/Card";
 // import Ionicons from "@expo/vector-icons/Ionicons";
 import { NotificationIcon } from "../components/Icons";
 import Logo from "../components/Logo";
-import Place from "../components/Places";
+import Place from "../components/Place";
 import Menu from "../components/Menu";
 import { connect } from "react-redux";
 import React from "react";
@@ -71,6 +71,8 @@ class HomeScreen extends React.Component {
 	componentDidMount() {
 		// setStatusBarStyle("dark");
 		StatusBar.setBarStyle("dark-content", true);
+
+		if (Platform.OS == "android") StatusBar.setBarStyle("light-content", true);
 	}
 
 	componentDidUpdate() {
@@ -173,18 +175,20 @@ class HomeScreen extends React.Component {
 								</Query>
 							</ScrollView>
 							<Subtitle>Recommended Places</Subtitle>
-							{places.map((place, index) => (
-								<Place
-									key={index}
-									image={place.image}
-									title={place.title}
-									subtitle={place.subtitle}
-									logo={place.logo}
-									author={place.author}
-									avatar={place.avatar}
-									caption={place.caption}
-								/>
-							))}
+							<PlacesContainer>
+								{places.map((place, index) => (
+									<Place
+										key={index}
+										image={place.image}
+										title={place.title}
+										subtitle={place.subtitle}
+										logo={place.logo}
+										author={place.author}
+										avatar={place.avatar}
+										caption={place.caption}
+									/>
+								))}
+							</PlacesContainer>
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
@@ -195,6 +199,12 @@ class HomeScreen extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
+const PlacesContainer = styled.View`
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding-left: 10px;
+`;
+
 const Message = styled.Text`
 	margin: 20px;
 	color: #b8bece;
@@ -204,6 +214,7 @@ const Message = styled.Text`
 
 const CardsContainer = styled.View`
 	flex-direction: row;
+	padding-left: 10px;
 `;
 
 const RootView = styled.View`
