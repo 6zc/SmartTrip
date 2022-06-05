@@ -5,10 +5,10 @@ import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import User from 'react-native-vector-icons/Entypo'
+import LoginPage from './Personal/main'
 import DynamicSearchBar from './top_searchbar/dynamic_search_bar'
 import MapWrapper from './map/map';
 import MainPage from './main/main';
-import LoginPage from './Personal/main'
 import { LogBox } from "react-native";
 
 EIcon.loadFont();
@@ -79,6 +79,20 @@ const App = () => {
           },
         }}>
         <Tabs.Screen
+          name="Main"
+          component={Main}
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <AIcon
+              name="home"
+              size={34}
+              color={focused ? color : '#4da4dd'}
+              focused={focused}
+              />
+              ),
+            }}
+        />
+        <Tabs.Screen
           name="Map"
           component={Map}
           options={{
@@ -93,12 +107,12 @@ const App = () => {
           }}
         />
         <Tabs.Screen
-          name="Main"
-          component={Main}
+          name="Login"
+          component={LoginPage}
           options={{
             tabBarIcon: ({focused, color, size}) => (
-              <AIcon
-                name="home"
+              <User
+                name="user"
                 size={34}
                 color={focused ? color : '#4da4dd'}
                 focused={focused}
