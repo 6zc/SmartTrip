@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Animated, TouchableOpacity, Dimensions } from "react-native";
 // import { Ionicons } from "@expo/vector-icons";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicon from "react-native-vector-icons/Ionicons";
 import MenuItem from "./MenuItem";
 import { connect } from "react-redux";
 
@@ -39,7 +39,7 @@ class Menu extends React.Component {
 		if (this.props.action == "openMenu") {
 			Animated.spring(this.state.top, {
 				useNativeDriver: false,
-				toValue: 0,
+				toValue: 54,
 			}).start();
 		}
 		if (this.props.action == "closeMenu") {
@@ -63,7 +63,7 @@ class Menu extends React.Component {
 					style={{ position: "absolute", top: 120, left: "50%", marginLeft: -22, zIndex: 1 }}
 				>
 					<CloseView>
-						<Ionicons name="ios-close" size={44} color="#546bfb" />
+						<Ionicon name="ios-close" size={44} color="#546bfb" />
 					</CloseView>
 				</TouchableOpacity>
 				<Content>
@@ -112,6 +112,8 @@ const Container = styled.View`
 	width: 100%;
 	height: 100%;
 	z-index: 100;
+	border-radius: 10px;
+	overflow: hidden;
 `;
 
 const AnimatedContainer = Animated.createAnimatedComponent(Container);

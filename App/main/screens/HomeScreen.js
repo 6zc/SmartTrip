@@ -1,18 +1,55 @@
-// import { StatusBar } from "expo-status-bar";
-import { ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
+// import { setStatusBarStyle } from "expo-status-bar";
+import { ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
 import styled from "styled-components";
 import Card from "../components/Card";
 // import Ionicons from "@expo/vector-icons/Ionicons";
-// import Ionicons from "react-native-vector-icons/Ionicons";
 import { NotificationIcon } from "../components/Icons";
 import Logo from "../components/Logo";
 import Place from "../components/Places";
 import Menu from "../components/Menu";
 import { connect } from "react-redux";
 import React from "react";
+import Avatar from "../components/Avatar";
+import gql from "graphql-tag";
+import { Query } from "react-apollo";
+import Ionicon from "react-native-vector-icons/Ionicons";
+
+// Query to Contentful using GraphQL
+const CardsQuery = gql`
+	{
+		cardsCollection {
+			items {
+				title
+				subtitle
+				image {
+					title
+					description
+					contentType
+					fileName
+					size
+					url
+					width
+					height
+				}
+				subtitle
+				caption
+				logo {
+					title
+					description
+					contentType
+					fileName
+					size
+					url
+					width
+					height
+				}
+			}
+		}
+	}
+`;
 
 function mapStateToProps(state) {
-	return { action: state.action };
+	return { action: state.action, name: state.name };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -25,63 +62,152 @@ function mapDispatchToProps(dispatch) {
 }
 
 class HomeScreen extends React.Component {
+	state = {
+		scale: new Animated.Value(1),
+		opacity: new Animated.Value(1),
+	};
+
+	componentDidMount() {
+		// setStatusBarStyle("dark");
+		StatusBar.setBarStyle("dark-content", true);
+	}
+
+	componentDidUpdate() {
+		this.toggleMenu();
+	}
+
+	toggleMenu = () => {
+		if (this.props.action == "openMenu") {
+			Animated.timing(this.state.scale, {
+				useNativeDriver: false,
+				toValue: 0.9,
+				duration: 300,
+				easing: Easing.in(),
+			}).start();
+			Animated.spring(this.state.opacity, {
+				useNativeDriver: false,
+				toValue: 0.5,
+			}).start();
+
+			// setStatusBarStyle("light");
+			StatusBar.setBarStyle("light-content", true);
+		}
+
+		if (this.props.action == "closeMenu") {
+			Animated.timing(this.state.scale, {
+				useNativeDriver: false,
+				toValue: 1,
+				duration: 300,
+				easing: Easing.in(),
+			}).start();
+			Animated.spring(this.state.opacity, {
+				useNativeDriver: false,
+				toValue: 1,
+			}).start();
+			// setStatusBarStyle("dark");
+			StatusBar.setBarStyle("dark-content", true);
+		}
+	};
+
 	render() {
 		return (
-			<Container>
+			<RootView>
 				<Menu />
-				<SafeAreaView>
-					<ScrollView>
-						<TitleBar>
-							<Avatar source={require("../assets/avatar.png")} />
-							<Title>Welcome back,</Title>
-							<Name>Mashiro</Name>
-							<NotificationIcon style={{ position: "absolute", right: 20, top: 5 }}></NotificationIcon>
-						</TitleBar>
-						<ScrollView
-							style={{ flexDirection: "row", padding: 20, paddingLeft: 12, paddingTop: 30 }}
-							horizontal={true}
-							showsHorizontalScrollIndicator={false}
-						>
-							{logos.map((logo, index) => (
-								<TouchableOpacity key={index} onPress={this.props.openMenu}>
-									<Logo image={logo.image} text={logo.text} />
+				<AnimatedContainer style={{ transform: [{ scale: this.state.scale }], opacity: this.state.opacity }}>
+					<SafeAreaView>
+						<ScrollView>
+							<TitleBar>
+								<TouchableOpacity style={{ position: "absolute", top: 0, left: 20 }}>
+									<Avatar />
 								</TouchableOpacity>
-							))}
-						</ScrollView>
-						<Subtitle>Recent Places</Subtitle>
-						<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-							{cards.map((card, index) => (
-								<Card
+								<Title>Welcome back,</Title>
+								<Name>{this.props.name}</Name>
+								<NotificationIcon style={{ position: "absolute", right: 20, top: 5 }}></NotificationIcon>
+							</TitleBar>
+							<ScrollView
+								style={{ flexDirection: "row", padding: 20, paddingLeft: 12, paddingTop: 30 }}
+								horizontal={true}
+								showsHorizontalScrollIndicator={false}
+							>
+								{logos.map((logo, index) => (
+									<TouchableOpacity key={index} onPress={this.props.openMenu}>
+										<Logo image={logo.image} text={logo.text} />
+									</TouchableOpacity>
+								))}
+							</ScrollView>
+							<Subtitle>Recent Places</Subtitle>
+							<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
+								<Query query={CardsQuery}>
+									{({ loading, error, data }) => {
+										if (loading) return <Message>Loading...</Message>;
+										if (error) return <Message>Error...</Message>;
+
+										console.log(data.cardsCollection.items);
+
+										return (
+											<CardsContainer>
+												{data.cardsCollection.items.map((card, index) => (
+													<TouchableOpacity
+														key={index}
+														onPress={() => {
+															this.props.navigation.push("Section", {
+																// passing information to new screen
+																section: card,
+															});
+														}}
+													>
+														<Card
+															title={card.title}
+															image={card.image}
+															caption={card.caption}
+															logo={card.logo}
+															subtitle={card.subtitle}
+														></Card>
+													</TouchableOpacity>
+												))}
+											</CardsContainer>
+										);
+									}}
+								</Query>
+							</ScrollView>
+							<Subtitle>Recommended Places</Subtitle>
+							{places.map((place, index) => (
+								<Place
 									key={index}
-									title={card.title}
-									image={card.image}
-									caption={card.caption}
-									logo={card.logo}
-									subtitle={card.subtitle}
-								></Card>
+									image={place.image}
+									title={place.title}
+									subtitle={place.subtitle}
+									logo={place.logo}
+									author={place.author}
+									avatar={place.avatar}
+									caption={place.caption}
+								/>
 							))}
 						</ScrollView>
-						<Subtitle>Recommended Places</Subtitle>
-						{places.map((place, index) => (
-							<Place
-								key={index}
-								image={place.image}
-								title={place.title}
-								subtitle={place.subtitle}
-								logo={place.logo}
-								author={place.author}
-								avatar={place.avatar}
-								caption={place.caption}
-							/>
-						))}
-					</ScrollView>
-				</SafeAreaView>
-			</Container>
+					</SafeAreaView>
+				</AnimatedContainer>
+			</RootView>
 		);
 	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
+const Message = styled.Text`
+	margin: 20px;
+	color: #b8bece;
+	font-size: 15px;
+	font-weight: 500;
+`;
+
+const CardsContainer = styled.View`
+	flex-direction: row;
+`;
+
+const RootView = styled.View`
+	background: black;
+	flex: 1;
+`;
 
 const Subtitle = styled.Text`
 	color: #b8bece;
@@ -92,21 +218,14 @@ const Subtitle = styled.Text`
 	text-transform: uppercase;
 `;
 
-const Avatar = styled.Image`
-	width: 44px;
-	height: 44px;
-	background: black;
-	border-radius: 22px;
-	margin-left: 20px;
-	position: absolute;
-	top: 0;
-	left: 0;
-`;
-
 const Container = styled.View`
 	flex: 1;
 	background-color: #f0f3f5;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
 `;
+
+const AnimatedContainer = Animated.createAnimatedComponent(Container);
 
 const Title = styled.Text`
 	font-size: 16px;

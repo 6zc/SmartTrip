@@ -3,14 +3,14 @@ import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import CustomCallout from './custom_callout';
 import {Cal, getCord} from './calculator';
-import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-
+import EIcon from 'react-native-vector-icons/Ionicons';
+EIcon.loadFont();
 
 const refs = []
 
 const {width, height} = Dimensions.get('window');
 
-const Map = props => {
+const Map = (props) => {
   const {stationList, curStation, humidity, uvindex} = props
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.4;
@@ -81,21 +81,29 @@ const Map = props => {
       <View style={styles.tips}>
         {uvindex.length ?
           <View style={styles.tipLeft}>
-            <FontAwesome style={styles.icons} name={'sun'} size={18} />
+            <EIcon name="sunny" size={18} style={styles.icons}/>
             <Text style={styles.tip}>{' UV Index: ' + uvindex[0].value+ '/10'}</Text>
           </View> : 
           <View style={styles.tipLeft}>
-            <FontAwesome style={styles.icons} name={'moon'} size={18} />
+            <EIcon name="sunny" size={18} style={styles.icons}/>
             <Text style={styles.tip}>{' UV Index: 0/10'}</Text>
           </View>
         }
         {humidity.length ? 
           <View style={styles.tipRight}>
-            <FontAwesome style={styles.icons} name={'percent'} size={17} />
+            <EIcon
+                name="thermometer"
+                size={18}
+                style={styles.icons}
+              />
             <Text style={styles.tip}>{' Humidity: ' + humidity[0].value + '%'}</Text>
           </View> : 
           <View style={styles.tipRight}>
-            <FontAwesome style={styles.icons} name={'percent'} size={17} />
+            <EIcon
+              name="thermometer"
+              size={18}
+              style={styles.icons}
+            />            
             <Text style={styles.tip}>{' Humidity: 65%'}</Text>
           </View>
         }

@@ -5,11 +5,16 @@ import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import User from 'react-native-vector-icons/Entypo'
-import SearchBar from './top_searchbar/top_searchbar';
+import LoginPage from './Personal/main'
+import DynamicSearchBar from './top_searchbar/dynamic_search_bar'
 import MapWrapper from './map/map';
 import MainPage from './main/main';
 import { LogBox } from "react-native";
-import LoginPage from './Personal/main'
+
+EIcon.loadFont();
+AIcon.loadFont();
+User.loadFont();
+
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 const Tabs = AnimatedTabBarNavigator();
 const App = () => {
@@ -46,13 +51,15 @@ const App = () => {
   }
   // Declare your page component
   const Map = props => {
+    console.log(props)
     return (
       <View>
-        <SearchBar 
-          stationList={stationList} 
+        <DynamicSearchBar
+          itemList={stationList}
           setCurStation={setCurStation}
           curStation={curStation}/>
-        <MapWrapper 
+        <MapWrapper
+          navigation={props.navigation}
           stationList={stationList}
           curStation={curStation}
           humidity={humidity}
@@ -71,6 +78,20 @@ const App = () => {
           },
         }}>
         <Tabs.Screen
+          name="Main"
+          component={Main}
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <AIcon
+              name="home"
+              size={34}
+              color={focused ? color : '#4da4dd'}
+              focused={focused}
+              />
+              ),
+            }}
+        />
+        <Tabs.Screen
           name="Map"
           component={Map}
           options={{
@@ -78,20 +99,6 @@ const App = () => {
               <EIcon
                 name="location-sharp"
                 size={30}
-                color={focused ? color : '#4da4dd'}
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Main"
-          component={Main}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <AIcon
-                name="home"
-                size={34}
                 color={focused ? color : '#4da4dd'}
                 focused={focused}
               />

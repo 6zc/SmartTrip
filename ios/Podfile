@@ -3,6 +3,8 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
+pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 target 'groupmap2' do
   config = use_native_modules!
 
@@ -12,7 +14,7 @@ target 'groupmap2' do
     :hermes_enabled => false
   )
   
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 
   target 'groupmap2Tests' do
     inherit! :complete
