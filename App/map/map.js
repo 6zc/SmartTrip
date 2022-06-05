@@ -2,8 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import CustomCallout from './custom_callout';
-import {Cal, getCord} from './calculator';
+import {Cal, getCord} from '../utils/calculator';
+import Linking from '../utils/linking';
 import EIcon from 'react-native-vector-icons/Ionicons';
+import OpenMap from "react-native-open-map";
+
+
 EIcon.loadFont();
 
 const refs = []
@@ -30,7 +34,6 @@ const Map = (props) => {
     setLatitude(latitude);
     setLongitude(longitude);
     if(refs[curStation]){
-      // console.log(refs[curStation])
       setTimeout(() => refs[curStation].showCallout(), 0);
     }
   },[props.curStation]);
@@ -70,6 +73,20 @@ const Map = (props) => {
                   e.nativeEvent.action === 'callout-inside-press'
                 ) {
                   return;
+                } else{
+                  Linking.turn2MapApp(...Object.values(getCord(marker.place)), )
+                  // OpenMap.show({
+                    // latitude: 40.778721,
+                    // longitude: -73.968188,
+                  //     ...getCord(marker.place), 
+                  // });
+                  // openMap({
+                  //   ...getCord(marker.place), 
+                  //   // provider:'google',
+                  //   start:"My Location",
+                  //   end:"Hong Kong Observatory",
+                  //   navigate:true
+                  // })
                 }
               }}
               style={styles.customView}>

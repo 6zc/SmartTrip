@@ -29,18 +29,6 @@ const searchbar = props => {
     })
   ])
 
-  // React.useEffect(() => {
-  //   // Animated.timing(                  // 随时间变化而执行动画
-  //   //   fadeAnim,                       // 动画中的变量值
-  //   //   {
-  //   //     toValue: 1,                   // 透明度最终变为1，即完全不透明
-  //   //     duration: 400,              // 让动画持续一段时间
-  //   //   }
-  //   // ).start();    
-  //   .start();
-  // }, [showList])
-
-
   const filterList = (text) => {
     var newData = dataBackup;
     newData = dataBackup.filter((item) => {
@@ -50,7 +38,6 @@ const searchbar = props => {
     });
     setDataSource(newData)
     setQueryText(text)
-    console.log(newData)
   };
 
   const renderItems = item => {
@@ -79,7 +66,7 @@ const searchbar = props => {
           driftAnim.setValue(700);
         }}
         onChangeText={(text) => filterList(text)}
-        onSearchPress={() => console.log("Search Icon is pressed")}
+        // onSearchPress={() => console.log("Search Icon is pressed")}
         onClearPress={() => {
           filterList("");
           setShowList(false);
