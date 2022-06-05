@@ -120,20 +120,6 @@ const App = () => {
             ),
           }}
         />
-        <Tabs.Screen
-          name="Login"
-          component={LoginPage}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <User
-                name="user"
-                size={34}
-                color={focused ? color : '#4da4dd'}
-                focused={focused}
-              />
-            ),
-          }}
-        />
       </Tabs.Navigator>
     </NavigationContainer>
   );
