@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, FlatList, Animated} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {StyleSheet, View, FlatList, Animated, Easing} from 'react-native';
 import SearchBar from "react-native-dynamic-search-bar";
 import { BlurView } from "@react-native-community/blur";
 import ResultItem from './result_item';
@@ -11,6 +11,35 @@ const searchbar = props => {
   const [dataSource, setDataSource] = useState(itemList)
   const [dataBackup, setDataBackup] = useState(itemList)
   const [showList, setShowList] = useState(false)
+
+  const fadeAnim = useRef(new Animated.Value(0)).current
+  const driftAnim = useRef(new Animated.Value(700)).current
+  const parallelAni = Animated.parallel([
+    // after decay, in parallel:
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration:300, // return to start
+      useNativeDriver: true,
+    }),
+    Animated.timing(driftAnim, {
+      toValue: 60,
+      duration:400,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: false,
+    })
+  ])
+
+  // React.useEffect(() => {
+  //   // Animated.timing(                  // 随时间变化而执行动画
+  //   //   fadeAnim,                       // 动画中的变量值
+  //   //   {
+  //   //     toValue: 1,                   // 透明度最终变为1，即完全不透明
+  //   //     duration: 400,              // 让动画持续一段时间
+  //   //   }
+  //   // ).start();    
+  //   .start();
+  // }, [showList])
+
 
   const filterList = (text) => {
     var newData = dataBackup;
@@ -40,27 +69,38 @@ const searchbar = props => {
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
         placeholder="Search here"
-        onFocus={()=>setShowList(true)}
-        onBlur={()=>setShowList(false)}
+        onFocus={()=>{
+          setShowList(true);
+          parallelAni.start();
+        }}
+        onBlur={()=>{
+          setShowList(false);
+          fadeAnim.setValue(0);
+          driftAnim.setValue(700);
+        }}
         onChangeText={(text) => filterList(text)}
         onSearchPress={() => console.log("Search Icon is pressed")}
         onClearPress={() => {
-          filterList("")
-          setShowList(false)
+          filterList("");
+          setShowList(false);
+          fadeAnim.setValue(0);
+          driftAnim.setValue(700);
         }}
         onPress={() => setShowList(true)}
       />
       {showList?
         <View style={styles.wrapper}>
-          <BlurView
-            style={styles.blur}
-            blurType="light"
-            blurAmount={10}
-            reducedTransparencyFallbackColor="white"/>
-          <FlatList
+          <Animated.View style={{...styles.blurWrapper,opacity:fadeAnim}}>
+            <BlurView
+              style={styles.blur}
+              blurType="light"
+              blurAmount={10}
+              reducedTransparencyFallbackColor="white"/>
+          </Animated.View>
+          <Animated.FlatList
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.contentContainer}
-            style={styles.flatlist}
+            style={{...styles.flatlist, top:driftAnim}}
             data={dataSource}
             renderItem={renderItems}/>
         </View> : null
@@ -77,6 +117,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     // justifyContent:'center',
+  },
+  blurWrapper: {
+    width:430,
+    height:720,
+    position: 'absolute',
   },
   flatlist: {
     top:60,
