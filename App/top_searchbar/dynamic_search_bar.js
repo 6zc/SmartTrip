@@ -1,15 +1,45 @@
-import React, {useState} from 'react';
-import {StyleSheet, View, FlatList, Text} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {StyleSheet, View, FlatList, Animated, Easing} from 'react-native';
 import SearchBar from "react-native-dynamic-search-bar";
-import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { BlurView } from "@react-native-community/blur";
+import ResultItem from './result_item';
 
 
 const searchbar = props => {
-  const {itemList} = props
+  const {itemList, navigation} = props
   const [queryText, setQueryText] = useState('')
   const [dataSource, setDataSource] = useState(itemList)
   const [dataBackup, setDataBackup] = useState(itemList)
   const [showList, setShowList] = useState(false)
+
+  const fadeAnim = useRef(new Animated.Value(0)).current
+  const driftAnim = useRef(new Animated.Value(700)).current
+  const parallelAni = Animated.parallel([
+    // after decay, in parallel:
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration:300, // return to start
+      useNativeDriver: true,
+    }),
+    Animated.timing(driftAnim, {
+      toValue: 60,
+      duration:400,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: false,
+    })
+  ])
+
+  // React.useEffect(() => {
+  //   // Animated.timing(                  // 随时间变化而执行动画
+  //   //   fadeAnim,                       // 动画中的变量值
+  //   //   {
+  //   //     toValue: 1,                   // 透明度最终变为1，即完全不透明
+  //   //     duration: 400,              // 让动画持续一段时间
+  //   //   }
+  //   // ).start();    
+  //   .start();
+  // }, [showList])
+
 
   const filterList = (text) => {
     var newData = dataBackup;
@@ -25,21 +55,12 @@ const searchbar = props => {
 
   const renderItems = item => {
     return(
-      <View style={styles.item}>
-        <Text>{'PLACES'}</Text>
-      </View>
+      <ResultItem />
     )
   }
 
   return (
     <View style={styles.container}>
-      {showList?
-        <BlurView
-          style={styles.blur}
-          blurType="light"
-          blurAmount={10}
-          reducedTransparencyFallbackColor="white"/> : null
-      }
       <SearchBar
         style={styles.bar}
         fontSize={19}
@@ -47,32 +68,61 @@ const searchbar = props => {
         iconColor="#c6c6c6"
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
-        // backgroundColor="#353d5e"
         placeholder="Search here"
-        onFocus={()=>setShowList(true)}
-        onBlur={()=>setShowList(false)}
+        onFocus={()=>{
+          setShowList(true);
+          parallelAni.start();
+        }}
+        onBlur={()=>{
+          setShowList(false);
+          fadeAnim.setValue(0);
+          driftAnim.setValue(700);
+        }}
         onChangeText={(text) => filterList(text)}
         onSearchPress={() => console.log("Search Icon is pressed")}
         onClearPress={() => {
-          filterList("")
-          setShowList(false)
+          filterList("");
+          setShowList(false);
+          fadeAnim.setValue(0);
+          driftAnim.setValue(700);
         }}
         onPress={() => setShowList(true)}
       />
       {showList?
-        <FlatList
-          contentContainerStyle={styles.contentContainer}
-          style={styles.flatlist}
-          data={dataSource}
-          renderItem={renderItems}
-        />
-        : null
+        <View style={styles.wrapper}>
+          <Animated.View style={{...styles.blurWrapper,opacity:fadeAnim}}>
+            <BlurView
+              style={styles.blur}
+              blurType="light"
+              blurAmount={10}
+              reducedTransparencyFallbackColor="white"/>
+          </Animated.View>
+          <Animated.FlatList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.contentContainer}
+            style={{...styles.flatlist, top:driftAnim}}
+            data={dataSource}
+            renderItem={renderItems}/>
+        </View> : null
       }
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    top:45,
+    width:430,
+    height:720,
+    alignItems: 'center',
+    position: 'absolute',
+    // justifyContent:'center',
+  },
+  blurWrapper: {
+    width:430,
+    height:720,
+    position: 'absolute',
+  },
   flatlist: {
     top:60,
     width: 350,
@@ -80,7 +130,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   blur: {
-    top:-10,
+    top:-50,
     width: 430,
     height:800,
     position: 'absolute',
@@ -88,7 +138,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: 'center',
-
   },
   item: {
     backgroundColor: '#ffffff',
