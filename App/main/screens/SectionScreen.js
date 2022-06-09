@@ -46,6 +46,10 @@ class SectionScreen extends React.Component {
 							<Ionicon name="ios-close" size={32} color="#4775f2" />
 						</CloseView>
 					</TouchableOpacity>
+					<MapView>
+						<Ionicon name="navigate-circle-outline" size={24} color="#4775f2" />
+						<MapText>Map</MapText>
+					</MapView>
 					<Content>
 						{/* <WebView
 						source={{ html: section.content + htmlStyles }}
@@ -70,6 +74,26 @@ class SectionScreen extends React.Component {
 }
 
 export default SectionScreen;
+
+const MapView = styled.View`
+	flex-direction: row;
+	background: white;
+	height: 44px;
+	padding: 10px 16px 10px;
+	border-radius: 22px;
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.35);
+	align-items: center;
+	margin: 0 8px;
+	position: absolute;
+	top: 320px;
+	right: 0px;
+`;
+
+const MapText = styled.Text`
+	font-weight: 600;
+	font-size: 17px;
+	margin-left: 8px;
+`;
 
 // demo content
 const htmlContent = `
