@@ -113,6 +113,7 @@ class HomeScreen extends React.Component {
 	};
 
 	render() {
+		state = { data: "hello" };
 		return (
 			<RootView>
 				<Menu />
