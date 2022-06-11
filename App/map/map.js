@@ -73,6 +73,8 @@ const Map = (props) => {
                   return;
                 } else{
                   Linking.link2map(...Object.values(getCord(marker.place)), marker.place)
+                  // Linking.link2map(0, 0, marker.place)
+
                 }
               }}
               style={styles.customView}>
