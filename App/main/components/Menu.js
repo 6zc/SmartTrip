@@ -5,6 +5,8 @@ import { Animated, TouchableOpacity, Dimensions } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import MenuItem from "./MenuItem";
 import { connect } from "react-redux";
+import MenuCard from "./MenuCard";
+import { ScrollView } from "react-native-gesture-handler";
 
 const screenWidth = Dimensions.get("window").width;
 var cardWidth = screenWidth;
@@ -72,11 +74,18 @@ class Menu extends React.Component {
 						<Ionicon name="ios-close" size={44} color="#546bfb" />
 					</CloseView>
 				</TouchableOpacity>
-				<Content>
+				{/* <Content>
 					{items.map((item, index) => (
 						<MenuItem key={index} icon={item.icon} title={item.title} text={item.text} />
 					))}
-				</Content>
+				</Content> */}
+				<ScrollView>
+					<Content>
+						{cards.map((card, index) => (
+							<MenuCard key={index} image={card.image} title={card.title} subtitle={card.subtitle} />
+						))}
+					</Content>
+				</ScrollView>
 			</AnimatedContainer>
 		);
 	}
@@ -114,7 +123,7 @@ const CloseView = styled.View`
 
 const Container = styled.View`
 	position: absolute;
-	background: white;
+	background: #f0f3f5;
 	width: ${cardWidth};
 	align-self: center;
 	height: 100%;
@@ -133,10 +142,44 @@ const Cover = styled.View`
 `;
 
 const Content = styled.View`
-	height: ${screenHeight};
 	background: #f0f3f5;
-	padding: 50px;
+	padding-top: 35px;
+	padding-left: 10px;
+	padding-bottom: 55px;
 `;
+
+const cards = [
+	{
+		image: require("../assets/background12.jpg"),
+		title: "Nearby Place 1",
+		subtitle: "0.5km",
+	},
+	{
+		image: require("../assets/background13.jpg"),
+		title: "Nearby Place 2",
+		subtitle: "0.8km",
+	},
+	{
+		image: require("../assets/background14.jpg"),
+		title: "Nearby Place 3",
+		subtitle: "1.2km",
+	},
+	{
+		image: require("../assets/background15.jpg"),
+		title: "Nearby Place 4",
+		subtitle: "2.1km",
+	},
+	{
+		image: require("../assets/background16.jpg"),
+		title: "Nearby Place 5",
+		subtitle: "2.7km",
+	},
+	{
+		image: require("../assets/background11.jpg"),
+		title: "Nearby Place 6",
+		subtitle: "3.5km",
+	},
+];
 
 const items = [
 	{
