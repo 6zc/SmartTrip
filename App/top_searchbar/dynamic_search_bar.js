@@ -42,7 +42,7 @@ const searchbar = props => {
 
   const renderItems = item => {
     return(
-      <ResultItem />
+      <ResultItem item={item.item}/>
     )
   }
 

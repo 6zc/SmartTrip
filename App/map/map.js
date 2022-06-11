@@ -5,8 +5,6 @@ import CustomCallout from './custom_callout';
 import {Cal, getCord} from '../utils/calculator';
 import Linking from '../utils/linking';
 import EIcon from 'react-native-vector-icons/Ionicons';
-import OpenMap from "react-native-open-map";
-
 
 EIcon.loadFont();
 
@@ -74,19 +72,7 @@ const Map = (props) => {
                 ) {
                   return;
                 } else{
-                  Linking.turn2MapApp(...Object.values(getCord(marker.place)), )
-                  // OpenMap.show({
-                    // latitude: 40.778721,
-                    // longitude: -73.968188,
-                  //     ...getCord(marker.place), 
-                  // });
-                  // openMap({
-                  //   ...getCord(marker.place), 
-                  //   // provider:'google',
-                  //   start:"My Location",
-                  //   end:"Hong Kong Observatory",
-                  //   navigate:true
-                  // })
+                  Linking.link2map(...Object.values(getCord(marker.place)), marker.place)
                 }
               }}
               style={styles.customView}>

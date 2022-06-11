@@ -53,16 +53,25 @@
 	<array/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>baidumap</string>
-		<string>iosamap</string>
 		<string>comgooglemaps</string>
-		<string>citymapper</string>
-		<string>uber</string>
-		<string>lyft</string>
-		<string>navigon</string>
-		<string>transit</string>
-		<string>waze</string>
-		<string>moovit</string>
+    <string>citymapper</string>
+    <string>uber</string>
+    <string>lyft</string>
+    <string>transit</string>
+    <string>truckmap</string>
+    <string>waze</string>
+    <string>yandexnavi</string>
+    <string>moovit</string>
+    <string>yandextaxi</string>
+    <string>yandexmaps</string>
+    <string>kakaomap</string>
+    <string>szn-mapy</string>
+    <string>mapsme</string>
+    <string>osmandmaps</string>
+    <string>gett</string>
+    <string>nmap</string>
+    <string>dgis</string>
+    <string>lftgpas</string>
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
