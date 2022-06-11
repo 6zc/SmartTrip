@@ -1,19 +1,28 @@
 import React, {useState} from 'react';
-import {StyleSheet,View,Text, Button, TouchableOpacity} from 'react-native';
+import {StyleSheet,View,Text, TouchableOpacity} from 'react-native';
+import {getCord} from '../utils/calculator';
+import Linking from '../utils/linking';
+
 
 const Item = props => {
-  
+  const {item} = props
   return (
     <View style={styles.item}>
-      <Text>{'Placeholder'}</Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.btnText}>{'Details'}</Text>
+      <Text style={styles.title}>{item.place}</Text>
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={() => Linking.turn2MapApp(...Object.values(getCord(item.place)))}>
+        <Text style={styles.btnText}>{'Navigation'}</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  title:{
+    fontSize:20,
+    fontWeight:'bold'
+  },
   item: {
     backgroundColor: '#ffffff',
     height: 150,
@@ -33,8 +42,9 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#4da4dd',
     height:26,
-    width:70,
+    width:100,
     borderRadius:8,
+    marginTop: 20,
     alignItems: 'center',
     justifyContent:'center',
   },

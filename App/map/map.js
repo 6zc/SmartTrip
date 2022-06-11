@@ -2,8 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import CustomCallout from './custom_callout';
-import {Cal, getCord} from './calculator';
+import {Cal, getCord} from '../utils/calculator';
+import Linking from '../utils/linking';
 import EIcon from 'react-native-vector-icons/Ionicons';
+
 EIcon.loadFont();
 
 const refs = []
@@ -30,7 +32,6 @@ const Map = (props) => {
     setLatitude(latitude);
     setLongitude(longitude);
     if(refs[curStation]){
-      // console.log(refs[curStation])
       setTimeout(() => refs[curStation].showCallout(), 0);
     }
   },[props.curStation]);
@@ -70,6 +71,8 @@ const Map = (props) => {
                   e.nativeEvent.action === 'callout-inside-press'
                 ) {
                   return;
+                } else{
+                  Linking.link2map(...Object.values(getCord(marker.place)), marker.place)
                 }
               }}
               style={styles.customView}>

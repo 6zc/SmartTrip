@@ -51,7 +51,6 @@ const App = () => {
   }
   // Declare your page component
   const Map = props => {
-    console.log(props)
     return (
       <View>
         <DynamicSearchBar
@@ -74,6 +73,10 @@ const App = () => {
         tabBarOptions={{
           activeTintColor: '#ffffff',
           activeBackgroundColor: '#4da4dd',
+          tabStyle:{
+            backgroundColor: '#f1f1f1',
+            height:100,
+          },
           labelStyle: {
             fontSize: 24,
           },
@@ -100,20 +103,6 @@ const App = () => {
               <EIcon
                 name="location-sharp"
                 size={30}
-                color={focused ? color : '#4da4dd'}
-                focused={focused}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Login"
-          component={LoginPage}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <User
-                name="user"
-                size={34}
                 color={focused ? color : '#4da4dd'}
                 focused={focused}
               />

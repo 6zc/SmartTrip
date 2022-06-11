@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Text, Platform} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+// import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import EIcon from 'react-native-vector-icons/Ionicons';
 EIcon.loadFont();
 
@@ -13,7 +13,7 @@ const CustomCallout = props => {
   }else{
     rainfall.max = weatherObj.rainfall.max
   }
-  const rainIcon = rainfall.max === 0?'sun':(rainfall.max>25?'cloud-rain':'cloud-showers-heavy')
+  // const rainIcon = rainfall.max === 0?'sun':(rainfall.max>25?'cloud-rain':'cloud-showers-heavy')
   return (
     <View style={[styles.container, props.style]}>
       <View style={[styles.bubble, {width:Math.max(place.length*9+20, 130)}]}>
