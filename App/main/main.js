@@ -6,6 +6,7 @@ import AppNavigator from "./navigator/AppNavigator";
 import { LogBox } from "react-native";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
+import { ModalPortal } from 'react-native-modals';
 
 // client access to Contentful
 const client = new ApolloClient({

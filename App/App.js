@@ -110,7 +110,7 @@ const App = () => {
           }}
         />
         <Tabs.Screen
-          name="Login"
+          name="Sign Up"
           component={LoginPage}
           options={{
             tabBarIcon: ({focused, color, size}) => (
