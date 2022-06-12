@@ -65,7 +65,21 @@ class SectionScreen extends React.Component {
 							}
 						}}
 					></WebView> */}
-						<Markdown body={section.content} pureCSS={htmlStyles} scalesPageToFit={false} scrollEnabled={false} />
+						<Markdown
+							body={section.content}
+							pureCSS={htmlStyles}
+							scalesPageToFit={false}
+							scrollEnabled={false}
+							// ref="webview"
+							// onNavigationStateChange={event => {
+							// 	// open in Safari
+							// 	console.log(event);
+							// 	if (event.url != "about:blank") {
+							// 		// this.refs.webview.stopLoading();
+							// 		Linking.openURL(event.url);
+							// 	}
+							// }}
+						/>
 					</Content>
 				</Container>
 			</ScrollView>
