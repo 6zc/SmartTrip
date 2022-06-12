@@ -125,7 +125,15 @@ class HomeScreen extends React.Component {
 								</TouchableOpacity>
 								<Title>Welcome back,</Title>
 								<Name>{this.props.name}</Name>
-								<NotificationIcon style={{ position: "absolute", right: 20, top: 5 }}></NotificationIcon>
+								<DiscoverView>
+									<TouchableOpacity
+										onPress={() => {
+											this.props.navigation.push("Discover", {});
+										}}
+									>
+										<Ionicon name="compass" size={35} color="#4775f2"></Ionicon>
+									</TouchableOpacity>
+								</DiscoverView>
 							</TitleBar>
 							<ScrollView
 								style={{ flexDirection: "row", padding: 20, paddingLeft: 12, paddingTop: 30 }}
@@ -198,6 +206,12 @@ class HomeScreen extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
+const DiscoverView = styled.View`
+	position: absolute;
+	top: 5px;
+	right: 20px;
+`;
 
 const PlacesContainer = styled.View`
 	flex-direction: row;
