@@ -7,6 +7,7 @@ import ResultItem from './result_item';
 
 const searchbar = props => {
   const {itemList, navigation} = props
+  console.log(itemList)
   const [queryText, setQueryText] = useState('')
   const [dataSource, setDataSource] = useState(itemList)
   const [dataBackup, setDataBackup] = useState(itemList)
@@ -32,7 +33,7 @@ const searchbar = props => {
   const filterList = (text) => {
     var newData = dataBackup;
     newData = dataBackup.filter((item) => {
-      const itemData = item.place.toLowerCase().split(" ").join("");
+      const itemData = item.title.toLowerCase().split(" ").join("");
       const textData = text.toLowerCase().split(" ").join("");
       return itemData.includes(textData);
     });

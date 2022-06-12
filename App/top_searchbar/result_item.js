@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet,View,Text, TouchableOpacity} from 'react-native';
-import {getCord} from '../utils/calculator';
 import Linking from '../utils/linking';
 
 
@@ -8,10 +7,10 @@ const Item = props => {
   const {item} = props
   return (
     <View style={styles.item}>
-      <Text style={styles.title}>{item.place}</Text>
+      <Text style={styles.title}>{item.title}</Text>
       <TouchableOpacity 
         style={styles.button}
-        onPress={() => Linking.turn2MapApp(...Object.values(getCord(item.place)))}>
+        onPress={() => Linking.link2map(...Object.values(coordinate), item.title)}>
         <Text style={styles.btnText}>{'Navigation'}</Text>
       </TouchableOpacity>
     </View>
