@@ -4,10 +4,20 @@
 
 import React, {useState, useEffect, useRef} from 'react';
 //import type(Node) from 'react'
-import {StyleSheet, View, Text, Dimensions, Image, TextInput, Button, ScrollView} from 'react-native';
+import {
+	StyleSheet,
+	View,
+	Text, 
+	Dimensions, 
+	Image, 
+	TextInput, 
+	Button, 
+	ScrollView,
+	Animated} from 'react-native';
 import Modal, { SlideAnimation, ModalContent } from 'react-native-modals';
 import { ModalPortal } from 'react-native-modals';
 import { ModalFooter, ModalButton} from 'react-native-modals';
+import SignPage from './SignPage'
 
 var {width, height, scale} = Dimensions.get('window');
 const LoginPage = props => {
@@ -19,13 +29,9 @@ const LoginPage = props => {
 	const [visiblee,setVisible] = useState(false)
 	const holder1 = 'Please input user name or email';
 	const holder2 = 'Please input password'	;
-	const nameRef = useRef();
 	const pwdRef = useRef();
 
 	const onSignup = () => {
-		// const name = nameRef.state.value;
-		// const pwd = pwdRef.state.value;
-	// 发送
 	}
 	const onChangeTextName = (Text) => {
 		setName(Text);
@@ -33,14 +39,23 @@ const LoginPage = props => {
 	const onChangeTextPwd = (Text) => {
 		setPwd(Text)
 	}
+	const cancelSign = () => {
+		setVisible(false)
+	}
+	const confirmSign = () => {
+	}
 	async function onLogin (){
-		
-		// 清空
+
 	}
 	return(
-	<ScrollView >
+	<ScrollView>
 		
 		<ModalPortal />	
+		<SignPage                  
+                visible={visiblee}
+                cancel = {cancelSign}
+                confirm = {confirmSign}
+        />
 		<View style={style.container}>
 			<Image source={require('./assets/bg-head.jpeg')} style={style.headbg}/>
 			<TextInput 
@@ -48,7 +63,6 @@ const LoginPage = props => {
 				style={style.inputs}
 				keyboardType='default'
 				onChangeText={(Text)=>onChangeTextName(Text)}
-				ref = {nameRef}
 				/>
 			<TextInput 
 				placeholder={holder2} 
@@ -61,22 +75,9 @@ const LoginPage = props => {
 				<Button title="login" onPress={onLogin} style = {style.button1}/>
 				<Button title="sign up" onPress={()=>{setVisible(!visiblee)}} style = {style.button2}/>
 			</Text>	
-			  <Modal
-    				visible={visiblee}
-    				modalAnimation={new SlideAnimation({
-      				slideFrom: 'bottom',
-    					})}
-    				style={style.modal}
-  				>
-    			<ModalContent>
-      				{}
-    			</ModalContent>
-  			</Modal>	
+
 		</View>
-		
-		<View style={style.container}>
-			<Image source={require('./assets/bg-head.jpeg')} style={style.headbg}/>
-		</View>
+
 	</ScrollView>
 	); 
 }
@@ -123,11 +124,5 @@ const style = StyleSheet.create({
 
 
 export default LoginPage
-/*
-	bg head
-	input 
-	sign up
 
-*/
 // 滑动放大
-// 注册界面
