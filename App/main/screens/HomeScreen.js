@@ -50,14 +50,19 @@ const CardsQuery = gql`
 `;
 
 function mapStateToProps(state) {
-	return { action: state.action, name: state.name };
+	return {
+		action: state.action,
+		name: state.name,
+		place: state.place,
+	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		openMenu: () =>
+		openMenu: place =>
 			dispatch({
 				type: "OPEN_MENU",
+				place: place,
 			}),
 	};
 }
@@ -141,7 +146,12 @@ class HomeScreen extends React.Component {
 								showsHorizontalScrollIndicator={false}
 							>
 								{logos.map((logo, index) => (
-									<TouchableOpacity key={index} onPress={this.props.openMenu}>
+									<TouchableOpacity
+										key={index}
+										onPress={() => {
+											this.props.openMenu(logo.text);
+										}}
+									>
 										<Logo image={logo.image} text={logo.text} />
 									</TouchableOpacity>
 								))}

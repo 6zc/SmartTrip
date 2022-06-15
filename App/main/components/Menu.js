@@ -15,7 +15,10 @@ if (screenWidth > 500) {
 }
 
 function mapStateToProps(state) {
-	return { action: state.action };
+	return {
+		action: state.action,
+		place: state.place,
+	};
 }
 
 function mapDispatchToProps(dispatch) {
@@ -63,7 +66,7 @@ class Menu extends React.Component {
 			<AnimatedContainer style={{ top: this.state.top }}>
 				<Cover>
 					<Image source={require("../assets/background2.jpg")} />
-					<Title>Nearby</Title>
+					<Title>Nearby {this.props.place}</Title>
 					<Subtitle>Found 1000 places nearby</Subtitle>
 				</Cover>
 				<TouchableOpacity
