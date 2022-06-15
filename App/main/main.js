@@ -19,11 +19,13 @@ const client = new ApolloClient({
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 LogBox.ignoreLogs(["Expected style"]);
 
+// initial state for redux
 const initialState = {
 	action: "",
 	name: "",
 };
 
+// set up redux - save states in reducer to use as props
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case "OPEN_MENU":
@@ -32,6 +34,10 @@ const reducer = (state = initialState, action) => {
 			return { action: "closeMenu" };
 		case "UPDATE_NAME":
 			return { name: action.name };
+		case "OPEN_CARD":
+			return { action: "openCard" };
+		case "CLOSE_CARD":
+			return { action: "closeCard" };
 		default:
 			return state;
 	}

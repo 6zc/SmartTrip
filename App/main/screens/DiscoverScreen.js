@@ -4,6 +4,14 @@ import { Button } from "react-native";
 import DiscoverCard from "../components/DiscoverCard";
 import { PanResponder, Animated, TouchableOpacity } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
+import { connect } from "react-redux";
+
+// receive redux
+function mapStateToProps(state) {
+	return {
+		action: state.action,
+	};
+}
 
 function getNextIndex(index) {
 	var nextIndex = index + 1;
@@ -21,12 +29,25 @@ class DiscoverScreen extends React.Component {
 		thirdScale: new Animated.Value(0.8),
 		thirdTranslateY: new Animated.Value(-50),
 		index: 0,
+		opacity: new Animated.Value(0),
 	};
 
 	UNSAFE_componentWillMount() {
 		this._panResponder = PanResponder.create({
 			// enable gestures
-			onMoveShouldSetPanResponder: () => true,
+			onMoveShouldSetPanResponder: (event, gestureState) => {
+				if ((gestureState.dx = 0 && gestureState.dy == 0)) {
+					return false;
+				} else {
+					// receive props sent from DiscoverCard.js to reducer in main.js
+					if (this.props.action == "openCard") {
+						// disable gestures when in full screen
+						return false;
+					} else {
+						return true;
+					}
+				}
+			},
 
 			// animation for showing the second/third card
 			onPanResponderGrant: () => {
@@ -36,6 +57,8 @@ class DiscoverScreen extends React.Component {
 				// third card
 				Animated.spring(this.state.thirdScale, { useNativeDriver: false, toValue: 0.9 }).start();
 				Animated.spring(this.state.thirdTranslateY, { useNativeDriver: false, toValue: 44 }).start();
+
+				Animated.timing(this.state.opacity, { useNativeDriver: false, toValue: 1 }).start();
 			},
 
 			// move cards
@@ -44,6 +67,7 @@ class DiscoverScreen extends React.Component {
 			// release
 			onPanResponderRelease: () => {
 				const positionY = this.state.pan.y.__getValue();
+				Animated.timing(this.state.opacity, { useNativeDriver: false, toValue: 0 }).start();
 				// console.log(positionY);
 				// drop the card
 				if (positionY > 280) {
@@ -78,6 +102,7 @@ class DiscoverScreen extends React.Component {
 		return (
 			<Container>
 				<Card>
+					<AnimatedMask style={{ opacity: this.state.opacity }} />
 					<Animated.View
 						style={{ transform: [{ translateX: this.state.pan.x }, { translateY: this.state.pan.y }] }}
 						{...this._panResponder.panHandlers}
@@ -87,6 +112,7 @@ class DiscoverScreen extends React.Component {
 							image={cards[this.state.index].image}
 							subtitle={cards[this.state.index].subtitle}
 							text={cards[this.state.index].text}
+							canOpen={true}
 						/>
 					</Animated.View>
 					<Animated.View
@@ -134,7 +160,7 @@ class DiscoverScreen extends React.Component {
 					onPress={() => {
 						this.props.navigation.goBack();
 					}}
-					style={{ position: "absolute", bottom: 20, left: "50%", marginLeft: -30, zIndex: 1 }}
+					style={{ position: "absolute", bottom: 20, left: "50%", marginLeft: -30 }}
 				>
 					<CloseView>
 						<Ionicon name="arrow-undo-outline" size={40} color="#546bfb" />
@@ -145,7 +171,19 @@ class DiscoverScreen extends React.Component {
 	}
 }
 
-export default DiscoverScreen;
+export default connect(mapStateToProps)(DiscoverScreen);
+
+const Mask = styled.View`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.25);
+	z-index: -3;
+`;
+
+const AnimatedMask = Animated.createAnimatedComponent(Mask);
 
 const Container = styled.View`
 	flex: 1;
@@ -173,7 +211,7 @@ const cards = [
 		title: "Hong Kong Disneyland",
 		image: require("../assets/background5.jpg"),
 		subtitle: "Theme Park",
-		text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. ",
+		text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. It is the first theme park located inside the Hong Kong Disneyland Resort and it is owned and managed by the Hong Kong International Theme Parks. It is, together with Ocean Park Hong Kong, one of the two large theme parks in Hong Kong. Hong Kong Disneyland opened to visitors on Monday, 12 September 2005 at 13:00 HKT.",
 	},
 	{
 		title: "Hong Kong Disneyland",
