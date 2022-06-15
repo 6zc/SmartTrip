@@ -13,6 +13,7 @@ import Avatar from "../components/Avatar";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
+// import ModalLogin from "../components/ModalLogin";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -210,6 +211,7 @@ class HomeScreen extends React.Component {
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
+				{/* <ModalLogin /> */}
 			</RootView>
 		);
 	}
