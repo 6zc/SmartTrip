@@ -38,12 +38,12 @@ class Place extends React.Component {
 				<Cover>
 					<Image source={this.props.image} />
 					<Logo source={this.props.logo} resizeMode="contain" />
-					<Subtitle>{this.props.subtitle}</Subtitle>
+					<Subtitle>{this.props.distance}</Subtitle>
 					<Title>{this.props.title}</Title>
 				</Cover>
 				<Content>
 					<Caption>{this.props.caption}</Caption>
-					<Name>{this.props.author}</Name>
+					<Name>{this.props.type}</Name>
 				</Content>
 			</Container>
 		);

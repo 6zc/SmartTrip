@@ -21,7 +21,7 @@ const CardsQuery = gql`
 		cardsCollection {
 			items {
 				title
-				subtitle
+				type
 				image {
 					title
 					description
@@ -32,7 +32,7 @@ const CardsQuery = gql`
 					width
 					height
 				}
-				subtitle
+
 				caption
 				logo {
 					title
@@ -187,7 +187,7 @@ class HomeScreen extends React.Component {
 															image={card.image}
 															caption={card.caption}
 															logo={card.logo}
-															subtitle={card.subtitle}
+															type={card.type}
 															content={card.content}
 														></Card>
 													</TouchableOpacity>
@@ -204,9 +204,9 @@ class HomeScreen extends React.Component {
 										key={index}
 										image={place.image}
 										title={place.title}
-										subtitle={place.subtitle}
+										distance={place.distance}
 										logo={place.logo}
-										author={place.author}
+										type={place.type}
 										avatar={place.avatar}
 										caption={place.caption}
 									/>
@@ -293,17 +293,34 @@ const logos = [
 		image: require("../assets/restaurant.png"),
 		text: "Restaurants",
 	},
+
 	{
-		image: require("../assets/mall.png"),
-		text: "Malls",
+		image: require("../assets/park.png"),
+		text: "Parks",
+	},
+	{
+		image: require("../assets/movie.png"),
+		text: "Movies",
+	},
+	{
+		image: require("../assets/museum.png"),
+		text: "Museums",
+	},
+	{
+		image: require("../assets/bookshop.png"),
+		text: "Bookshops",
 	},
 	{
 		image: require("../assets/theme-park.png"),
 		text: "Theme Parks",
 	},
 	{
-		image: require("../assets/cafe.png"),
-		text: "Cafe",
+		image: require("../assets/shopping.png"),
+		text: "Shopping",
+	},
+	{
+		image: require("../assets/coffee.png"),
+		text: "Coffee",
 	},
 	{
 		image: require("../assets/bar.png"),
@@ -314,8 +331,8 @@ const logos = [
 		text: "Zoos",
 	},
 	{
-		image: require("../assets/store.png"),
-		text: "Stores",
+		image: require("../assets/grocery.png"),
+		text: "Groceries",
 	},
 ];
 
@@ -324,63 +341,63 @@ const cards = [
 		caption: "3 days ago",
 		image: require("../assets/background11.jpg"),
 		title: "J.Boroski",
-		subtitle: "Bars",
+		subtitle: "Bar",
 		logo: require("../assets/bar.png"),
 	},
 	{
 		caption: "5 days ago",
 		image: require("../assets/background12.jpg"),
 		title: "Shake Shack",
-		subtitle: "Restaurants",
+		subtitle: "Restaurant",
 		logo: require("../assets/restaurant.png"),
 	},
 	{
 		caption: "8 days ago",
 		image: require("../assets/background13.jpg"),
 		title: "Hong Kong Disneyland",
-		subtitle: "Theme Parks",
+		subtitle: "Theme Park",
 		logo: require("../assets/theme-park.png"),
 	},
 	{
 		caption: "10 days ago",
 		image: require("../assets/background14.jpg"),
 		title: "K11 Musea",
-		subtitle: "Malls",
-		logo: require("../assets/mall.png"),
+		subtitle: "shopping",
+		logo: require("../assets/shopping.png"),
 	},
 ];
 
 const places = [
 	{
 		title: "Recommended Place 1",
-		subtitle: "0.5km",
+		distance: "0.5km",
 		image: require("../assets/background6.jpg"),
-		logo: require("../assets/cafe.png"),
-		author: "Cafe",
+		logo: require("../assets/coffee.png"),
+		type: "coffee",
 		caption: "This is a recommended place",
 	},
 	{
 		title: "Recommended Place 2",
-		subtitle: "0.8km",
+		distance: "0.8km",
 		image: require("../assets/background13.jpg"),
 		logo: require("../assets/zoo.png"),
-		author: "Zoos",
+		type: "Zoo",
 		caption: "This is a recommended place",
 	},
 	{
 		title: "Recommended Place 3",
-		subtitle: "1.2km",
+		distance: "1.2km",
 		image: require("../assets/background11.jpg"),
-		logo: require("../assets/mall.png"),
-		author: "Malls",
+		logo: require("../assets/shopping.png"),
+		type: "shopping",
 		caption: "Is this a recommended place? This is a recommended place!",
 	},
 	{
 		title: "Recommended Place 4",
-		subtitle: "1.5km",
+		distance: "1.5km",
 		image: require("../assets/background14.jpg"),
-		logo: require("../assets/store.png"),
-		author: "Stores",
+		logo: require("../assets/grocery.png"),
+		type: "grocery",
 		caption: "This is a recommended place",
 	},
 ];
