@@ -65,6 +65,10 @@ function mapDispatchToProps(dispatch) {
 				type: "OPEN_MENU",
 				place: place,
 			}),
+		openLogin: () =>
+			dispatch({
+				type: "OPEN_LOGIN",
+			}),
 	};
 }
 
@@ -126,7 +130,7 @@ class HomeScreen extends React.Component {
 					<SafeAreaView>
 						<ScrollView>
 							<TitleBar>
-								<TouchableOpacity style={{ position: "absolute", top: 0, left: 20 }}>
+								<TouchableOpacity onPress={this.props.openLogin} style={{ position: "absolute", top: 0, left: 20 }}>
 									<Avatar />
 								</TouchableOpacity>
 								<Title>Welcome back,</Title>

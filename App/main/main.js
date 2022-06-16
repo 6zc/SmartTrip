@@ -7,7 +7,6 @@ import { LogBox } from "react-native";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
-
 // client access to Contentful
 const client = new ApolloClient({
 	uri: "https://graphql.contentful.com/content/v1/spaces/z5ui7o420lkc",
@@ -40,6 +39,10 @@ const reducer = (state = initialState, action) => {
 			return { action: "openCard" };
 		case "CLOSE_CARD":
 			return { action: "closeCard" };
+		case "OPEN_LOGIN":
+			return { action: "openLogin" };
+		case "CLOSE_LOGIN":
+			return { action: "closeLogin" };
 		default:
 			return state;
 	}
