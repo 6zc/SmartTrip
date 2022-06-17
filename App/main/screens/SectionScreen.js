@@ -31,7 +31,7 @@ class SectionScreen extends React.Component {
 						<Image source={section.image} />
 						<Wrapper>
 							<Logo source={section.logo} />
-							<Subtitle>{section.subtitle}</Subtitle>
+							<Subtitle>{section.type}</Subtitle>
 						</Wrapper>
 						<Title>{section.title}</Title>
 						<Caption>{section.caption}</Caption>
@@ -194,6 +194,7 @@ const Title = styled.Text`
 	position: absolute;
 	top: 78px;
 	left: 20px;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.95);
 `;
 
 const Caption = styled.Text`

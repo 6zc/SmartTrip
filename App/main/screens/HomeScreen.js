@@ -168,11 +168,14 @@ class HomeScreen extends React.Component {
 										if (loading) return <Message>Loading...</Message>;
 										if (error) return <Message>Error...</Message>;
 
-										console.log(data.cardsCollection.items);
+										var items = data.cardsCollection.items;
+										var length = items.length;
+										console.log(items);
+										var recentItems = items.slice(length - 3, length);
 
 										return (
 											<CardsContainer>
-												{data.cardsCollection.items.map((card, index) => (
+												{recentItems.map((card, index) => (
 													<TouchableOpacity
 														key={index}
 														onPress={() => {
@@ -198,7 +201,46 @@ class HomeScreen extends React.Component {
 								</Query>
 							</ScrollView>
 							<Subtitle>Recommended Places</Subtitle>
-							<PlacesContainer>
+
+							<Query query={CardsQuery}>
+								{({ loading, error, data }) => {
+									if (loading) return <Message>Loading...</Message>;
+									if (error) return <Message>Error...</Message>;
+
+									var items = data.cardsCollection.items;
+									var length = items.length;
+									console.log(items);
+									var recomItems = items.slice(0, length - 3);
+
+									return (
+										<PlacesContainer>
+											{recomItems.map((card, index) => (
+												<TouchableOpacity
+													key={index}
+													onPress={() => {
+														this.props.navigation.push("Section", {
+															// passing information to new screen
+															section: card,
+														});
+													}}
+												>
+													<Place
+														title={card.title}
+														image={card.image}
+														distance="0.5km"
+														caption={card.caption}
+														logo={card.logo}
+														type={card.type}
+														content={card.content}
+													></Place>
+												</TouchableOpacity>
+											))}
+										</PlacesContainer>
+									);
+								}}
+							</Query>
+
+							{/* <PlacesContainer>
 								{places.map((place, index) => (
 									<Place
 										key={index}
@@ -211,7 +253,7 @@ class HomeScreen extends React.Component {
 										caption={place.caption}
 									/>
 								))}
-							</PlacesContainer>
+							</PlacesContainer> */}
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
