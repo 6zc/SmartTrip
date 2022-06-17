@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
+import { BlurView } from "@react-native-community/blur";
 
 const screenWidth = Dimensions.get("window").width;
 var cardWidth = screenWidth - 40;
@@ -12,6 +13,16 @@ if (screenWidth > 500) {
 const MenuCard = props => (
 	<Container style={{ width: cardWidth }}>
 		<Image source={props.image} />
+		<BlurView
+			blurType="light"
+			blurAmount={5}
+			style={{
+				position: "absolute",
+
+				width: "100%",
+				height: "100%",
+			}}
+		/>
 		<Subtitle>{props.subtitle}</Subtitle>
 		<Title>{props.title}</Title>
 	</Container>
@@ -51,7 +62,8 @@ const Title = styled.Text`
 	margin-top: 4px;
 	margin-bottom: 20px;
 	margin-left: 20px;
-	width: 170px;
+	width: 300px;
+	box-shadow: 0 6px 6px rgba(0, 0, 0, 0.95);
 `;
 
 const Subtitle = styled.Text`

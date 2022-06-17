@@ -7,6 +7,8 @@ import MenuItem from "./MenuItem";
 import { connect } from "react-redux";
 import MenuCard from "./MenuCard";
 import { ScrollView } from "react-native-gesture-handler";
+import gql from "graphql-tag";
+import { Query } from "react-apollo";
 
 const screenWidth = Dimensions.get("window").width;
 var cardWidth = screenWidth;
@@ -30,12 +32,50 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
+// Query to Contentful using GraphQL
+function getContent(contentType) {
+	return gql`
+		{
+			cardsCollection(where: { contentType: "${contentType}" }) {
+				items {
+					title
+					type
+					image {
+						title
+						description
+						contentType
+						fileName
+						size
+						url
+						width
+						height
+					}
+
+					caption
+					logo {
+						title
+						description
+						contentType
+						fileName
+						size
+						url
+						width
+						height
+					}
+					content
+				}
+			}
+		}
+	`;
+}
+
 const screenHeight = Dimensions.get("window").height;
 
 // stateful component
 class Menu extends React.Component {
 	state = {
 		top: new Animated.Value(screenHeight),
+		// Query to Contentful using GraphQL
 	};
 
 	componentDidMount() {
@@ -67,7 +107,7 @@ class Menu extends React.Component {
 				<Cover>
 					<Image source={require("../assets/background2.jpg")} />
 					<Title>Nearby {this.props.place}</Title>
-					<Subtitle>Found 1000 places nearby</Subtitle>
+					{/* <Subtitle>Found {this.state.number} places nearby</Subtitle> */}
 				</Cover>
 				<TouchableOpacity
 					onPress={this.props.closeMenu}
@@ -84,9 +124,35 @@ class Menu extends React.Component {
 				</Content> */}
 				<ScrollView>
 					<Content>
-						{cards.map((card, index) => (
-							<MenuCard key={index} image={card.image} title={card.title} subtitle={card.subtitle} />
-						))}
+						<Query query={getContent(this.props.place)}>
+							{({ loading, error, data }) => {
+								if (loading) return <Message>Loading...</Message>;
+								if (error) return <Message>Error...</Message>;
+
+								var items = data.cardsCollection.items;
+								var length = items.length;
+								// this.setState({ number: length });
+								// console.log(items);
+
+								return (
+									<CardsContainer>
+										{items.map((card, index) => (
+											<TouchableOpacity
+												key={index}
+												onPress={() => {
+													this.props.navigation.push("Section", {
+														// passing information to new screen
+														section: card,
+													});
+												}}
+											>
+												<MenuCard key={index} image={card.image} title={card.title} subtitle="0.8km" />
+											</TouchableOpacity>
+										))}
+									</CardsContainer>
+								);
+							}}
+						</Query>
 					</Content>
 				</ScrollView>
 			</AnimatedContainer>
@@ -95,6 +161,19 @@ class Menu extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);
+
+const CardsContainer = styled.View`
+	flex-direction: row;
+	flex-wrap: wrap;
+	// padding-left: 10px;
+`;
+
+const Message = styled.Text`
+	margin: 20px;
+	color: #b8bece;
+	font-size: 15px;
+	font-weight: 500;
+`;
 
 const Image = styled.Image`
 	position: absolute;
@@ -150,59 +229,3 @@ const Content = styled.View`
 	padding-left: 10px;
 	padding-bottom: 55px;
 `;
-
-const cards = [
-	{
-		image: require("../assets/background12.jpg"),
-		title: "Nearby Place 1",
-		subtitle: "0.5km",
-	},
-	{
-		image: require("../assets/background13.jpg"),
-		title: "Nearby Place 2",
-		subtitle: "0.8km",
-	},
-	{
-		image: require("../assets/background14.jpg"),
-		title: "Nearby Place 3",
-		subtitle: "1.2km",
-	},
-	{
-		image: require("../assets/background15.jpg"),
-		title: "Nearby Place 4",
-		subtitle: "2.1km",
-	},
-	{
-		image: require("../assets/background16.jpg"),
-		title: "Nearby Place 5",
-		subtitle: "2.7km",
-	},
-	{
-		image: require("../assets/background11.jpg"),
-		title: "Nearby Place 6",
-		subtitle: "3.5km",
-	},
-];
-
-const items = [
-	{
-		icon: "american-football",
-		title: "WHEN",
-		text: "we all",
-	},
-	{
-		icon: "ios-card",
-		title: "FALL",
-		text: "asleep",
-	},
-	{
-		icon: "ios-compass",
-		title: "WHERE",
-		text: "do we",
-	},
-	{
-		icon: "ios-exit",
-		title: "GO",
-		text: "?",
-	},
-];

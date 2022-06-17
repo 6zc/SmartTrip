@@ -138,7 +138,7 @@ const Title = styled.Text`
 	margin-bottom: 10px;
 	margin-left: 20px;
 	width: 240px;
-	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.95);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.95);
 `;
 
 const Subtitle = styled.Text`

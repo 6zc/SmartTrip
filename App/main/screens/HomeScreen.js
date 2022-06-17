@@ -125,7 +125,7 @@ class HomeScreen extends React.Component {
 	render() {
 		return (
 			<RootView>
-				<Menu />
+				<Menu navigation={this.props.navigation} />
 				<AnimatedContainer style={{ transform: [{ scale: this.state.scale }], opacity: this.state.opacity }}>
 					<SafeAreaView>
 						<ScrollView>
@@ -210,7 +210,7 @@ class HomeScreen extends React.Component {
 									var items = data.cardsCollection.items;
 									var length = items.length;
 									console.log(items);
-									var recomItems = items.slice(0, length - 3);
+									var recomItems = items.slice(length - 7, length - 3);
 
 									return (
 										<PlacesContainer>
@@ -375,71 +375,5 @@ const logos = [
 	{
 		image: require("../assets/grocery.png"),
 		text: "Groceries",
-	},
-];
-
-const cards = [
-	{
-		caption: "3 days ago",
-		image: require("../assets/background11.jpg"),
-		title: "J.Boroski",
-		subtitle: "Bar",
-		logo: require("../assets/bar.png"),
-	},
-	{
-		caption: "5 days ago",
-		image: require("../assets/background12.jpg"),
-		title: "Shake Shack",
-		subtitle: "Restaurant",
-		logo: require("../assets/restaurant.png"),
-	},
-	{
-		caption: "8 days ago",
-		image: require("../assets/background13.jpg"),
-		title: "Hong Kong Disneyland",
-		subtitle: "Theme Park",
-		logo: require("../assets/theme-park.png"),
-	},
-	{
-		caption: "10 days ago",
-		image: require("../assets/background14.jpg"),
-		title: "K11 Musea",
-		subtitle: "shopping",
-		logo: require("../assets/shopping.png"),
-	},
-];
-
-const places = [
-	{
-		title: "Recommended Place 1",
-		distance: "0.5km",
-		image: require("../assets/background6.jpg"),
-		logo: require("../assets/coffee.png"),
-		type: "coffee",
-		caption: "This is a recommended place",
-	},
-	{
-		title: "Recommended Place 2",
-		distance: "0.8km",
-		image: require("../assets/background13.jpg"),
-		logo: require("../assets/zoo.png"),
-		type: "Zoo",
-		caption: "This is a recommended place",
-	},
-	{
-		title: "Recommended Place 3",
-		distance: "1.2km",
-		image: require("../assets/background11.jpg"),
-		logo: require("../assets/shopping.png"),
-		type: "shopping",
-		caption: "Is this a recommended place? This is a recommended place!",
-	},
-	{
-		title: "Recommended Place 4",
-		distance: "1.5km",
-		image: require("../assets/background14.jpg"),
-		logo: require("../assets/grocery.png"),
-		type: "grocery",
-		caption: "This is a recommended place",
 	},
 ];
