@@ -13,6 +13,7 @@ import Avatar from "../components/Avatar";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
+// import ModalLogin from "../components/ModalLogin";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -20,7 +21,7 @@ const CardsQuery = gql`
 		cardsCollection {
 			items {
 				title
-				subtitle
+				type
 				image {
 					title
 					description
@@ -31,7 +32,7 @@ const CardsQuery = gql`
 					width
 					height
 				}
-				subtitle
+
 				caption
 				logo {
 					title
@@ -50,14 +51,23 @@ const CardsQuery = gql`
 `;
 
 function mapStateToProps(state) {
-	return { action: state.action, name: state.name };
+	return {
+		action: state.action,
+		name: state.name,
+		place: state.place,
+	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		openMenu: () =>
+		openMenu: place =>
 			dispatch({
 				type: "OPEN_MENU",
+				place: place,
+			}),
+		openLogin: () =>
+			dispatch({
+				type: "OPEN_LOGIN",
 			}),
 	};
 }
@@ -115,17 +125,25 @@ class HomeScreen extends React.Component {
 	render() {
 		return (
 			<RootView>
-				<Menu />
+				<Menu navigation={this.props.navigation} />
 				<AnimatedContainer style={{ transform: [{ scale: this.state.scale }], opacity: this.state.opacity }}>
 					<SafeAreaView>
 						<ScrollView>
 							<TitleBar>
-								<TouchableOpacity style={{ position: "absolute", top: 0, left: 20 }}>
+								<TouchableOpacity onPress={this.props.openLogin} style={{ position: "absolute", top: 0, left: 20 }}>
 									<Avatar />
 								</TouchableOpacity>
 								<Title>Welcome back,</Title>
 								<Name>{this.props.name}</Name>
-								<NotificationIcon style={{ position: "absolute", right: 20, top: 5 }}></NotificationIcon>
+								<DiscoverView>
+									<TouchableOpacity
+										onPress={() => {
+											this.props.navigation.push("Discover", {});
+										}}
+									>
+										<Ionicon name="compass" size={35} color="#4775f2"></Ionicon>
+									</TouchableOpacity>
+								</DiscoverView>
 							</TitleBar>
 							<ScrollView
 								style={{ flexDirection: "row", padding: 20, paddingLeft: 12, paddingTop: 30 }}
@@ -133,7 +151,12 @@ class HomeScreen extends React.Component {
 								showsHorizontalScrollIndicator={false}
 							>
 								{logos.map((logo, index) => (
-									<TouchableOpacity key={index} onPress={this.props.openMenu}>
+									<TouchableOpacity
+										key={index}
+										onPress={() => {
+											this.props.openMenu(logo.text);
+										}}
+									>
 										<Logo image={logo.image} text={logo.text} />
 									</TouchableOpacity>
 								))}
@@ -145,11 +168,14 @@ class HomeScreen extends React.Component {
 										if (loading) return <Message>Loading...</Message>;
 										if (error) return <Message>Error...</Message>;
 
-										console.log(data.cardsCollection.items);
+										var items = data.cardsCollection.items;
+										var length = items.length;
+										console.log(items);
+										var recentItems = items.slice(length - 3, length);
 
 										return (
 											<CardsContainer>
-												{data.cardsCollection.items.map((card, index) => (
+												{recentItems.map((card, index) => (
 													<TouchableOpacity
 														key={index}
 														onPress={() => {
@@ -164,7 +190,7 @@ class HomeScreen extends React.Component {
 															image={card.image}
 															caption={card.caption}
 															logo={card.logo}
-															subtitle={card.subtitle}
+															type={card.type}
 															content={card.content}
 														></Card>
 													</TouchableOpacity>
@@ -175,29 +201,75 @@ class HomeScreen extends React.Component {
 								</Query>
 							</ScrollView>
 							<Subtitle>Recommended Places</Subtitle>
-							<PlacesContainer>
+
+							<Query query={CardsQuery}>
+								{({ loading, error, data }) => {
+									if (loading) return <Message>Loading...</Message>;
+									if (error) return <Message>Error...</Message>;
+
+									var items = data.cardsCollection.items;
+									var length = items.length;
+									console.log(items);
+									var recomItems = items.slice(length - 7, length - 3);
+
+									return (
+										<PlacesContainer>
+											{recomItems.map((card, index) => (
+												<TouchableOpacity
+													key={index}
+													onPress={() => {
+														this.props.navigation.push("Section", {
+															// passing information to new screen
+															section: card,
+														});
+													}}
+												>
+													<Place
+														title={card.title}
+														image={card.image}
+														distance="0.5km"
+														caption={card.caption}
+														logo={card.logo}
+														type={card.type}
+														content={card.content}
+													></Place>
+												</TouchableOpacity>
+											))}
+										</PlacesContainer>
+									);
+								}}
+							</Query>
+
+							{/* <PlacesContainer>
 								{places.map((place, index) => (
 									<Place
 										key={index}
 										image={place.image}
 										title={place.title}
-										subtitle={place.subtitle}
+										distance={place.distance}
 										logo={place.logo}
-										author={place.author}
+										type={place.type}
 										avatar={place.avatar}
 										caption={place.caption}
 									/>
 								))}
-							</PlacesContainer>
+							</PlacesContainer> */}
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
+				{/* <ModalLogin /> */}
 			</RootView>
 		);
 	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
+const DiscoverView = styled.View`
+	position: absolute;
+	top: 5px;
+	right: 20px;
+`;
 
 const PlacesContainer = styled.View`
 	flex-direction: row;
@@ -263,17 +335,34 @@ const logos = [
 		image: require("../assets/restaurant.png"),
 		text: "Restaurants",
 	},
+
 	{
-		image: require("../assets/mall.png"),
-		text: "Malls",
+		image: require("../assets/park.png"),
+		text: "Parks",
+	},
+	{
+		image: require("../assets/movie.png"),
+		text: "Movies",
+	},
+	{
+		image: require("../assets/museum.png"),
+		text: "Museums",
+	},
+	{
+		image: require("../assets/bookshop.png"),
+		text: "Bookshops",
 	},
 	{
 		image: require("../assets/theme-park.png"),
 		text: "Theme Parks",
 	},
 	{
-		image: require("../assets/cafe.png"),
-		text: "Cafe",
+		image: require("../assets/shopping.png"),
+		text: "Shopping",
+	},
+	{
+		image: require("../assets/coffee.png"),
+		text: "Coffee",
 	},
 	{
 		image: require("../assets/bar.png"),
@@ -284,73 +373,7 @@ const logos = [
 		text: "Zoos",
 	},
 	{
-		image: require("../assets/store.png"),
-		text: "Stores",
-	},
-];
-
-const cards = [
-	{
-		caption: "3 days ago",
-		image: require("../assets/background11.jpg"),
-		title: "J.Boroski",
-		subtitle: "Bars",
-		logo: require("../assets/bar.png"),
-	},
-	{
-		caption: "5 days ago",
-		image: require("../assets/background12.jpg"),
-		title: "Shake Shack",
-		subtitle: "Restaurants",
-		logo: require("../assets/restaurant.png"),
-	},
-	{
-		caption: "8 days ago",
-		image: require("../assets/background13.jpg"),
-		title: "Hong Kong Disneyland",
-		subtitle: "Theme Parks",
-		logo: require("../assets/theme-park.png"),
-	},
-	{
-		caption: "10 days ago",
-		image: require("../assets/background14.jpg"),
-		title: "K11 Musea",
-		subtitle: "Malls",
-		logo: require("../assets/mall.png"),
-	},
-];
-
-const places = [
-	{
-		title: "Recommended Place 1",
-		subtitle: "0.5km",
-		image: require("../assets/background6.jpg"),
-		logo: require("../assets/cafe.png"),
-		author: "Cafe",
-		caption: "This is a recommended place",
-	},
-	{
-		title: "Recommended Place 2",
-		subtitle: "0.8km",
-		image: require("../assets/background13.jpg"),
-		logo: require("../assets/zoo.png"),
-		author: "Zoos",
-		caption: "This is a recommended place",
-	},
-	{
-		title: "Recommended Place 3",
-		subtitle: "1.2km",
-		image: require("../assets/background11.jpg"),
-		logo: require("../assets/mall.png"),
-		author: "Malls",
-		caption: "Is this a recommended place? This is a recommended place!",
-	},
-	{
-		title: "Recommended Place 4",
-		subtitle: "1.5km",
-		image: require("../assets/background14.jpg"),
-		logo: require("../assets/store.png"),
-		author: "Stores",
-		caption: "This is a recommended place",
+		image: require("../assets/grocery.png"),
+		text: "Groceries",
 	},
 ];

@@ -19,19 +19,30 @@ import { LogBox } from "react-native";
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 LogBox.ignoreLogs(["Expected style"]);
 
+// initial state for redux
 const initialState = {
 	action: "",
 	name: "",
+	place: "",
 };
 
+// set up redux - save states in reducer to use as props
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case "OPEN_MENU":
-			return { action: "openMenu" };
+			return { action: "openMenu", place: action.place };
 		case "CLOSE_MENU":
 			return { action: "closeMenu" };
 		case "UPDATE_NAME":
 			return { name: action.name };
+		case "OPEN_CARD":
+			return { action: "openCard" };
+		case "CLOSE_CARD":
+			return { action: "closeCard" };
+		case "OPEN_LOGIN":
+			return { action: "openLogin" };
+		case "CLOSE_LOGIN":
+			return { action: "closeLogin" };
 		default:
 			return state;
 	}
