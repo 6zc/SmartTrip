@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,7 @@ import User from 'react-native-vector-icons/Entypo'
 import LoginPage from './Personal/main'
 import DynamicSearchBar from './top_searchbar/dynamic_search_bar'
 import MapWrapper from './map/map';
+import Oops from './map/oops';
 import MainPage from './main/main';
 import { LogBox } from "react-native";
 import ApolloClient from "apollo-boost";
@@ -32,25 +33,23 @@ const CardsQuery = gql`
 	{
 		cardsCollection {
 			items {
+        sys {
+          id
+        }
 				title
-				subtitle
+				type
 				image {
-					title
-					description
-					contentType
-					fileName
 					size
 					url
 					width
 					height
 				}
-				subtitle
+        location {
+          lat
+          lon
+        }
 				caption
 				logo {
-					title
-					description
-					contentType
-					fileName
 					size
 					url
 					width
@@ -100,6 +99,9 @@ const App = () => {
     return (
       <Query query={CardsQuery}>
         {({ loading, error, data }) => {
+          if (loading || error) return <Oops loading={loading}></Oops>;
+
+          console.log(data.cardsCollection.items)
           return (
             <View>
               <DynamicSearchBar
@@ -162,7 +164,7 @@ const App = () => {
             }}
           />
           <Tabs.Screen
-            name="Login"
+            name="User"
             component={LoginPage}
             options={{
               tabBarIcon: ({focused, color, size}) => (

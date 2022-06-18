@@ -1,10 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, Text, Platform, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from '../utils/linking';
 
 const PlaceView = props => {
-  const {title, subtitle, image, coordinate, logo} =props
+  const {title, type, image, coordinate, logo} =props
   
   return (
     <View style={styles.container}>
@@ -12,15 +12,14 @@ const PlaceView = props => {
         <TouchableOpacity 
           style={styles.navi}
           onPressOut={() => {
-            console.log('1')
             Linking.link2map(...Object.values(coordinate), title)
             }}>
           <Ionicon backgroundColor='#ffffff' name="navigate-circle-outline" size={35} color="#ffffff" />
         </TouchableOpacity>
         <Image style={styles.image} source={image} />
         <View style={styles.lineWrapper}>
-          <Text style={styles.subtitle}>{subtitle} </Text>
-          <Image style={styles.logo} source={logo} />
+          <Text style={styles.lineWrapper.type}>{type} </Text>
+          <Image style={styles.lineWrapper.logo} source={logo} />
         </View>
         <Text style={styles.title}>{title} </Text>
       </View>
@@ -32,12 +31,19 @@ const styles = StyleSheet.create({
   lineWrapper:{
     flexDirection: 'row',
     alignItem:'center',
-    top:-6,
-  },
-  logo: {
-    width:15,
-    height:15,
-    left: 12,
+    top: -6,
+    maxWidth: 220,
+    type: {
+      fontSize:15,
+      left:12,
+      color:'#aaaaaa',
+      fontWeight:'bold'
+    },
+    logo: {
+      width:15,
+      height:15,
+      left: 12,
+    },
   },
   navi:{
     position: 'absolute',
@@ -49,7 +55,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: 'column',
-    alignItem: 'flex-end',
+    alignItem: 'flex-start',
     justifyContent:'flex-end',
     height:520,
     width:328,
@@ -60,7 +66,6 @@ const styles = StyleSheet.create({
     shadowOpacity:0.4,
   },
   bubble: {
-    height:350,
     width:290,
     flexDsirection: 'column',
     justifyContent: 'center',
@@ -72,21 +77,15 @@ const styles = StyleSheet.create({
     width:290,
     height:290,
     top:-13,
-    
   },
-  subtitle: {
-    fontSize:15,
-    // left:5,
-    left:12,
-    color:'#aaaaaa',
-    fontWeight:'bold'
-  },
+  
   title:{
-    // left:5,
     fontSize:22,
     top:-4,
     left:12,
-    fontWeight:'bold'
+    marginBottom: 8,
+    fontWeight:'bold',
+    maxWidth: 220
   }
 });
 

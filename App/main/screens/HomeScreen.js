@@ -167,10 +167,9 @@ class HomeScreen extends React.Component {
 									{({ loading, error, data }) => {
 										if (loading) return <Message>Loading...</Message>;
 										if (error) return <Message>Error...</Message>;
-
+										
 										var items = data.cardsCollection.items;
 										var length = items.length;
-										console.log(items);
 										var recentItems = items.slice(length - 3, length);
 
 										return (
@@ -209,7 +208,7 @@ class HomeScreen extends React.Component {
 
 									var items = data.cardsCollection.items;
 									var length = items.length;
-									console.log(items);
+									// console.log(items);
 									var recomItems = items.slice(length - 7, length - 3);
 
 									return (

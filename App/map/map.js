@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Dimensions, Image, TouchableOpacity} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import Ionicon from 'react-native-vector-icons/Ionicons';
-import PlaceView from './place_view.js'
-import {getCord} from '../utils/calculator';
+import PlaceView from './place_view.js';
+// import {getCord} from '../utils/calculator';
 
 const refs = []
 
@@ -14,15 +14,13 @@ const Map = (props) => {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-  const [latitude, setLatitude] = useState(22.2745);
-  const [longitude, setLongitude] = useState(114.1533);
 
-  const region = {
-    latitude: latitude,
-    longitude: longitude,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
-  };
+  // const region = {
+  //   latitude: 22.2745,
+  //   longitude: 114.1533,
+  //   latitudeDelta: LATITUDE_DELTA,
+  //   longitudeDelta: LONGITUDE_DELTA,
+  // };
 
   // useEffect(() => {
   //   const {latitude,longitude} = getCord(curStation)
@@ -32,22 +30,28 @@ const Map = (props) => {
   //     setTimeout(() => refs[curStation].showCallout(), 0);
   //   }
   // },[props.curStation]);
-  const tempPlaceList = ['Hong Kong Park', 'Hong Kong Observatory', 'Tai Po']
+  // const tempPlaceList = ['Hong Kong Park', 'Hong Kong Observatory', 'Tai Po']
 
   return (
     <View style={styles.container}>
       <MapView
         provider={props.provider}
+        stopPropagation={true}
         style={styles.map}
         showsUserLocation={true}
-        region={region}
+        followsUserLocation={true}
+        // region={region}
         minZoomLevel={9}
-        maxZoomLevel={16}>
-        {itemList.map((card, index) => (
+        maxZoomLevel={20}>
+        {itemList.map((card) => (
             <Marker
-              ref={ref=>refs[card.title]=ref}
-              key={card.title}
-              coordinate={getCord(tempPlaceList[index])}
+              ref={ref=>refs[card.sys.id]=ref}
+              key={card.sys.id}
+              pointerEvents={"auto"}
+              coordinate={{
+                longitude: card.location.lon+0.0049,
+                latitude: card.location.lat-0.0028,
+              }}
               >
               <View style={styles.customMarker}>
                 <Image style={styles.logo} source={card.logo}></Image>
@@ -68,8 +72,11 @@ const Map = (props) => {
                     logo={card.logo}
                     image={card.image}
                     title={card.title}
-                    subtitle={card.subtitle}
-                    coordinate={getCord(tempPlaceList[index])}
+                    type={card.type}
+                    coordinate={{
+                      longitude: card.location.lon,
+                      latitude: card.location.lat
+                    }}
                   />
               </Callout>
             </Marker>
@@ -77,32 +84,24 @@ const Map = (props) => {
       </MapView>
       <View style={styles.tips}>
         {uvindex.length ?
-          <View style={styles.tipLeft}>
+          <View style={styles.tips.tipLeft}>
             <Ionicon name="sunny" size={18} style={styles.icons}/>
-            <Text style={styles.tip}>{' UV Index: ' + uvindex[0].value+ '/10'}</Text>
+            <Text style={styles.tips.tip}>{' UV Index: ' + uvindex[0].value+ '/10'}</Text>
           </View> : 
-          <View style={styles.tipLeft}>
+          <View style={styles.tips.tipLeft}>
             <Ionicon name="sunny" size={18} style={styles.icons}/>
-            <Text style={styles.tip}>{' UV Index: 0/10'}</Text>
+            <Text style={styles.tips.tip}>{' UV Index: 0/10'}</Text>
           </View>
         }
         {humidity.length ? 
-          <View style={styles.tipRight}>
+          <View style={styles.tips.tipRight}>
             <Ionicon
                 name="thermometer"
                 size={18}
                 style={styles.icons}
               />
-            <Text style={styles.tip}>{' Humidity: ' + humidity[0].value + '%'}</Text>
-          </View> : 
-          <View style={styles.tipRight}>
-            <Ionicon
-              name="thermometer"
-              size={18}
-              style={styles.icons}
-            />            
-            <Text style={styles.tip}>{' Humidity: 65%'}</Text>
-          </View>
+            <Text style={styles.tips.tip}>{' Humidity: ' + humidity[0].value + '%'}</Text>
+          </View> : null
         }
       </View>
     </View>
@@ -129,28 +128,27 @@ const styles = StyleSheet.create({
     shadowOffset:{width:0,height:0},
     shadowColor:'#000000',
     shadowOpacity:0.1,
-  },
-  tip:{
-    fontSize:17,
-    fontWeight:'bold'
-  },
-  tipLeft:{
-    borderRadius: 12,
-    width: 170,
-    backgroundColor: '#ffffff',
-    flexDirection: 'row',
-    marginLeft: -10,
-    alignItems: 'center',
-    justifyContent:'center',
-
-  },
-  tipRight:{
-    borderRadius: 12,
-    width: 170,
-    backgroundColor: '#ffffff',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent:'center',
+    tip:{
+      fontSize:17,
+      fontWeight:'bold'
+    },
+    tipLeft:{
+      borderRadius: 12,
+      width: 170,
+      backgroundColor: '#ffffff',
+      flexDirection: 'row',
+      marginLeft: -10,
+      alignItems: 'center',
+      justifyContent:'center',
+    },
+    tipRight:{
+      borderRadius: 12,
+      width: 170,
+      backgroundColor: '#ffffff',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent:'center',
+    },
   },
   textWrapper: {
     flexDirection: 'row',
@@ -172,13 +170,12 @@ const styles = StyleSheet.create({
   },
   customMarker: {
     flexDirection: 'column',
-    // alignSelf: 'flex-start',
     justifyContent: 'center',
     alignItems: 'center',
-    height:30,
-    width:30,
+    height:20,
+    width:20,
     backgroundColor: '#ffffff',
-    borderRadius:9,
+    borderRadius:5,
     shadowRadius:3,
     shadowOffset:{width:0,height:0},
     shadowColor:'#000000',
@@ -186,11 +183,8 @@ const styles = StyleSheet.create({
     zIndex:4
   },
   logo:{
-    height:22,
-    width:22,
-  },
-  customView:{
-    // height:60
+    height:18,
+    width:18,
   },
   container: {
     ...StyleSheet.absoluteFillObject,
@@ -200,7 +194,6 @@ const styles = StyleSheet.create({
     width: width+10,
   },
   map: {
-    // ...StyleSheet.absoluteFillObject,
     position: 'absolute',
     top: 0,
     left: 0,

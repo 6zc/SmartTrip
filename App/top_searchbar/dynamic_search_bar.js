@@ -16,7 +16,6 @@ const searchbar = props => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const driftAnim = useRef(new Animated.Value(700)).current
   const parallelAni = Animated.parallel([
-    // after decay, in parallel:
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration:300, // return to start
@@ -41,22 +40,18 @@ const searchbar = props => {
     setQueryText(text)
   };
 
-  const renderItems = item => {
-    return(
-      <ResultItem item={item.item}/>
-    )
-  }
-
   return (
     <View style={styles.container}>
       <SearchBar
-        style={styles.bar}
+        style={[styles.bar, {backgroundColor:(showList?'#9c9c9c':'#ffffff')}]}
+        // style={styles.bar}
         fontSize={19}
-        fontColor="#c6c6c6"
+        // fontColor={showList?'#ffffff':'#696969'}
         iconColor="#c6c6c6"
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
         placeholder="Search here"
+        darkMode={showList?true:false}
         onFocus={()=>{
           setShowList(true);
           parallelAni.start();
@@ -81,7 +76,7 @@ const searchbar = props => {
           <Animated.View style={{...styles.blurWrapper,opacity:fadeAnim}}>
             <BlurView
               style={styles.blur}
-              blurType="light"
+              blurType="dark"
               blurAmount={10}
               reducedTransparencyFallbackColor="white"/>
           </Animated.View>
@@ -90,7 +85,22 @@ const searchbar = props => {
             contentContainerStyle={styles.contentContainer}
             style={{...styles.flatlist, top:driftAnim}}
             data={dataSource}
-            renderItem={renderItems}/>
+            ListFooterComponent={()=>{
+              return(
+                <View style={styles.footer}>
+                  <View style={styles.footer.line}></View>
+                </View>
+              )
+            }}
+            renderItem={item => {
+              return(
+                <View style={styles.result_item}>
+                  <ResultItem 
+                    item={item.item}
+                  />
+                </View>
+              )
+            }}/>
         </View> : null
       }
     </View>
@@ -98,10 +108,27 @@ const searchbar = props => {
 }
 
 const styles = StyleSheet.create({
+  footer: {
+    height:60,
+    width: 320,
+    marginTop: 20,
+    justifyContent: 'flex-start',
+    line:{
+      height: 2,
+      width: '100%',
+      backgroundColor: '#b5b5b5'
+    },
+  },
+  result_item: {
+    shadowColor: '#000000',
+    shadowOpacity: 0.4,
+    shadowOffset:{width:0,height:0},
+    shadowRadius:6,
+  },
   wrapper: {
     top:45,
     width:430,
-    height:720,
+    height:640,
     alignItems: 'center',
     position: 'absolute',
     // justifyContent:'center',
@@ -150,10 +177,10 @@ const styles = StyleSheet.create({
   },
   bar:{
     zIndex:4,
-    top: 40,
+    top: 50,
     height:45,
     width:350,
-    fontSize:40
+    fontSize:40,
   }
 });
 
