@@ -88,7 +88,9 @@ const searchbar = props => {
             ListFooterComponent={()=>{
               return(
                 <View style={styles.footer}>
+                  <View style={styles.footer.dot}></View>
                   <View style={styles.footer.line}></View>
+                  <View style={styles.footer.dot}></View>
                 </View>
               )
             }}
@@ -109,15 +111,25 @@ const searchbar = props => {
 
 const styles = StyleSheet.create({
   footer: {
-    height:60,
+    top:-20,
+    height:40,
     width: 320,
     marginTop: 20,
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     line:{
       height: 2,
-      width: '100%',
+      width: '90%',
       backgroundColor: '#b5b5b5'
     },
+    dot:{
+      height:4,
+      width:4,
+      borderRadius: 2,
+      backgroundColor: '#b5b5b5'
+    }
   },
   result_item: {
     shadowColor: '#000000',
