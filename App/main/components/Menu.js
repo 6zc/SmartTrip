@@ -114,7 +114,7 @@ class Menu extends React.Component {
 					style={{ position: "absolute", top: 120, left: "50%", marginLeft: -22, zIndex: 1 }}
 				>
 					<CloseView>
-						<Ionicon name="ios-close" size={44} color="#546bfb" />
+						<Ionicon name="ios-close" size={44} color="#5263ff" />
 					</CloseView>
 				</TouchableOpacity>
 				{/* <Content>

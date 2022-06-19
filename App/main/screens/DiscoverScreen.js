@@ -163,7 +163,7 @@ class DiscoverScreen extends React.Component {
 					style={{ position: "absolute", bottom: 20, left: "50%", marginLeft: -30 }}
 				>
 					<CloseView>
-						<Ionicon name="arrow-undo-outline" size={40} color="#546bfb" />
+						<Ionicon name="arrow-undo-outline" size={40} color="#5263ff" />
 					</CloseView>
 				</TouchableOpacity>
 			</Container>

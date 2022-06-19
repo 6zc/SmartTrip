@@ -137,7 +137,7 @@ const Title = styled.Text`
 	margin-top: 4px;
 	margin-bottom: 10px;
 	margin-left: 20px;
-	width: 240px;
+	width: ${getPlaceWidth(screenWidth) - 40};
 	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.95);
 `;
 

@@ -141,7 +141,21 @@ class HomeScreen extends React.Component {
 											this.props.navigation.push("Discover", {});
 										}}
 									>
-										<Ionicon name="compass" size={35} color="#4775f2"></Ionicon>
+										<Ionicon
+											name="compass"
+											size={35}
+											color="#5263ff"
+											style={{
+												shadowColor: "#c2cbff",
+												shadowOpacity: 0.8,
+												shadowRadius: 5,
+												// iOS
+												shadowOffset: {
+													width: 0,
+													height: 1,
+												},
+											}}
+										></Ionicon>
 									</TouchableOpacity>
 								</DiscoverView>
 							</TitleBar>
