@@ -4,7 +4,6 @@ import Ionicon from "react-native-vector-icons/Ionicons";
 
 const Rating = props => {
   const { rate } = props;
-  console.log(rate)
   return(
     rate===1?
     <Ionicon name="star" size={18} color="#ffd700"/>:

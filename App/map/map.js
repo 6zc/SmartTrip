@@ -15,12 +15,12 @@ const Map = (props) => {
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-  // const region = {
-  //   latitude: 22.2745,
-  //   longitude: 114.1533,
-  //   latitudeDelta: LATITUDE_DELTA,
-  //   longitudeDelta: LONGITUDE_DELTA,
-  // };
+  const region = {
+    latitude: 22.2745,
+    longitude: 114.1533,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA,
+  };
 
   // useEffect(() => {
   //   const {latitude,longitude} = getCord(curStation)
@@ -40,7 +40,7 @@ const Map = (props) => {
         style={styles.map}
         showsUserLocation={true}
         followsUserLocation={true}
-        // region={region}
+        region={region}
         minZoomLevel={9}
         maxZoomLevel={20}>
         {itemList.map((card) => (
@@ -101,7 +101,15 @@ const Map = (props) => {
                 style={styles.icons}
               />
             <Text style={styles.tips.tip}>{' Humidity: ' + humidity[0].value + '%'}</Text>
-          </View> : null
+          </View> : 
+          <View style={styles.tips.tipRight}>
+            <Ionicon
+                name="thermometer"
+                size={18}
+                style={styles.icons}
+              />
+            <Text style={styles.tips.tip}>{' Humidity: 65%'}</Text>
+          </View>
         }
       </View>
     </View>

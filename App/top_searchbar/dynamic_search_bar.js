@@ -7,7 +7,6 @@ import ResultItem from './result_item';
 
 const searchbar = props => {
   const {itemList, navigation} = props
-  console.log(itemList)
   const [queryText, setQueryText] = useState('')
   const [dataSource, setDataSource] = useState(itemList)
   const [dataBackup, setDataBackup] = useState(itemList)
@@ -85,6 +84,7 @@ const searchbar = props => {
             contentContainerStyle={styles.contentContainer}
             style={{...styles.flatlist, top:driftAnim}}
             data={dataSource}
+            keyExtractor={item => item.sys.id}
             ListFooterComponent={()=>{
               return(
                 <View style={styles.footer}>
@@ -96,7 +96,8 @@ const searchbar = props => {
             }}
             renderItem={item => {
               return(
-                <View style={styles.result_item}>
+                <View
+                  style={styles.result_item}>
                   <ResultItem 
                     item={item.item}
                   />

@@ -20,6 +20,9 @@ EIcon.loadFont();
 AIcon.loadFont();
 User.loadFont();
 
+// http://139.155.252.3:10089/api/homepage
+// http://139.155.252.3:10089/api/forecast
+
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
 const Tabs = AnimatedTabBarNavigator();
 const client = new ApolloClient({
@@ -71,8 +74,9 @@ const App = () => {
   useEffect(() => {
     async function fetchData(){
       try {
-        let response = await fetch('http://47.94.208.98:8080/homepage');
+        let response = await fetch('http://139.155.252.3:10089/api/homepage');
         let responseJson = await response.json();
+        console.log(responseJson)
         setStationList(responseJson.temperature.data)
         setHumidity(responseJson.humidity ? responseJson.humidity.data : [])
         setUvindex(responseJson.uvindex ? responseJson.uvindex.data : [])

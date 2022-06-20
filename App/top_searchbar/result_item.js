@@ -35,8 +35,11 @@ const Item = props => {
         </View>
         <View style={styles.starWrapper}>
           {
-            rateArray.map(item =>
-              <Rating rate={item}></Rating>
+            rateArray.map((item, index) =>
+              <Rating 
+                rate={item}
+                key={index}
+              />
             )
           }
         </View>
