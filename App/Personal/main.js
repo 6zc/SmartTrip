@@ -14,25 +14,33 @@ import {
 	Button, 
 	ScrollView,
 	Animated} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from "react-navigation-stack";
+
+import { Input } from "@rneui/themed";
 import Modal, { SlideAnimation, ModalContent } from 'react-native-modals';
 import { ModalPortal } from 'react-native-modals';
 import { ModalFooter, ModalButton} from 'react-native-modals';
 import SignPage from './SignPage'
+import Upage from './Upage'
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+Icon.loadFont();
 server = 'http://139.155.180.227:10089/login'
 var {width, height, scale} = Dimensions.get('window');
-IMAGE_URL = './assets/bg-head.'
+IMAGE_URL = './assets/bg-head.jpeg'
 scrollY =  new Animated.Value(0);
-NavHeight =220
+const input = React.createRef('input');
+const input2 = React.createRef('input2');
+
 const LoginPage = props => {
 	const [namemail, setName] = useState('');
 	const [pwd, setPwd] = useState('');
 	const [loginStates, setLoginState] = useState(false);
 	const [signupState,setSignupState] = useState(false);
 	const [visiblee,setVisible] = useState(false)
-	const holder1 = 'Please input user name or email';
-	const holder2 = 'Please input password'	;
-	const pwdRef = useRef();
-
+	const holder1 = '  Please input user name or email';
+	const holder2 = '  Please input password';
 	const onChangeTextName = (Text) => {
 		setName(Text);
 	}
@@ -44,11 +52,10 @@ const LoginPage = props => {
 	}
 	const confirmSign = () => {
 	}
-	async function onLogin (){
-		// posts
-		console.log('here')
+	function onLogin (){
+		console.log('onLogin',pwd,namemail)
         fetch(server, {
-        body: JSON.stringify(this.state), // must match 'Content-Type' header
+        body: JSON.stringify({pwd:pwd,namemail:namemail}), // must match 'Content-Type' header
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, same-origin, *omit
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -59,14 +66,18 @@ const LoginPage = props => {
             console.log('then')
             input.current.clear()
             input2.current.clear()
-            input3.current.clear()
-            input4.current.clear() 
             response.json()// parses response to JSON
             console.log(response.json())
+            //跳转页面
+            navigator.push({name:'In'})
+
         }).catch(error=>{
             //讨论错误
             console.log('error:',error)
         })
+        input.current.clear()
+        input2.current.clear()
+        props.navigation.navigate('Upage')
 	}
 	return(
 	<ScrollView>
@@ -77,50 +88,39 @@ const LoginPage = props => {
             confirm = {confirmSign}
         />
 		<View style={style.container}>
-	<Animated.Image
-        			pointerEvents='none'
-        style={{
-          height: 255,
-          transform: [{
-            translateY: scrollY.interpolate({
-              inputRange: [-255, 0, 255 - NavHeight, 255],
-              outputRange: [255 / 2, 0, -(255 - NavHeight), -(255 - NavHeight)],
-            })
-          }, {
-            scale: scrollY.interpolate({
-              inputRange: [-255, 0, 255],
-              outputRange: [2, 1, 1], // -255: 2, 0: 1, 255: 1  当scrollY在-255到0时，scale按照2-1的动画运动；当scrollY在0-255时，scale不变。可以输入任意数量对应的值，但必须是递增或者相等
-            })
-          }]
-        }}
-        source={{uri: IMAGE_URL}}
-      >
-
-      </Animated.Image>
-      <TextInput 
-				placeholder={holder1} 
-				style={style.inputs}
-				keyboardType='default'
-				onChangeText={(Text)=>onChangeTextName(Text)}
-				/>
-			<TextInput 
-				placeholder={holder2} 
-				style = {style.inputs}
-				secureTextEntry={true}
-				onChangeText={(Text)=>onChangeTextPwd(Text)}
-				ref = {pwdRef}
-				/>
-			<Text>
-				<Button title="login" onPress={onLogin} style = {style.button1}/>
-				<Button title="sign up" onPress={()=>{setVisible(!visiblee)}} style = {style.button2}/>
-			</Text>	
-
+			<Image 
+				source={require('./assets/bg-head.jpeg')} 
+				style={style.headbg}
+			/>
+	      	<View style={style.inputs}>
+	      		<Input 
+					placeholder={holder1} 
+					keyboardType='default'
+					onChangeText={(Text)=>onChangeTextName(Text)}
+					ref={input}
+					leftIcon={{ type: 'font-awesome', name: 'user-o' }}
+					/>
+				<Input 
+					placeholder={holder2} 
+					secureTextEntry={true}
+					onChangeText={(Text)=>onChangeTextPwd(Text)}
+					ref = {input2}
+					leftIcon={{ type: 'font-awesome', name: 'lock' }}
+					/>
+				<Text>
+					<Button title="login" onPress={onLogin} style = {style.button1}/>
+					<Button title="sign up" onPress={()=>{setVisible(!visiblee)}} style = {style.button2}/>
+				</Text>	
+			</View>
 		</View>
-
 	</ScrollView>
 	); 
 }
-
+const HomeScreen = createStackNavigator({
+    LoginPage: {screen: LoginPage},
+    Upage: {screen: Upage}
+    
+});
 const style = StyleSheet.create({
 	container: {
 		height: '100%',
@@ -143,9 +143,8 @@ const style = StyleSheet.create({
 		marginTop: 20,
 		padding: 10,
 		width: '85%',
-		height: 40,
-		backgroundColor: '#eee',
 		marginBottom: 20,
+		alignItems: 'center'
 	},
 	button1: {
 		display: 'inline-block',
@@ -159,6 +158,4 @@ const style = StyleSheet.create({
 		backgroundColor: 'white'
 	}
 })
-
-
 export default LoginPage

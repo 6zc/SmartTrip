@@ -8,7 +8,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
 
-// client access to Contentful
+// client access to Contentfulß
 const client = new ApolloClient({
 	uri: "https://graphql.contentful.com/content/v1/spaces/z5ui7o420lkc",
 	credentials: "same-origin",

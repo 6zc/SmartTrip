@@ -9,21 +9,29 @@ import {
     Button
 } from 'react-native';
 import { Input } from "@rneui/themed";
-
 const server = 'http://139.155.180.227:10089/users/signup' 
-const holdername = 'Please input user name *';
-const holderpwd = 'Please input password *' ;
-const holderphone = 'Please input your phone *';
-const holderemail = 'Please input your email';
+const holdername = 'User Name *';
+const holderpwd = 'Password *' ;
+const holderphone = 'Phone Number*';
+const holderemail = 'Email ';
 const input = React.createRef('input');
 const input2 = React.createRef('input2');
 const input3 = React.createRef('input3');
 const input4 = React.createRef('input4');
+/*          error1:'Please input a valid user name',
+            error2:'Please input a valid password',
+            error3:'Please input a valid phone number',
+            error4:'Please input a valid email'
+*/
 const initState = {
             uname:'',
             pwd:'',
             phone:'',
-            email:''
+            email:'',
+            error1:'',
+            error2:'',
+            error3:'',
+            error4:''
         }
 export default class SignPage extends Component {
     constructor(props){
@@ -32,18 +40,34 @@ export default class SignPage extends Component {
     }
     onSignUp = () => {
 
-        console.log('here',this.state.uname,this.state.pwd,this.state.phone,this.state.email)
+        console.log('received',this.state.uname,this.state.pwd,this.state.phone,this.state.email)
         if(this.state.uname==''){
+            this.setState({error1:'Please input user name'})
             input.current.shake()
+        }else{
+            this.setState({error1:''})
         }
         if(this.state.pwd==''){
+            this.setState({error2:'Please input password'})
             input2.current.shake()
         }
+        else{
+            this.setState({error2:''})
+        }
         if(this.state.phone==''){
+            this.setState({error3:'Please input phone'})
             input3.current.shake()
         }
+        else{
+            this.setState({error3:''})
+        }
         if(this.state.email==''){
+            this.setState({error4:'Please input email'})
+            // email
             input4.current.shake()
+        }
+        else{
+            this.setState({error4:''})
         }
         fetch(server, {
         body: JSON.stringify(this.state), // must match 'Content-Type' header
@@ -63,13 +87,19 @@ export default class SignPage extends Component {
             //讨论错误
             console.log('error:',error)
 
+        }).finally(()=>{
+            input.current.clear()
+            input2.current.clear()
+            input3.current.clear()
+            input4.current.clear() 
+            this.setState(initState)
         })
-        input.current.clear()
-        input2.current.clear()
-        input3.current.clear()
-        input4.current.clear() 
-        this.setState(initState)
     }
+    onCancel = () => {
+        this.setState(initState)
+        this.props.cancel()
+    }
+    on
     render() {
         return (
             <Modal 
@@ -90,24 +120,32 @@ export default class SignPage extends Component {
                             placeholder={holdername}
                             onChangeText={(Text)=>this.setState({uname:Text})}
                             ref={input}
+                            errorStyle={{ color: 'red' }}
+                            errorMessage={this.state.error1}
                         />
                         <Input 
                             placeholder={holderpwd}
                             onChangeText={(Text)=>this.setState({pwd:Text})}
                             ref={input2}
-                        />
-                        <Input 
-                            placeholder={holderemail}
-                            onChangeText={(Text)=>this.setState({phone:Text})}
-                            ref={input3}
+                            errorStyle={{ color: 'red' }}
+                            errorMessage={this.state.error2}
                         />
                         <Input 
                             placeholder={holderphone}
+                            onChangeText={(Text)=>this.setState({phone:Text})}
+                            ref={input3}
+                            errorStyle={{ color: 'red' }}
+                            errorMessage={this.state.error3}
+                        />
+                        <Input 
+                            placeholder={holderemail}
                             onChangeText={(Text)=>this.setState({email:Text})}
                             ref={input4}
+                            errorStyle={{ color: 'red' }}
+                            errorMessage={this.state.error4}
                         />
                     <Text>
-                        <Button title="cancel" onPress = {this.props.cancel} style = {style.button1}/>
+                        <Button title="cancel" onPress = {this.onCancel} style = {style.button1}/>
                         <Button title="sign up now" onPress = {this.onSignUp} style = {style.button2}/>
                     </Text> 
                     </View>

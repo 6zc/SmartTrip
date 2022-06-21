@@ -6,6 +6,7 @@ import EIcon from 'react-native-vector-icons/Ionicons';
 import AIcon from 'react-native-vector-icons/AntDesign';
 import User from 'react-native-vector-icons/Entypo'
 import LoginPage from './Personal/main'
+import Upage from './Personal/Upage'
 import DynamicSearchBar from './top_searchbar/dynamic_search_bar'
 import MapWrapper from './map/map';
 import MainPage from './main/main';
@@ -43,7 +44,6 @@ const App = () => {
       <MainPage></MainPage>
     )
   }
-  //
   const Login = props => {
     return (
       <Login></Login>
@@ -110,7 +110,7 @@ const App = () => {
           }}
         />
         <Tabs.Screen
-          name="Login"
+          name=" "
           component={LoginPage}
           options={{
             tabBarIcon: ({focused, color, size}) => (
