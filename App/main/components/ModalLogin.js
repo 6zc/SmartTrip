@@ -6,6 +6,7 @@ import Success from "./Success";
 import Loading from "./Loading";
 import { Alert, Animated, Dimensions } from "react-native";
 import LottieView from "lottie-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { connect } from "react-redux";
 
@@ -18,6 +19,11 @@ function mapDispatchToProps(dispatch) {
 		closeLogin: () =>
 			dispatch({
 				type: "CLOSE_LOGIN",
+			}),
+		updateName: name =>
+			dispatch({
+				type: "UPDATE_NAME",
+				name,
 			}),
 	};
 }
@@ -37,6 +43,10 @@ class ModalLogin extends React.Component {
 		translateY: new Animated.Value(0),
 	};
 
+	componentDidMount() {
+		this.retrieveName();
+	}
+
 	// detect change in redux
 	componentDidUpdate() {
 		if (this.props.action == "openLogin") {
@@ -55,9 +65,32 @@ class ModalLogin extends React.Component {
 		}
 	}
 
+	// store the data
+	storeName = async name => {
+		try {
+			await AsyncStorage.setItem("name", name);
+		} catch (error) {
+			console.log("store error");
+			console.log(error);
+		}
+	};
+
+	// get user name
+	retrieveName = async () => {
+		try {
+			const name = await AsyncStorage.getItem("name");
+			if (name != null) {
+				console.log(name);
+				this.props.updateName(name);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	// login function
 	handleLogin = () => {
-		console.log(this.state.email, this.state.password);
+		// console.log(this.state.email, this.state.password);
 
 		Keyboard.dismiss();
 
@@ -65,15 +98,24 @@ class ModalLogin extends React.Component {
 			isLoading: true,
 		});
 
+		// do the api call here
+		const email = this.state.email;
+		const password = this.state.password;
+		// ...
 		// simulate api call
 		setTimeout(() => {
 			this.setState({ isLoading: false });
 			this.setState({ isSuccessful: true });
 
 			// send alert
-			// Alert.alert("Congrats", "You've logged successfully!");
+			// Alert.alert("Congrats", "You've logged in successfully!");
 
-			// hide login
+			// store user name
+			this.storeName(email);
+			// update user name
+			this.props.updateName(email);
+
+			// auto hide login
 			setTimeout(() => {
 				this.props.closeLogin();
 				this.setState({ isSuccessful: false });

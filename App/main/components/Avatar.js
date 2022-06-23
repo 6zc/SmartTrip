@@ -31,12 +31,12 @@ class Avatar extends React.Component {
 			.then(response => response.json())
 			// using the response
 			.then(response => {
-				console.log(response);
+				// console.log(response);
 				this.setState({
 					// change state
 					photo: response.results[0].picture.thumbnail,
 				});
-				this.props.updateName(response.results[0].name.first);
+				// this.props.updateName(response.results[0].name.first);
 			});
 	}
 

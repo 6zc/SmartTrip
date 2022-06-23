@@ -1,5 +1,5 @@
 // import { setStatusBarStyle } from "expo-status-bar";
-import { Platform, ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
+import { Alert, Platform, ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
 import styled from "styled-components";
 import Card from "../components/Card";
 // import Ionicons from "@expo/vector-icons/Ionicons";
@@ -14,6 +14,7 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import ModalLogin from "../components/ModalLogin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -69,6 +70,12 @@ function mapDispatchToProps(dispatch) {
 			dispatch({
 				type: "OPEN_LOGIN",
 			}),
+		updateName: name => {
+			dispatch({
+				type: "UPDATE_NAME",
+				name,
+			});
+		},
 	};
 }
 
@@ -122,6 +129,17 @@ class HomeScreen extends React.Component {
 		}
 	};
 
+	handleAvatar = () => {
+		if (this.props.name) {
+			Alert.alert("Logged Out", "You've logged out successfully!");
+			// log out
+			this.props.updateName();
+			AsyncStorage.clear();
+		} else {
+			this.props.openLogin();
+		}
+	};
+
 	render() {
 		return (
 			<RootView>
@@ -130,7 +148,7 @@ class HomeScreen extends React.Component {
 					<SafeAreaView>
 						<ScrollView>
 							<TitleBar>
-								<TouchableOpacity onPress={this.props.openLogin} style={{ position: "absolute", top: 0, left: 20 }}>
+								<TouchableOpacity onPress={this.handleAvatar} style={{ position: "absolute", top: 0, left: 20 }}>
 									<Avatar />
 								</TouchableOpacity>
 								<Title>Welcome back,</Title>
@@ -184,7 +202,7 @@ class HomeScreen extends React.Component {
 
 										var items = data.cardsCollection.items;
 										var length = items.length;
-										console.log(items);
+										// console.log(items);
 										var recentItems = items.slice(length - 3, length);
 
 										return (
@@ -223,7 +241,7 @@ class HomeScreen extends React.Component {
 
 									var items = data.cardsCollection.items;
 									var length = items.length;
-									console.log(items);
+									// console.log(items);
 									var recomItems = items.slice(length - 7, length - 3);
 
 									return (
