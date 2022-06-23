@@ -13,7 +13,7 @@ import Avatar from "../components/Avatar";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
-// import ModalLogin from "../components/ModalLogin";
+import ModalLogin from "../components/ModalLogin";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -271,7 +271,7 @@ class HomeScreen extends React.Component {
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
-				{/* <ModalLogin /> */}
+				<ModalLogin />
 			</RootView>
 		);
 	}
@@ -349,30 +349,26 @@ const logos = [
 		image: require("../assets/restaurant.png"),
 		text: "Restaurants",
 	},
-
-	{
-		image: require("../assets/park.png"),
-		text: "Parks",
-	},
-	{
-		image: require("../assets/movie.png"),
-		text: "Movies",
-	},
 	{
 		image: require("../assets/museum.png"),
 		text: "Museums",
 	},
 	{
-		image: require("../assets/bookshop.png"),
-		text: "Bookshops",
+		image: require("../assets/park.png"),
+		text: "Parks",
 	},
 	{
 		image: require("../assets/theme-park.png"),
 		text: "Theme Parks",
 	},
 	{
-		image: require("../assets/shopping.png"),
-		text: "Shopping",
+		image: require("../assets/movie.png"),
+		text: "Movies",
+	},
+
+	{
+		image: require("../assets/bookshop.png"),
+		text: "Bookshops",
 	},
 	{
 		image: require("../assets/coffee.png"),
@@ -383,11 +379,16 @@ const logos = [
 		text: "Bars",
 	},
 	{
-		image: require("../assets/zoo.png"),
-		text: "Zoos",
+		image: require("../assets/shopping.png"),
+		text: "Shopping",
 	},
 	{
 		image: require("../assets/grocery.png"),
 		text: "Groceries",
+	},
+
+	{
+		image: require("../assets/zoo.png"),
+		text: "Zoos",
 	},
 ];

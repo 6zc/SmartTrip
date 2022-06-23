@@ -168,7 +168,7 @@ const htmlStyles = `
 `;
 
 const Content = styled.View`
-	height: 1000px;
+	height: 2000px;
 	padding: 20px;
 `;
 
