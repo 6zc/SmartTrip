@@ -86,6 +86,10 @@ class HomeScreen extends React.Component {
 	};
 
 	componentDidMount() {
+		if (!this.props.name) {
+			this.props.updateName("Guest");
+		}
+
 		// setStatusBarStyle("dark");
 		StatusBar.setBarStyle("dark-content", true);
 
@@ -130,10 +134,10 @@ class HomeScreen extends React.Component {
 	};
 
 	handleAvatar = () => {
-		if (this.props.name) {
+		if (this.props.name != "Guest") {
 			Alert.alert("Logged Out", "You've logged out successfully!");
 			// log out
-			this.props.updateName();
+			this.props.updateName("Guest");
 			AsyncStorage.clear();
 		} else {
 			this.props.openLogin();
