@@ -22,7 +22,7 @@ import Modal, { SlideAnimation, ModalContent } from 'react-native-modals';
 import { ModalPortal } from 'react-native-modals';
 import { ModalFooter, ModalButton} from 'react-native-modals';
 import SignPage from './SignPage'
-import Upage from './Upage'
+//import Upage from './Upage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 Icon.loadFont();
@@ -80,7 +80,7 @@ const LoginPage = props => {
         props.navigation.navigate('Upage')
 	}
 	return(
-
+		
 	<ScrollView>
 		<ModalPortal />	
 		<SignPage                  

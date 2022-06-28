@@ -1,13 +1,9 @@
-## main.js 登陆界面
-	1. 发送网络请求 x
-	2. 跳转到用户页面 615/616
-		不需要跳转，直接加载不同的component
-		
-## Upage.js 用户界面
-	1. 整体页面 615-617
+# User Page
+	LoginPage
+	SignUpPage
+	setting
+# User Page的搭建
+	collections 使用什么存储
+	Recent Visited Places
 
-## 注册界面
-	1. 必须填写 614 x
-	2. 样式修改 x
-	3. 页面跳转 615/616 
-	4. 自适应图片 615
+6.26 改成三个页面

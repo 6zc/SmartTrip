@@ -18,6 +18,11 @@ const input = React.createRef('input');
 const input2 = React.createRef('input2');
 const input3 = React.createRef('input3');
 const input4 = React.createRef('input4');
+/*          error1:'Please input a valid user name',
+            error2:'Please input a valid password',
+            error3:'Please input a valid phone number',
+            error4:'Please input a valid email'
+*/
 const initState = {
             uname:'',
             pwd:'',
@@ -28,7 +33,7 @@ const initState = {
             error3:'',
             error4:''
         }
-export default class SignPage extends Component {
+export default class Setting extends Component {
     constructor(props){
         super(props)
         this.state = initState
