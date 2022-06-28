@@ -76,6 +76,11 @@ function mapDispatchToProps(dispatch) {
 				name,
 			});
 		},
+		updateAvatar: avatar =>
+			dispatch({
+				type: "UPDATE_AVATAR",
+				avatar,
+			}),
 	};
 }
 
@@ -86,9 +91,9 @@ class HomeScreen extends React.Component {
 	};
 
 	componentDidMount() {
-		if (!this.props.name) {
-			this.props.updateName("Guest");
-		}
+		// if (!this.props.name) {
+		// 	this.props.updateName("Guest");
+		// }
 
 		// setStatusBarStyle("dark");
 		StatusBar.setBarStyle("dark-content", true);
@@ -138,6 +143,7 @@ class HomeScreen extends React.Component {
 			Alert.alert("Logged Out", "You've logged out successfully!");
 			// log out
 			this.props.updateName("Guest");
+			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 			AsyncStorage.clear();
 		} else {
 			this.props.openLogin();

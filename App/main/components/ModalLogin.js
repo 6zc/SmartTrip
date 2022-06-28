@@ -7,6 +7,7 @@ import Loading from "./Loading";
 import { Alert, Animated, Dimensions } from "react-native";
 import LottieView from "lottie-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { saveState } from "./AsyncStorage";
 
 import { connect } from "react-redux";
 
@@ -24,6 +25,11 @@ function mapDispatchToProps(dispatch) {
 			dispatch({
 				type: "UPDATE_NAME",
 				name,
+			}),
+		updateAvatar: avatar =>
+			dispatch({
+				type: "UPDATE_AVATAR",
+				avatar,
 			}),
 	};
 }
@@ -111,7 +117,10 @@ class ModalLogin extends React.Component {
 			// Alert.alert("Congrats", "You've logged in successfully!");
 
 			// store user name
-			this.storeName(email);
+			// this.storeName(email);
+
+			this.fetchUser();
+
 			// update user name
 			this.props.updateName(email);
 
@@ -121,6 +130,20 @@ class ModalLogin extends React.Component {
 				this.setState({ isSuccessful: false });
 			}, 1000);
 		}, 1000);
+	};
+
+	fetchUser = () => {
+		fetch("https://randomuser.me/api/")
+			// transform to json first
+			.then(response => response.json())
+			// using the response
+			.then(response => {
+				const name = response.results[0].name.first;
+				const avatar = response.results[0].picture.thumbnail;
+				saveState({ name, avatar });
+				this.props.updateName(name);
+				this.props.updateAvatar(avatar);
+			});
 	};
 
 	// animation for email icon

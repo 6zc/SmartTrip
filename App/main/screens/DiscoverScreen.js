@@ -6,6 +6,44 @@ import { PanResponder, Animated, TouchableOpacity } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 
+import gql from "graphql-tag";
+import { Query } from "react-apollo";
+
+// Query to Contentful using GraphQL
+const CardsQuery = gql`
+	{
+		cardsCollection {
+			items {
+				title
+				type
+				image {
+					title
+					description
+					contentType
+					fileName
+					size
+					url
+					width
+					height
+				}
+
+				caption
+				logo {
+					title
+					description
+					contentType
+					fileName
+					size
+					url
+					width
+					height
+				}
+				content
+			}
+		}
+	}
+`;
+
 // receive redux
 function mapStateToProps(state) {
 	return {
@@ -107,14 +145,29 @@ class DiscoverScreen extends React.Component {
 						style={{ transform: [{ translateX: this.state.pan.x }, { translateY: this.state.pan.y }] }}
 						{...this._panResponder.panHandlers}
 					>
-						<DiscoverCard
-							title={cards[this.state.index].title}
-							image={cards[this.state.index].image}
-							subtitle={cards[this.state.index].subtitle}
-							text={cards[this.state.index].text}
-							canOpen={true}
-						/>
+						<Query query={CardsQuery}>
+							{({ loading, error, data }) => {
+								if (loading) return <Message>Loading...</Message>;
+								if (error) return <Message>Error...</Message>;
+
+								var items = data.cardsCollection.items;
+								var length = items.length;
+								// console.log(items);
+								cards = items.slice(0, 6);
+
+								return (
+									<DiscoverCard
+										title={cards[this.state.index].title}
+										image={cards[this.state.index].image}
+										subtitle={cards[this.state.index].type}
+										text={cards[this.state.index].content}
+										canOpen={true}
+									/>
+								);
+							}}
+						</Query>
 					</Animated.View>
+
 					<Animated.View
 						style={{
 							position: "absolute",
@@ -206,23 +259,23 @@ const CloseView = styled.View`
 	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 `;
 
-const cards = [
+var cards = [
 	{
 		title: "Hong Kong Disneyland",
 		image: require("../assets/background5.jpg"),
 		subtitle: "Theme Park",
 		text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. It is the first theme park located inside the Hong Kong Disneyland Resort and it is owned and managed by the Hong Kong International Theme Parks. It is, together with Ocean Park Hong Kong, one of the two large theme parks in Hong Kong. Hong Kong Disneyland opened to visitors on Monday, 12 September 2005 at 13:00 HKT.",
 	},
-	{
-		title: "Hong Kong Disneyland",
-		image: require("../assets/background6.jpg"),
-		subtitle: "Theme Park",
-		text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. ",
-	},
-	{
-		title: "Hong Kong Disneyland",
-		image: require("../assets/background7.jpg"),
-		subtitle: "Theme Park",
-		text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. ",
-	},
+	// {
+	// 	title: "Hong Kong Disneyland",
+	// 	image: require("../assets/background6.jpg"),
+	// 	subtitle: "Theme Park",
+	// 	text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. ",
+	// },
+	// {
+	// 	title: "Hong Kong Disneyland",
+	// 	image: require("../assets/background7.jpg"),
+	// 	subtitle: "Theme Park",
+	// 	text: "Hong Kong Disneyland is a theme park located on reclaimed land in Penny's Bay, Lantau Island. ",
+	// },
 ];

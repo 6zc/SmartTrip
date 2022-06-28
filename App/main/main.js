@@ -22,8 +22,9 @@ LogBox.ignoreLogs(["Expected style"]);
 // initial state for redux
 const initialState = {
 	action: "",
-	name: "",
+	name: "Guest",
 	place: "",
+	avatar: "https://cl.ly/55da82beb939/download/avatar-default.jpg",
 };
 
 // set up redux - save states in reducer to use as props
@@ -35,6 +36,8 @@ const reducer = (state = initialState, action) => {
 			return { ...state, action: "closeMenu" };
 		case "UPDATE_NAME":
 			return { ...state, name: action.name };
+		case "UPDATE_AVATAR":
+			return { ...state, avatar: action.avatar };
 		case "OPEN_CARD":
 			return { ...state, action: "openCard" };
 		case "CLOSE_CARD":
