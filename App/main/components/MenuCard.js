@@ -12,19 +12,21 @@ if (screenWidth > 500) {
 
 const MenuCard = props => (
 	<Container style={{ width: cardWidth }}>
-		<Image source={props.image} />
-		<BlurView
-			blurType="light"
-			blurAmount={5}
-			style={{
-				position: "absolute",
+		<Cover>
+			<Image source={props.image} />
+			<BlurView
+				blurType="light"
+				blurAmount={5}
+				style={{
+					position: "absolute",
 
-				width: "100%",
-				height: "100%",
-			}}
-		/>
-		<Subtitle>{props.subtitle}</Subtitle>
-		<Title>{props.title}</Title>
+					width: "100%",
+					height: "100%",
+				}}
+			/>
+			<Subtitle>{props.subtitle}</Subtitle>
+			<Title>{props.title}</Title>
+		</Cover>
 	</Container>
 );
 
@@ -33,18 +35,15 @@ export default MenuCard;
 const Container = styled.View`
 	width: 335px;
 	height: 140px;
-	background: white;
 	margin: 10px 10px;
 	border-radius: 24px;
+	/* box-shadow: 0 10px 20px rgba(255, 255, 255, 0.95); */
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-	overflow: hidden;
-	justify-content: flex-end;
 `;
 
 const Cover = styled.View`
-	height: 160px;
-	border-top-left-radius: 14px;
-	border-top-right-radius: 14px;
+	height: 140px;
+	border-radius: 24px;
 	overflow: hidden;
 	justify-content: flex-end;
 `;

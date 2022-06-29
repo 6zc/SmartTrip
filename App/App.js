@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Platform} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
-import EIcon from 'react-native-vector-icons/Ionicons';
-import AIcon from 'react-native-vector-icons/AntDesign';
-import User from 'react-native-vector-icons/Entypo'
-import LoginPage from './Personal/main'
-import DynamicSearchBar from './top_searchbar/dynamic_search_bar'
-import MapWrapper from './map/map';
-import Oops from './map/oops';
-import MainPage from './main/main';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
+import EIcon from "react-native-vector-icons/Ionicons";
+import AIcon from "react-native-vector-icons/AntDesign";
+import User from "react-native-vector-icons/Entypo";
+import LoginPage from "./Personal/main";
+import DynamicSearchBar from "./top_searchbar/dynamic_search_bar";
+import MapWrapper from "./map/map";
+import MainPage from "./main/main";
 import { LogBox } from "react-native";
+import Oops from "./map/oops";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { Query } from "react-apollo";
@@ -66,10 +66,10 @@ const CardsQuery = gql`
 
 
 const App = () => {
-  const [curStation, setCurStation] = useState('Hong Kong Park');
-  const [stationList, setStationList] = useState([])
-  const [humidity, setHumidity] = useState([])
-  const [uvindex, setUvindex] = useState([])
+	const [curStation, setCurStation] = useState("Hong Kong Park");
+	const [stationList, setStationList] = useState([]);
+	const [humidity, setHumidity] = useState([]);
+	const [uvindex, setUvindex] = useState([]);
 
   useEffect(() => {
     async function fetchData(){
@@ -133,7 +133,7 @@ const App = () => {
         <Tabs.Navigator
           tabBarOptions={{
             activeTintColor: '#ffffff',
-            activeBackgroundColor: '#4da4dd',
+            activeBackgroundColor: "#5263ff",
             keyboardHidesTabBar: true,
             style: { position: 'absolute' },
             tabStyle:{
@@ -153,7 +153,7 @@ const App = () => {
                 <AIcon
                 name="home"
                 size={34}
-                color={focused ? color : '#4da4dd'}
+                color={focused ? color : "#5263ff"}
                 focused={focused}
                 />
                 ),
@@ -168,7 +168,7 @@ const App = () => {
                 <EIcon
                   name="location-sharp"
                   size={30}
-                  color={focused ? color : '#4da4dd'}
+                  color={focused ? color : "#5263ff"}
                   focused={focused}
                 />
               ),
@@ -182,7 +182,7 @@ const App = () => {
                 <User
                   name="user"
                   size={34}
-                  color={focused ? color : '#4da4dd'}
+                  color={focused ? color : "#5263ff"}
                   focused={focused}
                 />
               ),
@@ -195,16 +195,16 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  today: {
-    backgroundColor: '#4da4dd',
-  },
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    height: 780,
-    width: 400,
-  },
+	today: {
+		backgroundColor: "#4da4dd",
+	},
+	container: {
+		...StyleSheet.absoluteFillObject,
+		justifyContent: "flex-end",
+		alignItems: "center",
+		height: 780,
+		width: 400,
+	},
 });
 
 export default App;

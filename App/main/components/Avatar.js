@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function mapStateToProps(state) {
 	return {
 		name: state.name,
+		avatar: state.avatar,
 	};
 }
 
@@ -15,33 +17,45 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_NAME",
 				name: name,
 			}),
+		updateAvatar: avatar =>
+			dispatch({
+				type: "UPDATE_AVATAR",
+				avatar,
+			}),
 	};
 }
 
 class Avatar extends React.Component {
-	// initial state
-	state = {
-		// default url
-		photo: "https://cl.ly/55da82beb939/download/avatar-default.jpg",
-	};
-
 	componentDidMount() {
-		fetch("https://randomuser.me/api/")
-			// transform to json first
-			.then(response => response.json())
-			// using the response
-			.then(response => {
-				console.log(response);
-				this.setState({
-					// change state
-					photo: response.results[0].picture.thumbnail,
-				});
-				this.props.updateName(response.results[0].name.first);
-			});
+		// fetch("https://randomuser.me/api/")
+		// 	// transform to json first
+		// 	.then(response => response.json())
+		// 	// using the response
+		// 	.then(response => {
+		// 		// console.log(response);
+		// 		this.setState({
+		// 			// change state
+		// 			photo: response.results[0].picture.thumbnail,
+		// 		});
+		// 		// this.props.updateName(response.results[0].name.first);
+		// 	});
+		this.loadState();
 	}
 
+	loadState = () => {
+		AsyncStorage.getItem("state").then(serializedState => {
+			const state = JSON.parse(serializedState);
+			console.log(state);
+
+			if (state) {
+				this.props.updateName(state.name);
+				this.props.updateAvatar(state.avatar);
+			}
+		});
+	};
+
 	render() {
-		return <Image source={{ uri: this.state.photo }} />;
+		return <Image source={{ uri: this.props.avatar }} />;
 	}
 }
 

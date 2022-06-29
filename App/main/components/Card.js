@@ -35,6 +35,7 @@ const Title = styled.Text`
 	color: #3c4560;
 	font-size: 20px;
 	font-weight: 600;
+	width: 230px;
 `;
 
 const Subtitle = styled.Text`

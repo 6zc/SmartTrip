@@ -1,5 +1,5 @@
 // import { setStatusBarStyle } from "expo-status-bar";
-import { Platform, ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
+import { Alert, Platform, ScrollView, SafeAreaView, TouchableOpacity, Animated, Easing, StatusBar } from "react-native";
 import styled from "styled-components";
 import Card from "../components/Card";
 // import Ionicons from "@expo/vector-icons/Ionicons";
@@ -13,7 +13,8 @@ import Avatar from "../components/Avatar";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
-// import ModalLogin from "../components/ModalLogin";
+import ModalLogin from "../components/ModalLogin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -69,6 +70,17 @@ function mapDispatchToProps(dispatch) {
 			dispatch({
 				type: "OPEN_LOGIN",
 			}),
+		updateName: name => {
+			dispatch({
+				type: "UPDATE_NAME",
+				name,
+			});
+		},
+		updateAvatar: avatar =>
+			dispatch({
+				type: "UPDATE_AVATAR",
+				avatar,
+			}),
 	};
 }
 
@@ -79,6 +91,10 @@ class HomeScreen extends React.Component {
 	};
 
 	componentDidMount() {
+		// if (!this.props.name) {
+		// 	this.props.updateName("Guest");
+		// }
+
 		// setStatusBarStyle("dark");
 		StatusBar.setBarStyle("dark-content", true);
 
@@ -122,6 +138,18 @@ class HomeScreen extends React.Component {
 		}
 	};
 
+	handleAvatar = () => {
+		if (this.props.name != "Guest") {
+			Alert.alert("Logged Out", "You've logged out successfully!");
+			// log out
+			this.props.updateName("Guest");
+			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
+			AsyncStorage.clear();
+		} else {
+			this.props.openLogin();
+		}
+	};
+
 	render() {
 		return (
 			<RootView>
@@ -130,7 +158,7 @@ class HomeScreen extends React.Component {
 					<SafeAreaView>
 						<ScrollView>
 							<TitleBar>
-								<TouchableOpacity onPress={this.props.openLogin} style={{ position: "absolute", top: 0, left: 20 }}>
+								<TouchableOpacity onPress={this.handleAvatar} style={{ position: "absolute", top: 0, left: 20 }}>
 									<Avatar />
 								</TouchableOpacity>
 								<Title>Welcome back,</Title>
@@ -141,7 +169,21 @@ class HomeScreen extends React.Component {
 											this.props.navigation.push("Discover", {});
 										}}
 									>
-										<Ionicon name="compass" size={35} color="#4775f2"></Ionicon>
+										<Ionicon
+											name="compass"
+											size={35}
+											color="#5263ff"
+											style={{
+												shadowColor: "#c2cbff",
+												shadowOpacity: 0.8,
+												shadowRadius: 5,
+												// iOS
+												shadowOffset: {
+													width: 0,
+													height: 1,
+												},
+											}}
+										></Ionicon>
 									</TouchableOpacity>
 								</DiscoverView>
 							</TitleBar>
@@ -170,6 +212,7 @@ class HomeScreen extends React.Component {
 										
 										var items = data.cardsCollection.items;
 										var length = items.length;
+										// console.log(items);
 										var recentItems = items.slice(length - 3, length);
 
 										return (
@@ -256,7 +299,7 @@ class HomeScreen extends React.Component {
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
-				{/* <ModalLogin /> */}
+				<ModalLogin />
 			</RootView>
 		);
 	}
@@ -334,30 +377,26 @@ const logos = [
 		image: require("../assets/restaurant.png"),
 		text: "Restaurants",
 	},
-
-	{
-		image: require("../assets/park.png"),
-		text: "Parks",
-	},
-	{
-		image: require("../assets/movie.png"),
-		text: "Movies",
-	},
 	{
 		image: require("../assets/museum.png"),
 		text: "Museums",
 	},
 	{
-		image: require("../assets/bookshop.png"),
-		text: "Bookshops",
+		image: require("../assets/park.png"),
+		text: "Parks",
 	},
 	{
 		image: require("../assets/theme-park.png"),
 		text: "Theme Parks",
 	},
 	{
-		image: require("../assets/shopping.png"),
-		text: "Shopping",
+		image: require("../assets/movie.png"),
+		text: "Movies",
+	},
+
+	{
+		image: require("../assets/bookshop.png"),
+		text: "Bookshops",
 	},
 	{
 		image: require("../assets/coffee.png"),
@@ -368,11 +407,16 @@ const logos = [
 		text: "Bars",
 	},
 	{
-		image: require("../assets/zoo.png"),
-		text: "Zoos",
+		image: require("../assets/shopping.png"),
+		text: "Shopping",
 	},
 	{
 		image: require("../assets/grocery.png"),
 		text: "Groceries",
+	},
+
+	{
+		image: require("../assets/zoo.png"),
+		text: "Zoos",
 	},
 ];

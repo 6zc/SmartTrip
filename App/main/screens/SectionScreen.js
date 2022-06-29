@@ -43,11 +43,11 @@ class SectionScreen extends React.Component {
 						style={{ position: "absolute", top: 20, right: 20 }}
 					>
 						<CloseView>
-							<Ionicon name="ios-close" size={32} color="#4775f2" />
+							<Ionicon name="ios-close" size={32} color="#5263ff" />
 						</CloseView>
 					</TouchableOpacity>
 					<MapView>
-						<Ionicon name="navigate-circle-outline" size={24} color="#4775f2" />
+						<Ionicon name="navigate-circle-outline" size={24} color="#5263ff" />
 						<MapText>Map</MapText>
 					</MapView>
 					<Content>
@@ -168,7 +168,7 @@ const htmlStyles = `
 `;
 
 const Content = styled.View`
-	height: 1000px;
+	height: 2000px;
 	padding: 20px;
 `;
 
