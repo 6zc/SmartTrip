@@ -1,5 +1,11 @@
 import React, {useState, useRef} from 'react';
-import {StyleSheet, View, FlatList, Animated, Easing} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Platform,
+  Animated,
+  Easing,
+} from 'react-native';
 import SearchBar from "react-native-dynamic-search-bar";
 import { BlurView } from "@react-native-community/blur";
 import ResultItem from './result_item';
@@ -7,16 +13,16 @@ import ResultItem from './result_item';
 
 const searchbar = props => {
   const {itemList, navigation} = props
+  const dataBackup = itemList;
   const [queryText, setQueryText] = useState('')
   const [dataSource, setDataSource] = useState(itemList)
-  const [dataBackup, setDataBackup] = useState(itemList)
   const [showList, setShowList] = useState(false)
 
   const fadeAnim = useRef(new Animated.Value(0)).current
   const driftAnim = useRef(new Animated.Value(700)).current
   const parallelAni = Animated.parallel([
     Animated.timing(fadeAnim, {
-      toValue: 1,
+      toValue: Platform.OS==='ios' ? 1 : 0.8,
       duration:300, // return to start
       useNativeDriver: true,
     }),
@@ -43,9 +49,7 @@ const searchbar = props => {
     <View style={styles.container}>
       <SearchBar
         style={[styles.bar, {backgroundColor:(showList?'#9c9c9c':'#ffffff')}]}
-        // style={styles.bar}
         fontSize={19}
-        // fontColor={showList?'#ffffff':'#696969'}
         iconColor="#c6c6c6"
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
@@ -61,7 +65,6 @@ const searchbar = props => {
           driftAnim.setValue(700);
         }}
         onChangeText={(text) => filterList(text)}
-        // onSearchPress={() => console.log("Search Icon is pressed")}
         onClearPress={() => {
           filterList("");
           setShowList(false);
@@ -77,7 +80,7 @@ const searchbar = props => {
               style={styles.blur}
               blurType="dark"
               blurAmount={10}
-              reducedTransparencyFallbackColor="white"/>
+              />
           </Animated.View>
           <Animated.FlatList
             showsVerticalScrollIndicator={false}
@@ -85,6 +88,7 @@ const searchbar = props => {
             style={{...styles.flatlist, top:driftAnim}}
             data={dataSource}
             keyExtractor={item => item.sys.id}
+            // pointerEvents={'auto'}
             ListFooterComponent={()=>{
               return(
                 <View style={styles.footer}>
@@ -139,12 +143,10 @@ const styles = StyleSheet.create({
     shadowRadius:6,
   },
   wrapper: {
-    top:45,
+    // top:25,
     width:430,
-    height:640,
+    height: 630,
     alignItems: 'center',
-    position: 'absolute',
-    // justifyContent:'center',
   },
   blurWrapper: {
     width:430,
@@ -152,10 +154,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   flatlist: {
-    top:60,
-    width: 350,
-    zIndex:4,
-    // alignItems: 'center',
+    // top:20,
+    width:350,
+    flexGrow: 1,
+    height: '100%',
   },
   blur: {
     top:-50,
@@ -190,7 +192,7 @@ const styles = StyleSheet.create({
   },
   bar:{
     zIndex:4,
-    top: 50,
+    top: Platform.OS==='ios' ?50:30,
     height:45,
     width:350,
     fontSize:40,

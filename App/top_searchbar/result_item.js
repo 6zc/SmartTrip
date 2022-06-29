@@ -4,6 +4,8 @@ import Linking from '../utils/linking';
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Rating from './rating';
 import { assertScalarType } from 'graphql';
+import {Svg, Image as ImageSvg} from 'react-native-svg';
+
 
 
 const Item = props => {
@@ -26,7 +28,15 @@ const Item = props => {
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
-        <Image style={styles.imageWrapper.image} source={image} />
+        <Svg style={styles.imageWrapper.image}>
+          <ImageSvg
+            width={'100%'} 
+            height={'100%'}
+            preserveAspectRatio="xMidYMid slice"
+            href={{ uri: image.url}}
+          />
+        </Svg>
+        {/* <Image style={styles.imageWrapper.image} source={image} /> */}
       </View>
       <View style={styles.title}>
         <View>
@@ -52,7 +62,7 @@ const Item = props => {
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.heart}
-        onPress={() => Alert('Added to Favorite')}>
+        onPress={() => Alert.alert('Added to Favorite')}>
         {
           liked?
           <Ionicon name="heart" size={40} color="#ff4040" />

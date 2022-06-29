@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Dimensions, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, Image, Platform, WebView} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import PlaceView from './place_view.js';
+import {Svg, Image as ImageSvg} from 'react-native-svg';
 // import {getCord} from '../utils/calculator';
 
 const refs = []
@@ -35,7 +36,8 @@ const Map = (props) => {
   return (
     <View style={styles.container}>
       <MapView
-        provider={props.provider}
+        // provider={props.provider}
+        mapPadding={{top:30, right:30, bottom:30,left:30}}
         stopPropagation={true}
         style={styles.map}
         showsUserLocation={true}
@@ -44,43 +46,51 @@ const Map = (props) => {
         minZoomLevel={9}
         maxZoomLevel={20}>
         {itemList.map((card) => (
-            <Marker
-              ref={ref=>refs[card.sys.id]=ref}
-              key={card.sys.id}
-              pointerEvents={"auto"}
-              coordinate={{
-                longitude: card.location.lon+0.0049,
-                latitude: card.location.lat-0.0028,
-              }}
-              >
-              <View style={styles.customMarker}>
-                <Image style={styles.logo} source={card.logo}></Image>
-              </View>
-              <Callout
-                alphaHitTest
-                tooltip={true}
-                onPress={e => {
-                  if (
-                    e.nativeEvent.action === 'marker-inside-overlay-press' ||
-                    e.nativeEvent.action === 'callout-inside-press'
-                  ) {
-                    return;
-                  }
-                }}
-                style={styles.customView}>
-                  <PlaceView
-                    logo={card.logo}
-                    image={card.image}
-                    title={card.title}
-                    type={card.type}
-                    coordinate={{
-                      longitude: card.location.lon,
-                      latitude: card.location.lat
-                    }}
-                  />
-              </Callout>
-            </Marker>
-          ))}
+          <Marker
+            ref={ref=>refs[card.sys.id]=ref}
+            key={card.sys.id}
+            pointerEvents={'auto'}
+            coordinate={{
+              longitude: card.location.lon+0.0049,
+              latitude: card.location.lat-0.0028,
+            }}
+            // onPress={()=>console.log('pressed')}
+            >
+            <View style={styles.customMarker}>
+              <Svg width={18} height={18}>
+                <ImageSvg
+                  width={'100%'} 
+                  height={'100%'}
+                  preserveAspectRatio="xMidYMid slice"
+                  href={{ uri: card.logo.url}}
+                />
+              </Svg>
+            </View>
+            <Callout
+              style={styles.callout}
+              alphaHitTest
+              tooltip={true}
+              onPress={e => {
+                if (
+                  e.nativeEvent.action === 'marker-inside-overlay-press' ||
+                  e.nativeEvent.action === 'callout-inside-press'
+                ) {
+                  return;
+                }
+              }}>
+                <PlaceView
+                  logo={card.logo}
+                  image={card.image}
+                  title={card.title}
+                  type={card.type}
+                  coordinate={{
+                    longitude: card.location.lon,
+                    latitude: card.location.lat
+                  }}
+                />
+            </Callout>
+          </Marker>
+        ))}
       </MapView>
       <View style={styles.tips}>
         {uvindex.length ?
@@ -117,6 +127,10 @@ const Map = (props) => {
 };
 
 const styles = StyleSheet.create({
+  callout:{
+    maxHeight:400,
+    width:290,
+  },
   navi:{
     position: 'absolute',
     right: 30, 
@@ -126,16 +140,17 @@ const styles = StyleSheet.create({
     height:40
   },
   tips:{
-    width: 365,
+    width: '98%',
     height:40,
     position:'absolute',
     bottom: 53,
+    left: 0,
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    shadowRadius:5,
+    justifyContent: 'space-evenly',
+    shadowRadius:10,
     shadowOffset:{width:0,height:0},
     shadowColor:'#000000',
-    shadowOpacity:0.1,
+    shadowOpacity:0.25,
     tip:{
       fontSize:17,
       fontWeight:'bold'
@@ -145,7 +160,6 @@ const styles = StyleSheet.create({
       width: 170,
       backgroundColor: '#ffffff',
       flexDirection: 'row',
-      marginLeft: -10,
       alignItems: 'center',
       justifyContent:'center',
     },
@@ -200,6 +214,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: height-65,
     width: width+10,
+    // zIndex: -1,
   },
   map: {
     position: 'absolute',
@@ -207,7 +222,8 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    height:1200
+    height:1200,
+    // zIndex:-2
   },
 });
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Platform} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {AnimatedTabBarNavigator} from 'react-native-animated-nav-tab-bar';
 import EIcon from 'react-native-vector-icons/Ionicons';
@@ -74,9 +74,12 @@ const App = () => {
   useEffect(() => {
     async function fetchData(){
       try {
-        let response = await fetch('http://139.155.252.3:10089/api/homepage');
+        let response = await fetch('http://139.155.252.3:10089/api/homepage',{method: 'GET'});
         let responseJson = await response.json();
         console.log(responseJson)
+        if(responseJson.status===404){
+          return;
+        }
         setStationList(responseJson.temperature.data)
         setHumidity(responseJson.humidity ? responseJson.humidity.data : [])
         setUvindex(responseJson.uvindex ? responseJson.uvindex.data : [])
@@ -131,9 +134,12 @@ const App = () => {
           tabBarOptions={{
             activeTintColor: '#ffffff',
             activeBackgroundColor: '#4da4dd',
+            keyboardHidesTabBar: true,
+            style: { position: 'absolute' },
             tabStyle:{
+              zIndex: 5,
               backgroundColor: '#f1f1f1',
-              height:100,
+              height: Platform.OS === 'ios' ? 100: 80,
             },
             labelStyle: {
               fontSize: 24,
@@ -154,6 +160,7 @@ const App = () => {
               }}
           />
           <Tabs.Screen
+            onMoveShouldSetResponder={(e) => e.stopPropagation()}
             name="Map"
             component={Map}
             options={{

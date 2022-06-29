@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity, WebView} from 'react-native';
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from '../utils/linking';
+import {Svg, Image as ImageSvg} from 'react-native-svg';
 
 const PlaceView = props => {
   const {title, type, image, coordinate, logo} =props
@@ -16,7 +17,14 @@ const PlaceView = props => {
             }}>
           <Ionicon backgroundColor='#ffffff' name="navigate-circle-outline" size={35} color="#ffffff" />
         </TouchableOpacity>
-        <Image style={styles.image} source={image} />
+        <Svg width={290} height={290}>
+          <ImageSvg
+            width={'100%'} 
+            height={'100%'}
+            preserveAspectRatio="xMidYMid slice"
+            href={{ uri: image.url}}
+          />
+        </Svg>
         <View style={styles.lineWrapper}>
           <Text style={styles.lineWrapper.type}>{type} </Text>
           <Image style={styles.lineWrapper.logo} source={logo} />
@@ -31,15 +39,16 @@ const styles = StyleSheet.create({
   lineWrapper:{
     flexDirection: 'row',
     alignItem:'center',
-    top: -6,
     maxWidth: 220,
     type: {
+      lineHeight:25,
       fontSize:15,
       left:12,
       color:'#aaaaaa',
       fontWeight:'bold'
     },
     logo: {
+      top:5,
       width:15,
       height:15,
       left: 12,
@@ -49,24 +58,26 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 2, 
     top: 7, 
-    zIndex:3,
+    zIndex:5,
     width:40,
     height:40
   },
   container: {
     flexDirection: 'column',
     alignItem: 'flex-start',
-    justifyContent:'flex-end',
-    height:520,
+    justifyContent:'flex-start',
+    maxHeight:410,
     width:328,
     backgroundColor: 'rgba(255,255,255,0)',
     shadowRadius:6,
     shadowOffset:{width:0,height:0},
     shadowColor:'#000000',
     shadowOpacity:0.4,
+    // overflow:'hidden',
   },
   bubble: {
     width:290,
+    // height:400,
     flexDsirection: 'column',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
@@ -81,7 +92,7 @@ const styles = StyleSheet.create({
   
   title:{
     fontSize:22,
-    top:-4,
+    // top:-100,
     left:12,
     marginBottom: 8,
     fontWeight:'bold',
