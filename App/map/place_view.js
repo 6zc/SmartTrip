@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity, WebView} from 'react-native';
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from '../utils/linking';
+import Logo from '../utils/logo.js';
 import {Svg, Image as ImageSvg} from 'react-native-svg';
 
 const PlaceView = props => {
@@ -27,7 +28,12 @@ const PlaceView = props => {
         </Svg>
         <View style={styles.lineWrapper}>
           <Text style={styles.lineWrapper.type}>{type} </Text>
-          <Image style={styles.lineWrapper.logo} source={logo} />
+          <Logo
+            style={styles.lineWrapper.logo}
+            height={15}
+            width={15}
+            type={type}
+          />
         </View>
         <Text style={styles.title}>{title} </Text>
       </View>
@@ -49,8 +55,6 @@ const styles = StyleSheet.create({
     },
     logo: {
       top:5,
-      width:15,
-      height:15,
       left: 12,
     },
   },

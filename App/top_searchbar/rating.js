@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+// import { StyleSheet, View } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 
 const Rating = props => {

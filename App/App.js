@@ -52,12 +52,6 @@ const CardsQuery = gql`
           lon
         }
 				caption
-				logo {
-					size
-					url
-					width
-					height
-				}
 				content
 			}
 		}

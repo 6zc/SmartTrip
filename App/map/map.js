@@ -3,7 +3,8 @@ import {StyleSheet, View, Text, Dimensions, Image, Platform, WebView} from 'reac
 import MapView, {Marker, Callout} from 'react-native-maps';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import PlaceView from './place_view.js';
-import {Svg, Image as ImageSvg} from 'react-native-svg';
+import Logo from '../utils/logo.js';
+// import {Svg, Image as ImageSvg} from 'react-native-svg';
 // import {getCord} from '../utils/calculator';
 
 const refs = []
@@ -57,14 +58,11 @@ const Map = (props) => {
             // onPress={()=>console.log('pressed')}
             >
             <View style={styles.customMarker}>
-              <Svg width={18} height={18}>
-                <ImageSvg
-                  width={'100%'} 
-                  height={'100%'}
-                  preserveAspectRatio="xMidYMid slice"
-                  href={{ uri: card.logo.url}}
-                />
-              </Svg>
+              <Logo
+                height={18}
+                width={18}
+                type={card.type}
+              />
             </View>
             <Callout
               style={styles.callout}
