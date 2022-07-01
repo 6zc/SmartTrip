@@ -3,12 +3,14 @@ import { createStackNavigator } from "react-navigation-stack";
 import HomeScreen from "../screens/HomeScreen";
 import SectionScreen from "../screens/SectionScreen";
 import DiscoverScreen from "../screens/DiscoverScreen";
+import SignupScreen from "../screens/SignupScreen";
 
 const AppNavigator = createStackNavigator(
 	{
 		Home: HomeScreen,
 		Section: SectionScreen,
 		Discover: DiscoverScreen,
+		Signup: SignupScreen,
 	},
 	{
 		mode: "modal",

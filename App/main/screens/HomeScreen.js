@@ -209,7 +209,7 @@ class HomeScreen extends React.Component {
 									{({ loading, error, data }) => {
 										if (loading) return <Message>Loading...</Message>;
 										if (error) return <Message>Error...</Message>;
-										
+
 										var items = data.cardsCollection.items;
 										var length = items.length;
 										// console.log(items);
@@ -299,7 +299,7 @@ class HomeScreen extends React.Component {
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
-				<ModalLogin />
+				<ModalLogin navigation={this.props.navigation} />
 			</RootView>
 		);
 	}
