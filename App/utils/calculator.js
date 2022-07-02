@@ -1,3 +1,40 @@
+import Geolocation from 'react-native-geolocation-service'
+
+function getUserPosition() {
+  const Camera = {
+    center: {
+      latitude: undefined,
+      longitude: undefined
+    },
+    altitude: 30000,
+    // pitch: 0,
+    zoom: 5,
+  }
+
+  Geolocation.getCurrentPosition(
+    pos => {
+      Camera.center = {
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude+0.005,
+      };
+    },
+    error => {
+      console.log(error.code, error.message);
+    },
+    { 
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000,
+      accuracy: { 
+        android: 'balanced',
+        ios: 'threeKilometers	',
+      }
+    }
+  );
+
+  return Camera
+}
+
 function Cal(temp) {
   const colorList = [
     "#0000FF",
@@ -59,6 +96,6 @@ function getCord(name) {
   return cordList[name];
 }
 
-export { Cal, getCord };
+export { Cal, getCord, getUserPosition };
 
 // export default Cal;

@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  Image,
-  Platform,
-  WebView,
+  TouchableOpacity
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
+import { getUserPosition } from "../utils/calculator.js"
 import Ionicon from "react-native-vector-icons/Ionicons";
 import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
@@ -22,7 +21,6 @@ const Map = (props) => {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-  const mounted = useRef();
 
   const region = {
     latitude: 22.2745,
@@ -33,6 +31,17 @@ const Map = (props) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity 
+        style={styles.goBack}
+        onPress={ e =>{
+          const Camera = getUserPosition();
+          setTimeout(() => {
+            refs['map'].animateCamera(Camera, { duration: 1000 })
+          }, 100)
+        }}
+        >
+          <Logo height={30} width={30} type={'Userlocation'} />
+        </TouchableOpacity>
       <MapView
         // provider={props.provider}
         mapPadding={{ top: 30, right: 30, bottom: 30, left: 30 }}
@@ -43,6 +52,9 @@ const Map = (props) => {
         region={region}
         minZoomLevel={9}
         maxZoomLevel={20}
+        ref={ref => {
+          refs['map'] = ref;
+        }}
       >
         {itemList.map((card) => (
           <Marker
@@ -53,7 +65,6 @@ const Map = (props) => {
               longitude: card.location.lon + 0.0049,
               latitude: card.location.lat - 0.0028,
             }}
-            // onPress={()=>console.log('pressed')}
           >
             <View style={styles.customMarker}>
               <Logo height={18} width={18} type={card.type} />
@@ -118,6 +129,20 @@ const Map = (props) => {
 };
 
 const styles = StyleSheet.create({
+  goBack: {
+    height: 30,
+    width: 30,
+    position: "absolute",
+    backgroundColor: "#ffffff",
+    left: '86%',
+    bottom: 113,
+    zIndex:4,
+    borderRadius: 8,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: "#000000",
+    shadowOpacity: 0.25,
+  },
   callout: {
     maxHeight: 400,
     width: 290,
@@ -205,7 +230,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: height - 65,
     width: width + 10,
-    // zIndex: -1,
   },
   map: {
     position: "absolute",
@@ -213,7 +237,8 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    height: 1200,
+    height: 800,
+    width: width,
     // zIndex:-2
   },
 });

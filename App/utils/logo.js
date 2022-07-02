@@ -8,14 +8,18 @@ const TYPES = {
   "Movie theater": require("../resource/movie.png"),
   Park: require("../resource/park.png"),
   Restaurant: require("../resource/restaurant.png"),
-  Default: require("../resource/location.png"),
+  Default: require("../resource/default-place.png"),
+  Userlocation: require("../resource/search.png"),
 };
 
 const Logo = (props) => {
   const { type, height, width, style } = props;
   let path = TYPES[type] || TYPES.Default;
   return (
-    <Svg width={width} height={height} style={style}>
+    <Svg 
+      width={width}
+      height={height}
+      style={style}>
       <ImageSvg
         width={"100%"}
         height={"100%"}
