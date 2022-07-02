@@ -4,6 +4,7 @@ import HomeScreen from "../screens/HomeScreen";
 import SectionScreen from "../screens/SectionScreen";
 import DiscoverScreen from "../screens/DiscoverScreen";
 import SignupScreen from "../screens/SignupScreen";
+import LoginScreen from "../screens/LoginScreen";
 
 const AppNavigator = createStackNavigator(
 	{
@@ -11,6 +12,7 @@ const AppNavigator = createStackNavigator(
 		Section: SectionScreen,
 		Discover: DiscoverScreen,
 		Signup: SignupScreen,
+		Login: LoginScreen,
 	},
 	{
 		mode: "modal",

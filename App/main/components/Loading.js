@@ -7,7 +7,7 @@ const screenHeight = Dimensions.get("window").height;
 
 class Loading extends React.Component {
 	state = {
-		top: new Animated.Value(0),
+		top: new Animated.Value(screenHeight),
 		opacity: new Animated.Value(0),
 	};
 
@@ -50,7 +50,7 @@ export default Loading;
 const Container = styled.View`
 	width: 100%;
 	height: 100%;
-	background: rgba(255, 255, 255, 0.9);
+	background: rgba(40, 27, 90, 0.6);
 	justify-content: center;
 	align-items: center;
 	position: absolute;

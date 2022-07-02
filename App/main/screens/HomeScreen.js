@@ -146,7 +146,7 @@ class HomeScreen extends React.Component {
 			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 			AsyncStorage.clear();
 		} else {
-			this.props.openLogin();
+			this.props.navigation.push("Login", {});
 		}
 	};
 
