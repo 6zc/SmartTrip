@@ -8,14 +8,26 @@ import {
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from "../utils/linking";
 import Logo from "../utils/logo.js";
+import { Cal } from "../utils/calculator";
 import { Svg, Image as ImageSvg } from "react-native-svg";
 
 const PlaceView = (props) => {
-  const { title, type, image, coordinate, logo } = props;
+  const { title, type, image, coordinate, id } = props;
+  const temp = 30;
+  const weather = 'Sunny';
 
   return (
     <View style={styles.container}>
       <View style={styles.bubble}>
+        <View style={styles.group}>
+          <View style={styles.group.weatherWrapper}>
+            <Text style={styles.group.weather}>{' '+weather+' '}</Text>
+          </View>
+          <View style={[styles.group.tempWrapper,{backgroundColor:Cal(temp)}]}>
+            <Text 
+              style={styles.group.temp}>{' '+temp+'°C '}</Text>
+          </View>
+        </View>
         <TouchableOpacity
           style={styles.navi}
           onPressOut={() => {
@@ -38,7 +50,7 @@ const PlaceView = (props) => {
           />
         </Svg>
         <View style={styles.lineWrapper}>
-          <Text style={styles.lineWrapper.type}>{type} </Text>
+          <Text style={styles.lineWrapper.type}>{type}</Text>
           <Logo
             style={styles.lineWrapper.logo}
             height={15}
@@ -55,18 +67,49 @@ const PlaceView = (props) => {
 const styles = StyleSheet.create({
   lineWrapper: {
     flexDirection: "row",
-    alignItem: "center",
-    maxWidth: 220,
+    minWidth: 290,
     type: {
       lineHeight: 25,
-      fontSize: 15,
       left: 12,
-      color: "#aaaaaa",
       fontWeight: "bold",
+      fontSize: 15,
+      color: "#aaaaaa",
     },
     logo: {
       top: 5,
-      left: 12,
+      left: 18,
+    },
+  },
+  group: {
+    opacity: 0.85,
+    position: "absolute",
+    zIndex: 5,
+    top: 10,
+    left: 10,
+    flexDirection: 'row',
+    alignItem: 'center',
+    justifyContent: 'center',
+    weatherWrapper: {
+      backgroundColor: '#ffffff',
+      borderRadius: 8,
+      height: 24,
+    },
+    weather: {
+      color: "#6c6c6c",
+      fontWeight: "bold",
+      lineHeight: 24,
+      fontSize: 15,
+    },
+    tempWrapper: {
+      height: 24,
+      borderRadius: 8,
+      left: 8,
+    },
+    temp: {
+      fontWeight: "bold",
+      lineHeight: 24,
+      fontSize: 15,
+      color: "#4c4c4c",
     },
   },
   navi: {
@@ -79,9 +122,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: "column",
-    alignItem: "flex-start",
-    justifyContent: "flex-start",
-    maxHeight: 410,
+    maxHeight: 400,
     width: 328,
     backgroundColor: "rgba(255,255,255,0)",
     shadowRadius: 6,
@@ -104,11 +145,12 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 22,
+    fontSize: 21,
     left: 12,
     marginBottom: 8,
     fontWeight: "bold",
     maxWidth: 240,
+    color: "#4c4c4c",
   },
 });
 

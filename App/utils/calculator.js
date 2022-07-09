@@ -1,3 +1,55 @@
+// import Geolocation from 'react-native-geolocation-service'
+import Geolocation from '@react-native-community/geolocation';
+
+function calDistance(coord1, coord2){
+  // console.log(coord1, coord2);
+  const { lat:lat1, lng:lng1 } = coord1;
+  const { lat:lat2, lon:lng2 } = coord2;
+  let radLat1 = lat1*Math.PI / 180.0;
+  let radLat2 = lat2*Math.PI / 180.0;
+  let a = radLat1 - radLat2;
+  let  b = lng1*Math.PI / 180.0 - lng2*Math.PI / 180.0;
+  let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+  Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+  s = s * 6378.137 ;// EARTH_RADIUS;
+  s = Math.round(s * 10) / 10;
+  return s;
+}
+
+function getUserPosition() {
+  let Camera = {
+    center: {
+      latitude: undefined,
+      longitude: undefined
+    },
+    altitude: 30000,
+    // pitch: 0,
+    zoom: 5,
+  }
+
+  Geolocation.getCurrentPosition(
+    pos => {
+      Camera.center = {
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude+0.005,
+      };
+    },
+    error => {
+      console.log(error.code, error.message);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000,
+      accuracy: { 
+        android: 'balanced',
+        ios: 'threeKilometers	',
+      }
+    }
+  );
+  return Camera
+}
+
 function Cal(temp) {
   const colorList = [
     "#0000FF",
@@ -59,6 +111,6 @@ function getCord(name) {
   return cordList[name];
 }
 
-export { Cal, getCord };
+export { Cal, getCord, getUserPosition, calDistance };
 
 // export default Cal;

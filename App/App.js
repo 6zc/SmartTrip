@@ -5,7 +5,7 @@ import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
 import EIcon from "react-native-vector-icons/Ionicons";
 import AIcon from "react-native-vector-icons/AntDesign";
 import User from "react-native-vector-icons/Entypo";
-import LoginPage from "./Personal/main";
+// import LoginPage from "./Personal/main";
 import DynamicSearchBar from "./top_searchbar/dynamic_search_bar";
 import MapWrapper from "./map/map";
 import MainPage from "./main/main";
@@ -53,6 +53,7 @@ const CardsQuery = gql`
         }
 				caption
 				content
+        district
 			}
 		}
 	}
@@ -60,8 +61,8 @@ const CardsQuery = gql`
 
 
 const App = () => {
-	const [curStation, setCurStation] = useState("Hong Kong Park");
-	const [stationList, setStationList] = useState([]);
+	// const [curStation, setCurStation] = useState("Hong Kong Park");
+	const [areaWeather, setAreaWeather] = useState([]);
 	const [humidity, setHumidity] = useState([]);
 	const [uvindex, setUvindex] = useState([]);
 
@@ -74,7 +75,7 @@ const App = () => {
         if(responseJson.status===404){
           return;
         }
-        setStationList(responseJson.temperature.data)
+        setAreaWeather(responseJson.temperature.data)
         setHumidity(responseJson.humidity ? responseJson.humidity.data : [])
         setUvindex(responseJson.uvindex ? responseJson.uvindex.data : [])
       } catch (error) {
@@ -90,31 +91,26 @@ const App = () => {
     )
   }
   //
-  const Login = props => {
-    return (
-      <Login></Login>
-    )
-  }
+  // const Login = props => {
+  //   return (
+  //     <Login></Login>
+  //   )
+  // }
   // Declare your page component
   const Map = props => {
     return (
       <Query query={CardsQuery}>
         {({ loading, error, data }) => {
           if (loading || error) return <Oops loading={loading}></Oops>;
-
-          console.log(data.cardsCollection.items)
           return (
             <View>
               <DynamicSearchBar
                 navigation={props.navigation}
-                itemList={data.cardsCollection.items}
-                setCurStation={setCurStation}
-                curStation={curStation}/>
+                itemList={data.cardsCollection.items}/>
               <MapWrapper
                 navigation={props.navigation}
                 itemList={data.cardsCollection.items}
-                stationList={stationList}
-                curStation={curStation}
+                areaWeather={areaWeather}
                 humidity={humidity}
                 uvindex={uvindex}/>
             </View>)}}
@@ -128,7 +124,7 @@ const App = () => {
           tabBarOptions={{
             activeTintColor: '#ffffff',
             activeBackgroundColor: "#5263ff",
-            keyboardHidesTabBar: true,
+            // keyboardHidesTabBar: true,
             style: { position: 'absolute' },
             tabStyle:{
               zIndex: 5,
@@ -168,37 +164,23 @@ const App = () => {
               ),
             }}
           />
-          <Tabs.Screen
-            name="User"
-            component={LoginPage}
-            options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <User
-                  name="user"
-                  size={34}
-                  color={focused ? color : "#5263ff"}
-                  focused={focused}
-                />
-              ),
-            }}
-          />
         </Tabs.Navigator>
       </NavigationContainer>
     </ApolloProvider>
   );
 };
 
-const styles = StyleSheet.create({
-	today: {
-		backgroundColor: "#4da4dd",
-	},
-	container: {
-		...StyleSheet.absoluteFillObject,
-		justifyContent: "flex-end",
-		alignItems: "center",
-		height: 780,
-		width: 400,
-	},
-});
+// const styles = StyleSheet.create({
+// 	today: {
+// 		backgroundColor: "#4da4dd",
+// 	},
+// 	container: {
+// 		...StyleSheet.absoluteFillObject,
+// 		justifyContent: "flex-end",
+// 		alignItems: "center",
+// 		height: 780,
+// 		width: 400,
+// 	},
+// });
 
 export default App;
