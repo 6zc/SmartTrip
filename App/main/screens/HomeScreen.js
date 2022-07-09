@@ -21,6 +21,9 @@ const CardsQuery = gql`
 	{
 		cardsCollection {
 			items {
+				sys {
+					id
+				}
 				title
 				type
 				image {
@@ -146,7 +149,7 @@ class HomeScreen extends React.Component {
 			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 			AsyncStorage.clear();
 		} else {
-			this.props.openLogin();
+			this.props.navigation.push("Login", {});
 		}
 	};
 
@@ -209,7 +212,7 @@ class HomeScreen extends React.Component {
 									{({ loading, error, data }) => {
 										if (loading) return <Message>Loading...</Message>;
 										if (error) return <Message>Error...</Message>;
-										
+
 										var items = data.cardsCollection.items;
 										var length = items.length;
 										// console.log(items);
@@ -299,7 +302,7 @@ class HomeScreen extends React.Component {
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
-				<ModalLogin />
+				<ModalLogin navigation={this.props.navigation} />
 			</RootView>
 		);
 	}

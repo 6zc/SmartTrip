@@ -231,6 +231,17 @@ class ModalLogin extends React.Component {
 							<ButtonText>Log In</ButtonText>
 						</Button>
 					</TouchableOpacity>
+					<TouchableOpacity
+						style={{
+							position: "absolute",
+							top: 327,
+						}}
+						onPress={() => {
+							this.props.navigation.push("Signup", {});
+						}}
+					>
+						<SignupText>Sign Up</SignupText>
+					</TouchableOpacity>
 				</AnimatedModal>
 				<Success isActive={this.state.isSuccessful} />
 				<Loading isActive={this.state.isLoading} />
@@ -240,6 +251,10 @@ class ModalLogin extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalLogin);
+
+const SignupText = styled.Text`
+	margin-top: 20px;
+`;
 
 const Container = styled.View`
 	position: absolute;

@@ -16,6 +16,10 @@ import { ApolloProvider } from "react-apollo";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import TabNavigator from "./TabNavigator";
+
 EIcon.loadFont();
 AIcon.loadFont();
 User.loadFont();
@@ -32,155 +36,47 @@ const client = new ApolloClient({
 		Authorization: `Bearer qxbc_UQWulK8HYHtWVowQoTNj14vFHhiYeQ_9QX-19A`,
 	},
 });
-const CardsQuery = gql`
-	{
-		cardsCollection {
-			items {
-        sys {
-          id
-        }
-				title
-				type
-				image {
-					size
-					url
-					width
-					height
-				}
-        location {
-          lat
-          lon
-        }
-				caption
-				content
-        district
-			}
-		}
-	}
-`;
 
-
-const App = () => {
-	// const [curStation, setCurStation] = useState("Hong Kong Park");
-	const [areaWeather, setAreaWeather] = useState([]);
-	const [humidity, setHumidity] = useState([]);
-	const [uvindex, setUvindex] = useState([]);
-
-  useEffect(() => {
-    async function fetchData(){
-      try {
-        let response = await fetch('http://139.155.252.3:10089/api/homepage',{method: 'GET'});
-        let responseJson = await response.json();
-        console.log(responseJson)
-        if(responseJson.status===404){
-          return;
-        }
-        setAreaWeather(responseJson.temperature.data)
-        setHumidity(responseJson.humidity ? responseJson.humidity.data : [])
-        setUvindex(responseJson.uvindex ? responseJson.uvindex.data : [])
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchData()
-  },[])
-
-  const Main = props => {
-    return (
-      <MainPage></MainPage>
-    )
-  }
-  //
-  // const Login = props => {
-  //   return (
-  //     <Login></Login>
-  //   )
-  // }
-  // Declare your page component
-  const Map = props => {
-    return (
-      <Query query={CardsQuery}>
-        {({ loading, error, data }) => {
-          if (loading || error) return <Oops loading={loading}></Oops>;
-          return (
-            <View>
-              <DynamicSearchBar
-                navigation={props.navigation}
-                itemList={data.cardsCollection.items}/>
-              <MapWrapper
-                navigation={props.navigation}
-                itemList={data.cardsCollection.items}
-                areaWeather={areaWeather}
-                humidity={humidity}
-                uvindex={uvindex}/>
-            </View>)}}
-      </Query>
-    );
-  };
-  return (
-    <ApolloProvider client={client}>
-      <NavigationContainer>
-        <Tabs.Navigator
-          tabBarOptions={{
-            activeTintColor: '#ffffff',
-            activeBackgroundColor: "#5263ff",
-            // keyboardHidesTabBar: true,
-            style: { position: 'absolute' },
-            tabStyle:{
-              zIndex: 5,
-              backgroundColor: '#f1f1f1',
-              height: Platform.OS === 'ios' ? 100: 80,
-            },
-            labelStyle: {
-              fontSize: 24,
-            },
-          }}>
-          <Tabs.Screen
-            name="Main"
-            component={Main}
-            options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <AIcon
-                name="home"
-                size={34}
-                color={focused ? color : "#5263ff"}
-                focused={focused}
-                />
-                ),
-              }}
-          />
-          <Tabs.Screen
-            onMoveShouldSetResponder={(e) => e.stopPropagation()}
-            name="Map"
-            component={Map}
-            options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <EIcon
-                  name="location-sharp"
-                  size={30}
-                  color={focused ? color : "#5263ff"}
-                  focused={focused}
-                />
-              ),
-            }}
-          />
-        </Tabs.Navigator>
-      </NavigationContainer>
-    </ApolloProvider>
-  );
+// initial state for redux
+const initialState = {
+	action: "",
+	name: "Guest",
+	place: "",
+	avatar: "https://cl.ly/55da82beb939/download/avatar-default.jpg",
 };
 
-// const styles = StyleSheet.create({
-// 	today: {
-// 		backgroundColor: "#4da4dd",
-// 	},
-// 	container: {
-// 		...StyleSheet.absoluteFillObject,
-// 		justifyContent: "flex-end",
-// 		alignItems: "center",
-// 		height: 780,
-// 		width: 400,
-// 	},
-// });
+// set up redux - save states in reducer to use as props
+const reducer = (state = initialState, action) => {
+	switch (action.type) {
+		case "OPEN_MENU":
+			return { ...state, action: "openMenu", place: action.place };
+		case "CLOSE_MENU":
+			return { ...state, action: "closeMenu" };
+		case "UPDATE_NAME":
+			return { ...state, name: action.name };
+		case "UPDATE_AVATAR":
+			return { ...state, avatar: action.avatar };
+		case "OPEN_CARD":
+			return { ...state, action: "openCard" };
+		case "CLOSE_CARD":
+			return { ...state, action: "closeCard" };
+		case "OPEN_LOGIN":
+			return { ...state, action: "openLogin" };
+		case "CLOSE_LOGIN":
+			return { ...state, action: "closeLogin" };
+		default:
+			return state;
+	}
+};
+
+const store = createStore(reducer);
+
+const App = () => (
+	<ApolloProvider client={client}>
+		<Provider store={store}>
+			<TabNavigator />
+		</Provider>
+	</ApolloProvider>
+);
 
 export default App;

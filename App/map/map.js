@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -19,16 +19,48 @@ const iOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get("window");
 
 const Map = (props) => {
-  const { humidity, uvindex, itemList, navigation } = props;
+  const { navigation, itemList } = props;
+  const itemID = navigation.state?.params?.itemID;
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+	const [stationList, setStationList] = useState([]);
+	const [humidity, setHumidity] = useState([]);
+	const [uvindex, setUvindex] = useState([]);
+  // 
+
   const region = {
     latitude: 22.2745,
     longitude: 114.1533,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   };
+  useEffect(()=>{
+    if(refs[itemID]){
+      setTimeout(() => {
+        refs[itemID].showCallout();
+      }, 200)
+    }
+  })
+  useEffect(() => {
+		async function fetchData() {
+			try {
+				let response = await fetch("http://139.155.252.3:10089/api/homepage", { method: "GET" });
+				let responseJson = await response.json();
+				console.log(responseJson);
+				if (responseJson.status === 404) {
+					return;
+				}
+				setStationList(responseJson.temperature.data);
+				setHumidity(responseJson.humidity ? responseJson.humidity.data : []);
+				setUvindex(responseJson.uvindex ? responseJson.uvindex.data : []);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+		fetchData();
+    
+	}, []);
 
   useEffect(()=>{
     const Camera = getUserPosition();
