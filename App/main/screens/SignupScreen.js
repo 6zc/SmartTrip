@@ -13,6 +13,7 @@ class SignupScreen extends React.Component {
 	state = {
 		user: "",
 		email: "",
+		phone: "",
 		password: "",
 		userColor: "rgba(255,255,255, 0.6)",
 		emailColor: "rgba(255,255,255, 0.6)",
@@ -80,7 +81,7 @@ class SignupScreen extends React.Component {
 					style={{
 						position: "absolute",
 						width: 335,
-						height: 440,
+						height: 480,
 						borderRadius: 30,
 					}}
 				/>
@@ -103,6 +104,13 @@ class SignupScreen extends React.Component {
 						onFocus={this.focusEmail}
 					/>
 					<TextField
+						onChangeText={phone => this.setState({ phone })}
+						placeholder="Phone"
+						placeholderTextColor="rgba(255,255,255,0.5)"
+						keyboardType="phone-pad"
+						onFocus={this.focusEmail}
+					/>
+					<TextField
 						onChangeText={password => this.setState({ password })}
 						placeholder="Password"
 						placeholderTextColor="rgba(255,255,255,0.5)"
@@ -115,7 +123,7 @@ class SignupScreen extends React.Component {
 						color={this.state.userColor}
 						style={{
 							position: "absolute",
-							top: 128,
+							top: 116,
 							left: 31,
 						}}
 					/>
@@ -125,8 +133,18 @@ class SignupScreen extends React.Component {
 						color={this.state.emailColor}
 						style={{
 							position: "absolute",
-							top: 192,
+							top: 180,
 							left: 31,
+						}}
+					/>
+					<Ionicon
+						name="call"
+						size={24}
+						color={this.state.passwordColor}
+						style={{
+							position: "absolute",
+							top: 245,
+							left: 32,
 						}}
 					/>
 					<Ionicon
@@ -135,7 +153,7 @@ class SignupScreen extends React.Component {
 						color={this.state.passwordColor}
 						style={{
 							position: "absolute",
-							top: 256,
+							top: 308,
 							left: 32,
 						}}
 					/>
@@ -235,7 +253,7 @@ const TextField = styled.TextInput`
 const Background = styled.View`
 	position: absolute;
 	width: 335px;
-	height: 440px;
+	height: 480px;
 	background-color: #281b5a;
 	opacity: 0.3;
 	border-radius: 30px;
@@ -255,15 +273,12 @@ const Image = styled.Image`
 const Content = styled.View`
 	position: absolute;
 	justify-content: center;
-	// align-items: center;
-
 	border-width: 1px;
 	border-color: rgba(255, 255, 255, 0.3);
 	border-radius: 30px;
 	overflow: hidden;
-
 	width: 335px;
-	height: 440px;
+	height: 480px;
 	box-shadow: 0 30px 60px rgba(42, 28, 91, 0.5);
 `;
 
@@ -272,16 +287,12 @@ const Title = styled.Text`
 	color: white;
 	font-weight: 700;
 	margin-left: 20px;
-	/* margin-top: 4px;
-	margin-bottom: 10px;
-	
-	 */
+	margin-top: 8px;
 `;
 
 const Caption = styled.Text`
 	font-size: 15px;
-	// font-weight: 600;
 	color: rgba(255, 255, 255, 0.7);
 	margin-left: 20px;
-	margin-top: 16px;
+	margin-top: 8px;
 `;

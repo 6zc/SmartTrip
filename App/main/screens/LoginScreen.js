@@ -153,7 +153,7 @@ class LoginScreen extends React.Component {
 
 					<TextField
 						onChangeText={email => this.setState({ email })}
-						placeholder="Email"
+						placeholder="User Name"
 						placeholderTextColor="rgba(255,255,255,0.5)"
 						keyboardType="email-address"
 						onFocus={this.focusEmail}
