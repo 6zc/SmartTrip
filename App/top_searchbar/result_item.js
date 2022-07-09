@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,13 +10,14 @@ import {
 import Linking from "../utils/linking";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Rating from "./rating";
-import { assertScalarType } from "graphql";
 import { Svg, Image as ImageSvg } from "react-native-svg";
+import { getUserPosition, calDistance } from "../utils/calculator";
 
 const Item = (props) => {
   // TEMPORARY DATA
   const rating = Math.random() * 5;
   const liked = Math.random() > 0.5;
+  const [distance ,setDis] = useState(0)
 
   const { item } = props;
   const { title, image, location, type } = item;
@@ -24,6 +25,19 @@ const Item = (props) => {
     longitude: location.lon + 0.0049,
     latitude: location.lat - 0.0028,
   };
+  let position = {
+    lat:undefined,
+    lng:undefined,
+  };
+  let res = getUserPosition();
+  
+  setTimeout(() => {
+    position.lat = res.center.latitude;
+    position.lng = res.center.longitude;
+    setDis(calDistance(position, location))
+  }, 100)
+  
+
   let rateArray = new Array(5).fill(0);
   rateArray = rateArray.map((_item, index) => {
     if (index < Math.floor(rating)) return 1;
@@ -32,6 +46,9 @@ const Item = (props) => {
   });
   return (
     <View style={styles.container}>
+      <View style={styles.distanceWrapper}>
+        <Text style={styles.distanceWrapper.distance}>{' '+distance+' KM '}</Text>
+      </View>
       <View style={styles.imageWrapper}>
         <Svg style={styles.imageWrapper.image}>
           <ImageSvg
@@ -47,6 +64,7 @@ const Item = (props) => {
         <View>
           <Text style={styles.title.text}>{title}</Text>
           <Text style={styles.title.type}>{type}</Text>
+          {/* <Text style={styles.title.distance}>{distance+' KM'}</Text> */}
         </View>
         <View style={styles.starWrapper}>
           {rateArray.map((item, index) => (
@@ -80,6 +98,25 @@ const Item = (props) => {
 };
 
 const styles = StyleSheet.create({
+  distanceWrapper: {
+    position: "absolute",
+    flexDirection: 'row',
+    alignItem: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 6,
+    height: 20,
+    zIndex:4,
+    bottom: 5,
+    left: 6,
+    opacity:0.7,
+    distance: {
+      fontWeight: "bold",
+      lineHeight: 20,
+      fontSize: 12,
+      color: "#4c4c4c",
+    },
+  },
   starWrapper: {
     zIndex: 2,
     height: 30,
@@ -139,12 +176,21 @@ const styles = StyleSheet.create({
       color: "#ffffff",
     },
     type: {
-      fontSize: 15,
+      fontSize: 14,
       fontWeight: "bold",
       lineHeight: 25,
       width: 150,
       left: 8,
       top: 5,
+      color: "#cecece",
+    },
+    distance: {
+      fontSize: 12,
+      fontWeight: "bold",
+      lineHeight: 22,
+      width: 150,
+      left: 9,
+      // top: 5,
       color: "#cecece",
     },
   },

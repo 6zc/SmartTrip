@@ -1,10 +1,12 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, Platform, Animated, Easing } from "react-native";
+import { StyleSheet, View, Platform, Animated, Easing, TouchableOpacity } from "react-native";
 import SearchBar from "react-native-dynamic-search-bar";
 import { BlurView } from "@react-native-community/blur";
 import ResultItem from "./result_item";
+import { getUserPosition } from "../utils/calculator";
+// import Geolocation from '@react-native-community/geolocation';
 
-const searchbar = (props) => {
+const searchBar = (props) => {
   const { itemList, navigation } = props;
   const dataBackup = itemList;
   const [queryText, setQueryText] = useState("");
@@ -31,8 +33,9 @@ const searchbar = (props) => {
     var newData = dataBackup;
     newData = dataBackup.filter((item) => {
       const itemData = item.title.toLowerCase().split(" ").join("");
+      const typeData = item.type.toLowerCase().split(" ").join("");
       const textData = text.toLowerCase().split(" ").join("");
-      return itemData.includes(textData);
+      return itemData.includes(textData) || typeData.includes(textData);
     });
     setDataSource(newData);
     setQueryText(text);
@@ -49,8 +52,8 @@ const searchbar = (props) => {
         iconColor="#c6c6c6"
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
-        placeholder="Search here"
-        darkMode={showList ? true : false}
+        placeholder={ queryText || "Search here" }
+        darkMode={ showList ? true : false }
         onFocus={() => {
           setShowList(true);
           parallelAni.start();
@@ -73,6 +76,9 @@ const searchbar = (props) => {
         <View style={styles.wrapper}>
           <Animated.View style={{ ...styles.blurWrapper, opacity: fadeAnim }}>
             <BlurView style={styles.blur} blurType="dark" blurAmount={10} />
+          </Animated.View>
+          <Animated.View>
+            
           </Animated.View>
           <Animated.FlatList
             showsVerticalScrollIndicator={false}
@@ -135,7 +141,7 @@ const styles = StyleSheet.create({
   wrapper: {
     // top:25,
     width: 430,
-    height: 630,
+    height: 640,
     alignItems: "center",
   },
   blurWrapper: {
@@ -189,4 +195,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default searchbar;
+export default searchBar;

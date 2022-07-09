@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform,
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { getUserPosition } from "../utils/calculator.js"
@@ -13,15 +14,15 @@ import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
 
 const refs = [];
+const iOS = Platform.OS === 'ios';
 
 const { width, height } = Dimensions.get("window");
 
 const Map = (props) => {
-  const { stationList, curStation, humidity, uvindex, itemList } = props;
+  const { humidity, uvindex, itemList, navigation } = props;
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
   const region = {
     latitude: 22.2745,
     longitude: 114.1533,
@@ -29,26 +30,30 @@ const Map = (props) => {
     longitudeDelta: LONGITUDE_DELTA,
   };
 
+  useEffect(()=>{
+    const Camera = getUserPosition();
+    setTimeout(() => {
+      refs['map'].animateCamera(Camera, { duration: 1000 })
+    }, 300)
+  },[])
+
   return (
     <View style={styles.container}>
       <TouchableOpacity 
         style={styles.goBack}
         onPress={ e =>{
-          const Camera = getUserPosition();
+          let Camera = getUserPosition();
           setTimeout(() => {
             refs['map'].animateCamera(Camera, { duration: 1000 })
-          }, 100)
+          }, 10)
         }}
         >
           <Logo height={30} width={30} type={'Userlocation'} />
         </TouchableOpacity>
       <MapView
-        // provider={props.provider}
-        mapPadding={{ top: 30, right: 30, bottom: 30, left: 30 }}
         stopPropagation={true}
         style={styles.map}
         showsUserLocation={true}
-        followsUserLocation={true}
         region={region}
         minZoomLevel={9}
         maxZoomLevel={20}
@@ -62,8 +67,8 @@ const Map = (props) => {
             key={card.sys.id}
             pointerEvents={"auto"}
             coordinate={{
-              longitude: card.location.lon + 0.0049,
-              latitude: card.location.lat - 0.0028,
+              longitude: card.location.lon + (iOS?0.0049:0),
+              latitude: card.location.lat - (iOS?0.0028:0),
             }}
           >
             <View style={styles.customMarker}>
@@ -87,6 +92,8 @@ const Map = (props) => {
                 image={card.image}
                 title={card.title}
                 type={card.type}
+                id={card.sys.id}
+                refs={refs}
                 coordinate={{
                   longitude: card.location.lon,
                   latitude: card.location.lat,
@@ -167,6 +174,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "#000000",
     shadowOpacity: 0.25,
+    opacity: 0.8,
     tip: {
       fontSize: 17,
       fontWeight: "bold",
