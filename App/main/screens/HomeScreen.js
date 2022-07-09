@@ -21,6 +21,9 @@ const CardsQuery = gql`
 	{
 		cardsCollection {
 			items {
+				sys {
+					id
+				}
 				title
 				type
 				image {

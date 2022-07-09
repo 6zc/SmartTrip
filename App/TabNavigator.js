@@ -82,52 +82,22 @@ HomeStack.navigationOptions = ({ navigation }) => {
 	};
 };
 
-const MapPage = () => {
-	const [curStation, setCurStation] = useState("Hong Kong Park");
-	const [stationList, setStationList] = useState([]);
-	const [humidity, setHumidity] = useState([]);
-	const [uvindex, setUvindex] = useState([]);
-
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				let response = await fetch("http://139.155.252.3:10089/api/homepage", { method: "GET" });
-				let responseJson = await response.json();
-				console.log(responseJson);
-				if (responseJson.status === 404) {
-					return;
-				}
-				setStationList(responseJson.temperature.data);
-				setHumidity(responseJson.humidity ? responseJson.humidity.data : []);
-				setUvindex(responseJson.uvindex ? responseJson.uvindex.data : []);
-			} catch (error) {
-				console.error(error);
-			}
-		}
-		fetchData();
-	}, []);
-
+const MapPage = ({ route, navigation }) => {
 	return (
 		<Query query={CardsQuery}>
 			{({ loading, error, data }) => {
 				if (loading || error) return <Oops loading={loading}></Oops>;
-
-				// console.log(data.cardsCollection.items)
 				return (
 					<View>
 						<DynamicSearchBar
-							// navigation={props.navigation}
+							route={route}
+							navigation={navigation}
 							itemList={data.cardsCollection.items}
-							setCurStation={setCurStation}
-							curStation={curStation}
 						/>
 						<MapWrapper
-							// navigation={props.navigation}
+							route={route}
+							navigation={navigation}
 							itemList={data.cardsCollection.items}
-							stationList={stationList}
-							curStation={curStation}
-							humidity={humidity}
-							uvindex={uvindex}
 						/>
 					</View>
 				);

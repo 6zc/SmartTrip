@@ -22,7 +22,6 @@ class SectionScreen extends React.Component {
 		// receive data
 		const { navigation } = this.props;
 		const section = navigation.getParam("section");
-
 		return (
 			<ScrollView style={{ backgroundColor: "white" }}>
 				<Container>
@@ -46,10 +45,21 @@ class SectionScreen extends React.Component {
 							<Ionicon name="ios-close" size={32} color="#5263ff" />
 						</CloseView>
 					</TouchableOpacity>
-					<MapView>
-						<Ionicon name="navigate-circle-outline" size={24} color="#5263ff" />
-						<MapText>Map</MapText>
-					</MapView>
+					<TouchableOpacity
+						onPress={() => {
+							setTimeout(() => {
+								this.props.navigation.navigate("Map",{
+									itemID: section.sys.id,
+								});
+							}, 400)
+						}}
+						style={{ position: "absolute", top: 320, right: 0 }}
+						>
+						<MapView>
+								<Ionicon name="navigate-circle-outline" size={24} color="#5263ff" />
+								<MapText>Map</MapText>
+						</MapView>
+					</TouchableOpacity>
 					<Content>
 						{/* <WebView
 						source={{ html: section.content + htmlStyles }}
@@ -98,9 +108,6 @@ const MapView = styled.View`
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.35);
 	align-items: center;
 	margin: 0 8px;
-	position: absolute;
-	top: 320px;
-	right: 0px;
 `;
 
 const MapText = styled.Text`

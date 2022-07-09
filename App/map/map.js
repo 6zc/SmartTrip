@@ -4,17 +4,21 @@ import MapView, {Marker, Callout} from 'react-native-maps';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import PlaceView from './place_view.js';
 import {Svg, Image as ImageSvg} from 'react-native-svg';
-// import {getCord} from '../utils/calculator';
 
 const refs = []
 
 const {width, height} = Dimensions.get('window');
 
 const Map = (props) => {
-  const {stationList, curStation, humidity, uvindex, itemList} = props
+  const { navigation, itemList } = props;
+  const itemID = navigation.state?.params?.itemID;
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+	const [stationList, setStationList] = useState([]);
+	const [humidity, setHumidity] = useState([]);
+	const [uvindex, setUvindex] = useState([]);
+  // 
 
   const region = {
     latitude: 22.2745,
@@ -22,16 +26,33 @@ const Map = (props) => {
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   };
+  useEffect(()=>{
+    if(refs[itemID]){
+      setTimeout(() => {
+        refs[itemID].showCallout();
+      }, 200)
+    }
+  })
+  useEffect(() => {
+		async function fetchData() {
+			try {
+				let response = await fetch("http://139.155.252.3:10089/api/homepage", { method: "GET" });
+				let responseJson = await response.json();
+				console.log(responseJson);
+				if (responseJson.status === 404) {
+					return;
+				}
+				setStationList(responseJson.temperature.data);
+				setHumidity(responseJson.humidity ? responseJson.humidity.data : []);
+				setUvindex(responseJson.uvindex ? responseJson.uvindex.data : []);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+		fetchData();
+    
+	}, []);
 
-  // useEffect(() => {
-  //   const {latitude,longitude} = getCord(curStation)
-  //   setLatitude(latitude);
-  //   setLongitude(longitude);
-  //   if(refs[curStation]){
-  //     setTimeout(() => refs[curStation].showCallout(), 0);
-  //   }
-  // },[props.curStation]);
-  // const tempPlaceList = ['Hong Kong Park', 'Hong Kong Observatory', 'Tai Po']
 
   return (
     <View style={styles.container}>
