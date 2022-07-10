@@ -28,7 +28,7 @@ const linkingToMap = {
             })
             .catch((err) => console.error("An error occurred", err));
     },
-    link2map(lon =0, lat = 0, title=''){
+    link2map(lon = 0, lat = 0, title=''){
         if(lon===0 || lat ===0){
             lat = undefined
             lon = undefined

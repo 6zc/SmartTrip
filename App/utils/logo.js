@@ -9,7 +9,7 @@ const TYPES = {
   Park: require("../resource/park.png"),
   Restaurant: require("../resource/restaurant.png"),
   Default: require("../resource/default-place.png"),
-  Userlocation: require("../resource/search.png"),
+  Userlocation: require("../resource/compass.png"),
 };
 
 const Logo = (props) => {

@@ -50,24 +50,36 @@ function getUserPosition() {
   return Camera
 }
 
+function getCamera(lon = 0, lat = 0, offset = 0) {
+  return {
+    center: {
+      latitude: lat+offset,
+      longitude: lon
+    },
+    altitude: 30000,
+    // pitch: 0,
+    zoom: 5,
+  }
+}
+
 function Cal(temp) {
   const colorList = [
-    "#0000FF",
-    "#0033FF",
-    "#0066FF",
-    "#0099FF",
-    "#00CCFF", //blue
-    "#00FFCC",
-    "#00FF66",
-    "#00FF00",
-    "#CCFF00", //green
-    "#FFFF00",
-    "#FFCC00",
-    "#FF9900",
-    "#FF6600", //yellow
-    "#FF3300",
-    "#FF0000",
-    "#990000", //red
+    "#00FFFF",
+    "#97FFFF",
+    "#7FFFD4",
+    "#C1FFC1",
+    "#54FF9F", //blue
+    "#9AFF9A",
+    "#7FFF00",
+    "#C0FF3E",
+    "#CAFF70", //green
+    "#FFF68F",
+    "#FFEC8B",
+    "#FFD700",
+    "#FFC125", //yellow
+    "#FF8247",
+    "#FF3030",
+    "#8B2323", //red
   ];
   temp = parseInt(temp, 10);
   if (temp >= 40) {
@@ -111,6 +123,25 @@ function getCord(name) {
   return cordList[name];
 }
 
-export { Cal, getCord, getUserPosition, calDistance };
+function getWeatherDesc(uv, rain) {
+  if(rain===0){
+    if(uv<4) return 'Cloudy';
+    else if(uv<8) return 'Serene';
+    else return 'Sunny'
+  }
+  else if(rain<5) return 'Drizzling';
+  else if(rain<10) return 'Raining';
+  else if(rain<20) return 'Raining Heavily';
+  else return 'Rainstorm'
+}
+
+export { 
+  Cal,
+  getCord,
+  getUserPosition,
+  calDistance,
+  getCamera,
+  getWeatherDesc
+};
 
 // export default Cal;

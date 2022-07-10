@@ -32,6 +32,7 @@ const CardsQuery = gql`
 				sys {
 					id
 				}
+				district
 				title
 				type
 				image {
