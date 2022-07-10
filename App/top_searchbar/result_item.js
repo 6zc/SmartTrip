@@ -7,30 +7,25 @@ import {
   Image,
   Alert,
 } from "react-native";
-import Linking from "../utils/linking";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Rating from "./rating";
 import { Svg, Image as ImageSvg } from "react-native-svg";
 import { getUserPosition, calDistance } from "../utils/calculator";
 
 const Item = (props) => {
-  // TEMPORARY DATA
+  //TODO
   const rating = Math.random() * 5;
   const liked = Math.random() > 0.5;
   const [distance ,setDis] = useState(0)
 
-  const { item } = props;
+  const { item, navigation, setShowList } = props;
   const { title, image, location, type } = item;
-  const coordinate = {
-    longitude: location.lon + 0.0049,
-    latitude: location.lat - 0.0028,
-  };
   let position = {
     lat:undefined,
     lng:undefined,
   };
+
   let res = getUserPosition();
-  
   setTimeout(() => {
     position.lat = res.center.latitude;
     position.lng = res.center.longitude;
@@ -44,6 +39,7 @@ const Item = (props) => {
     else if (index > rating) return 0;
     else if (index + 1 > rating) return 0.5;
   });
+
   return (
     <View style={styles.container}>
       <View style={styles.distanceWrapper}>
@@ -58,13 +54,11 @@ const Item = (props) => {
             href={{ uri: image.url }}
           />
         </Svg>
-        {/* <Image style={styles.imageWrapper.image} source={image} /> */}
       </View>
       <View style={styles.title}>
         <View>
           <Text style={styles.title.text}>{title}</Text>
           <Text style={styles.title.type}>{type}</Text>
-          {/* <Text style={styles.title.distance}>{distance+' KM'}</Text> */}
         </View>
         <View style={styles.starWrapper}>
           {rateArray.map((item, index) => (
@@ -75,7 +69,14 @@ const Item = (props) => {
       <View style={styles.backOpacity}></View>
       <TouchableOpacity
         style={styles.navi}
-        onPress={() => Linking.link2map(...Object.values(coordinate), title)}
+        onPress={() => {
+          setShowList(false);
+          setTimeout(() => {
+            navigation.navigate("Map",{
+              itemID: item.sys.id,
+            });
+          }, 300)}
+        }
       >
         <Ionicon
           name="arrow-forward-circle-outline"

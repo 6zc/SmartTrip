@@ -3,8 +3,6 @@ import { StyleSheet, View, Platform, Animated, Easing, TouchableOpacity } from "
 import SearchBar from "react-native-dynamic-search-bar";
 import { BlurView } from "@react-native-community/blur";
 import ResultItem from "./result_item";
-import { getUserPosition } from "../utils/calculator";
-// import Geolocation from '@react-native-community/geolocation';
 
 const searchBar = (props) => {
   const { itemList, navigation } = props;
@@ -77,9 +75,6 @@ const searchBar = (props) => {
           <Animated.View style={{ ...styles.blurWrapper, opacity: fadeAnim }}>
             <BlurView style={styles.blur} blurType="dark" blurAmount={10} />
           </Animated.View>
-          <Animated.View>
-            
-          </Animated.View>
           <Animated.FlatList
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.contentContainer}
@@ -99,7 +94,11 @@ const searchBar = (props) => {
             renderItem={(item) => {
               return (
                 <View style={styles.result_item}>
-                  <ResultItem item={item.item} />
+                  <ResultItem 
+                    item={item.item}
+                    navigation={navigation}
+                    setShowList={setShowList}
+                  />
                 </View>
               );
             }}

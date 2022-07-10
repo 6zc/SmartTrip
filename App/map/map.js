@@ -8,8 +8,9 @@ import {
   Platform,
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { getUserPosition } from "../utils/calculator.js"
+import { getUserPosition, getCamera } from "../utils/calculator.js"
 import Ionicon from "react-native-vector-icons/Ionicons";
+import { BlurView } from "@react-native-community/blur";
 import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
 
@@ -24,34 +25,35 @@ const Map = (props) => {
   const ASPECT_RATIO = width / height;
   const LATITUDE_DELTA = 0.2;
   const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-	const [stationList, setStationList] = useState([]);
+	const [areaTemp, setAreaTemp] = useState([]);
 	const [humidity, setHumidity] = useState([]);
 	const [uvindex, setUvindex] = useState([]);
   // 
 
-  const region = {
-    latitude: 22.2745,
-    longitude: 114.1533,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
-  };
+  // const region = {
+  //   latitude: 22.2745,
+  //   longitude: 114.1533,
+  //   latitudeDelta: LATITUDE_DELTA,
+  //   longitudeDelta: LONGITUDE_DELTA,
+  // };
   useEffect(()=>{
     if(refs[itemID]){
+      refs['map'].animateCamera(getCamera(
+        ...Object.values(refs[itemID].props.coordinate),0.03),{ duration: 400 })
       setTimeout(() => {
         refs[itemID].showCallout();
-      }, 200)
+      }, 400)
     }
   })
   useEffect(() => {
 		async function fetchData() {
 			try {
-				let response = await fetch("http://139.155.252.3:10089/api/homepage", { method: "GET" });
+				let response = await fetch("http://39.108.191.242:10089/api/homepage", { method: "GET" });
 				let responseJson = await response.json();
-				console.log(responseJson);
 				if (responseJson.status === 404) {
 					return;
 				}
-				setStationList(responseJson.temperature.data);
+				setAreaTemp(responseJson.area_temp);
 				setHumidity(responseJson.humidity ? responseJson.humidity.data : []);
 				setUvindex(responseJson.uvindex ? responseJson.uvindex.data : []);
 			} catch (error) {
@@ -59,15 +61,11 @@ const Map = (props) => {
 			}
 		}
 		fetchData();
-    
-	}, []);
-
-  useEffect(()=>{
     const Camera = getUserPosition();
     setTimeout(() => {
       refs['map'].animateCamera(Camera, { duration: 1000 })
     }, 300)
-  },[])
+	}, []);
 
   return (
     <View style={styles.container}>
@@ -80,13 +78,14 @@ const Map = (props) => {
           }, 10)
         }}
         >
+          <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
           <Logo height={30} width={30} type={'Userlocation'} />
         </TouchableOpacity>
       <MapView
         stopPropagation={true}
         style={styles.map}
         showsUserLocation={true}
-        region={region}
+        followsUserLocation={true}
         minZoomLevel={9}
         maxZoomLevel={20}
         ref={ref => {
@@ -98,6 +97,7 @@ const Map = (props) => {
             ref={(ref) => (refs[card.sys.id] = ref)}
             key={card.sys.id}
             pointerEvents={"auto"}
+            tracksViewChanges={false}
             coordinate={{
               longitude: card.location.lon + (iOS?0.0049:0),
               latitude: card.location.lat - (iOS?0.0028:0),
@@ -108,7 +108,7 @@ const Map = (props) => {
             </View>
             <Callout
               style={styles.callout}
-              alphaHitTest
+              alphaHitTest={true}
               tooltip={true}
               onPress={(e) => {
                 if (
@@ -119,60 +119,59 @@ const Map = (props) => {
                 }
               }}
             >
-              <PlaceView
-                logo={card.logo}
-                image={card.image}
-                title={card.title}
-                type={card.type}
-                id={card.sys.id}
-                refs={refs}
-                coordinate={{
-                  longitude: card.location.lon,
-                  latitude: card.location.lat,
-                }}
-              />
+              <View style={styles.placeViewWrapper}>
+                <BlurView style={styles.blur} blurType="xlight" />
+                <PlaceView
+                  // weather={areaTemp}
+                  navigation={navigation}
+                  card={card}
+                  coordinate={{
+                    longitude: card.location.lon,
+                    latitude: card.location.lat,
+                  }}
+                />
+              </View>
             </Callout>
           </Marker>
         ))}
       </MapView>
       <View style={styles.tips}>
-        {uvindex.length ? (
-          <View style={styles.tips.tipLeft}>
-            <Ionicon name="sunny" size={18} style={styles.icons} />
-            <Text style={styles.tips.tip}>
-              {" UV Index: " + uvindex[0].value + "/10"}
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.tips.tipLeft}>
-            <Ionicon name="sunny" size={18} style={styles.icons} />
-            <Text style={styles.tips.tip}>{" UV Index: 0/10"}</Text>
-          </View>
-        )}
-        {humidity.length ? (
-          <View style={styles.tips.tipRight}>
-            <Ionicon name="thermometer" size={18} style={styles.icons} />
-            <Text style={styles.tips.tip}>
-              {" Humidity: " + humidity[0].value + "%"}
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.tips.tipRight}>
-            <Ionicon name="thermometer" size={18} style={styles.icons} />
-            <Text style={styles.tips.tip}>{" Humidity: 65%"}</Text>
-          </View>
-        )}
+        <View style={styles.tips.tipLeft}>
+          <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
+          <Ionicon name="sunny" size={18} style={styles.icons} />
+          <Text style={styles.tips.tip}>
+            {" UV Index: " + (uvindex.length ? uvindex[0].value : 0) + "/10"}
+          </Text>
+        </View>
+        <View style={styles.tips.tipRight}>
+          <BlurView style={styles.blur} blurType="xlight" blurAmount={10} />
+          <Ionicon name="thermometer" size={18} style={styles.icons} />
+          <Text style={styles.tips.tip}>
+            {" Humidity: " + ( humidity.length ? humidity[0].value : 70 ) + "%"}
+          </Text>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  placeViewWrapper: {
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  blur:{
+    position: "absolute",
+    top: -1,
+    left: -1,
+    height: '110%',
+    width: '110%',
+    zIndex:-1
+  },
   goBack: {
     height: 30,
     width: 30,
     position: "absolute",
-    backgroundColor: "#ffffff",
     left: '86%',
     bottom: 83,
     zIndex:4,
@@ -181,10 +180,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "#000000",
     shadowOpacity: 0.25,
+    overflow: "hidden",
   },
   callout: {
-    maxHeight: 400,
     width: 290,
+    height: 500,
+    justifyContent: "flex-end",
   },
   navi: {
     position: "absolute",
@@ -206,23 +207,22 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "#000000",
     shadowOpacity: 0.25,
-    opacity: 0.8,
     tip: {
       fontSize: 17,
       fontWeight: "bold",
     },
     tipLeft: {
+      overflow: 'hidden',
       borderRadius: 12,
       width: 170,
-      backgroundColor: "#ffffff",
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
     },
     tipRight: {
+      overflow: 'hidden',
       borderRadius: 12,
       width: 170,
-      backgroundColor: "#ffffff",
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",

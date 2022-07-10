@@ -8,19 +8,25 @@ import {
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from "../utils/linking";
 import Logo from "../utils/logo.js";
-import { Cal } from "../utils/calculator";
+import { Cal, getWeatherDesc } from "../utils/calculator";
 import { Svg, Image as ImageSvg } from "react-native-svg";
+import { BlurView } from "@react-native-community/blur";
 
 const PlaceView = (props) => {
-  const { title, type, image, coordinate, id } = props;
-  const temp = 30;
-  const weather = 'Sunny';
+  const { card, coordinate, navigation } = props
+  const { title, type, image } = card;
+  //TODO
+  const temp = (Math.random()*40).toFixed(0)
+  const rain = Math.random()*20;
+  const uv = Math.random()*12
 
+  const weather = getWeatherDesc(uv, rain);
   return (
     <View style={styles.container}>
       <View style={styles.bubble}>
         <View style={styles.group}>
           <View style={styles.group.weatherWrapper}>
+            <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
             <Text style={styles.group.weather}>{' '+weather+' '}</Text>
           </View>
           <View style={[styles.group.tempWrapper,{backgroundColor:Cal(temp)}]}>
@@ -34,12 +40,22 @@ const PlaceView = (props) => {
             Linking.link2map(...Object.values(coordinate), title);
           }}
         >
-          <Ionicon
-            backgroundColor="#ffffff"
-            name="navigate-circle-outline"
-            size={35}
-            color="#ffffff"
-          />
+          
+          <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
+          <Text style={styles.navi.naviText}>GO!</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.detail}
+          onPressOut={() => {
+            setTimeout(() => {
+              navigation.navigate("Section",{
+                section: card
+              });
+            }, 400)
+          }}
+        >
+            <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
+            <Text style={styles.detail.detailText}>Detail</Text>
         </TouchableOpacity>
         <Svg width={290} height={290}>
           <ImageSvg
@@ -65,6 +81,30 @@ const PlaceView = (props) => {
 };
 
 const styles = StyleSheet.create({
+  blur:{
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    zIndex: -1,
+    borderRadius: 8,
+  },
+  detail: {
+    position: "absolute",
+    right: 6,
+    top: 259,
+    zIndex: 4,
+    height: 24,
+    width: 55,
+    alignItems: 'center',
+    detailText:{
+      fontWeight: "bold",
+      color: "#5263ff",
+      fontSize: 15,
+      lineHeight:24
+    },
+  },
   lineWrapper: {
     flexDirection: "row",
     minWidth: 290,
@@ -81,7 +121,6 @@ const styles = StyleSheet.create({
     },
   },
   group: {
-    opacity: 0.85,
     position: "absolute",
     zIndex: 5,
     top: 10,
@@ -90,9 +129,9 @@ const styles = StyleSheet.create({
     alignItem: 'center',
     justifyContent: 'center',
     weatherWrapper: {
-      backgroundColor: '#ffffff',
       borderRadius: 8,
       height: 24,
+      overflow: "hidden",
     },
     weather: {
       color: "#6c6c6c",
@@ -104,6 +143,11 @@ const styles = StyleSheet.create({
       height: 24,
       borderRadius: 8,
       left: 8,
+      shadowRadius: 3,
+      shadowColor:'#000000',
+      shadowOpacity: 0.35,
+      shadowOffset: { width: 0, height: 1 },
+      opacity: 0.9,
     },
     temp: {
       fontWeight: "bold",
@@ -114,29 +158,30 @@ const styles = StyleSheet.create({
   },
   navi: {
     position: "absolute",
-    right: 2,
-    top: 7,
+    right: 69,
+    top: 259,
     zIndex: 5,
-    width: 40,
-    height: 40,
+    width: 38,
+    height: 24,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    naviText:{
+      fontWeight: "bold",
+      color: "#5263ff",
+      fontSize: 15,
+      lineHeight:24
+    },
   },
   container: {
     flexDirection: "column",
     maxHeight: 400,
     width: 328,
-    backgroundColor: "rgba(255,255,255,0)",
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 0 },
-    shadowColor: "#000000",
-    shadowOpacity: 0.4,
   },
   bubble: {
     width: 290,
     flexDsirection: "column",
     justifyContent: "center",
-    backgroundColor: "#ffffff",
-    borderRadius: 15,
-    overflow: "hidden",
   },
   image: {
     width: 290,
