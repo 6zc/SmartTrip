@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from "react-native";
+import { Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from "react-native";
 import { BlurView } from "@react-native-community/blur";
 import LottieView from "lottie-react-native";
 import { Divider } from "@rneui/base";
@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
+
+const server = "http://139.155.252.3:10089/login";
 
 function mapStateToProps(state) {
 	return { action: state.action };
@@ -35,9 +37,9 @@ function mapDispatchToProps(dispatch) {
 
 class LoginScreen extends React.Component {
 	state = {
-		email: "",
+		user: "",
 		password: "",
-		emailColor: "rgba(255,255,255, 0.6)",
+		userColor: "rgba(255,255,255, 0.6)",
 		passwordColor: "rgba(255,255,255, 0.6)",
 		isSuccessful: false,
 		isLoading: false,
@@ -54,61 +56,113 @@ class LoginScreen extends React.Component {
 	};
 
 	fetchUser = () => {
-		fetch("https://randomuser.me/api/")
-			// transform to json first
-			.then(response => response.json())
-			// using the response
+		// fetch("https://randomuser.me/api/")
+		// 	// transform to json first
+		// 	.then(response => response.json())
+		// 	// using the response
+		// 	.then(response => {
+		// 		const name = response.results[0].name.first;
+		// 		const avatar = response.results[0].picture.thumbnail;
+		// 		saveState({ name, avatar });
+		// 		this.props.updateName(name);
+		// 		this.props.updateAvatar(avatar);
+		// 	});
+
+		const user = this.state.user;
+		const password = this.state.password;
+
+		fetch(server, {
+			body: JSON.stringify({ username: user, password: password }), // must match 'Content-Type' header
+			cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+			method: "POST", // *GET, POST, PUT, DELETE, etc.
+			//mode: 'cors', // no-cors, cors, *same-origin
+			redirect: "follow", // manual, *follow, error
+		})
 			.then(response => {
-				const name = response.results[0].name.first;
-				const avatar = response.results[0].picture.thumbnail;
-				saveState({ name, avatar });
-				this.props.updateName(name);
-				this.props.updateAvatar(avatar);
+				// console.log("response message: ");
+				// console.log(response.text());
+				response
+					.json()
+					.then(data => {
+						// login success
+						console.log("login success");
+						// save name and avatar
+						const name = user;
+						saveState({ name });
+						this.props.updateName(name);
+						// animation
+						setTimeout(() => {
+							this.setState({ isLoading: false });
+							this.setState({ isSuccessful: true });
+							setTimeout(() => {
+								// hide login
+								this.props.navigation.goBack();
+								this.setState({ isSuccessful: false });
+							}, 1000);
+						}, 400);
+
+						// console.log(data);
+					})
+					.catch(data => {
+						// login failed
+						console.log("failed");
+						// animation and alert
+						setTimeout(() => {
+							this.setState({ isLoading: false });
+							Alert.alert("Login Failed", "Wrong user name or password.");
+						}, 300);
+					});
+			})
+			.catch(error => {
+				console.log(error);
 			});
 	};
 
 	// login function
 	handleLogin = () => {
-		// console.log(this.state.email, this.state.password);
+		// console.log(this.state.user, this.state.password);
 
+		// hide keyboard
 		this.tapBackground();
 
+		// loading animation
 		this.setState({
 			isLoading: true,
 		});
 
-		// do the api call here
-		const email = this.state.email;
-		const password = this.state.password;
+		// api call
+		this.fetchUser();
+
 		// ...
 		// simulate api call
-		setTimeout(() => {
-			this.setState({ isLoading: false });
-			this.setState({ isSuccessful: true });
+		// setTimeout(() => {
+		// 	this.setState({ isLoading: false });
 
-			// send alert
-			// Alert.alert("Congrats", "You've logged in successfully!");
+		// 	// store user name
+		// 	// this.storeName(user);
 
-			// store user name
-			// this.storeName(email);
+		// 	if (this.state.loginStatus == false) {
+		// 		// send alert
+		// 		Alert.alert("Login Failed", "Wrong user name or password.");
+		// 	} else {
+		// 		// success!
+		// 		// auto hide login
+		// 		this.setState({ isSuccessful: true });
+		// 		setTimeout(() => {
+		// 			this.props.navigation.goBack();
+		// 			this.setState({ isSuccessful: false });
+		// 		}, 1000);
+		// 	}
 
-			this.fetchUser();
-
-			// update user name
-			// this.props.updateName(email);
-
-			// auto hide login
-			setTimeout(() => {
-				this.props.navigation.goBack();
-				this.setState({ isSuccessful: false });
-			}, 1000);
-		}, 1000);
+		// 	// update user name
+		// 	// this.props.updateName(user);
+		// }, 1000);
 	};
 
-	focusEmail = () => {
+	focusUser = () => {
 		this.setState({
 			userColor: "rgba(255,255,255, 0.6)",
-			emailColor: "#5263ff",
+			userColor: "#5263ff",
 			passwordColor: "rgba(255,255,255, 0.6)",
 		});
 	};
@@ -116,7 +170,7 @@ class LoginScreen extends React.Component {
 	focusPassword = () => {
 		this.setState({
 			userColor: "rgba(255,255,255, 0.6)",
-			emailColor: "rgba(255,255,255, 0.6)",
+			userColor: "rgba(255,255,255, 0.6)",
 			passwordColor: "#5263ff",
 		});
 	};
@@ -124,7 +178,7 @@ class LoginScreen extends React.Component {
 	tapBackground = () => {
 		Keyboard.dismiss();
 		this.setState({
-			emailColor: "rgba(255,255,255, 0.6)",
+			userColor: "rgba(255,255,255, 0.6)",
 			passwordColor: "rgba(255,255,255, 0.6)",
 		});
 	};
@@ -152,11 +206,10 @@ class LoginScreen extends React.Component {
 					<Caption>Start your trip.</Caption>
 
 					<TextField
-						onChangeText={email => this.setState({ email })}
+						onChangeText={user => this.setState({ user })}
 						placeholder="User Name"
 						placeholderTextColor="rgba(255,255,255,0.5)"
-						keyboardType="email-address"
-						onFocus={this.focusEmail}
+						onFocus={this.focusUser}
 					/>
 					<TextField
 						onChangeText={password => this.setState({ password })}
@@ -166,9 +219,9 @@ class LoginScreen extends React.Component {
 						onFocus={this.focusPassword}
 					/>
 					<Ionicon
-						name="mail"
+						name="person"
 						size={24}
-						color={this.state.emailColor}
+						color={this.state.userColor}
 						style={{
 							position: "absolute",
 							top: 128,
@@ -369,7 +422,7 @@ const Caption = styled.Text`
 	margin-top: 16px;
 `;
 
-const IconEmail = styled.Image`
+const Iconuser = styled.Image`
 	width: 24px;
 	height: 16px;
 	position: absolute;
