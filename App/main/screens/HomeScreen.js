@@ -164,7 +164,9 @@ class HomeScreen extends React.Component {
 								<TouchableOpacity onPress={this.handleAvatar} style={{ position: "absolute", top: 0, left: 20 }}>
 									<Avatar />
 								</TouchableOpacity>
-								<Title>Welcome back,</Title>
+								{this.props.name == "Guest" && <Title>Welcome,</Title>}
+								{this.props.name != "Guest" && <Title>Welcome back,</Title>}
+
 								<Name>{this.props.name}</Name>
 								<DiscoverView>
 									<TouchableOpacity
@@ -206,45 +208,47 @@ class HomeScreen extends React.Component {
 									</TouchableOpacity>
 								))}
 							</ScrollView>
-							<Subtitle>Recent Places</Subtitle>
-							<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-								<Query query={CardsQuery}>
-									{({ loading, error, data }) => {
-										if (loading) return <Message>Loading...</Message>;
-										if (error) return <Message>Error...</Message>;
+							{this.props.name != "Guest" && <Subtitle>Favorite Places</Subtitle>}
+							{this.props.name != "Guest" && (
+								<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
+									<Query query={CardsQuery}>
+										{({ loading, error, data }) => {
+											if (loading) return <Message>Loading...</Message>;
+											if (error) return <Message>Error...</Message>;
 
-										var items = data.cardsCollection.items;
-										var length = items.length;
-										// console.log(items);
-										var recentItems = items.slice(length - 3, length);
+											var items = data.cardsCollection.items;
+											var length = items.length;
+											// console.log(items);
+											var recentItems = items.slice(length - 3, length);
 
-										return (
-											<CardsContainer>
-												{recentItems.map((card, index) => (
-													<TouchableOpacity
-														key={index}
-														onPress={() => {
-															this.props.navigation.push("Section", {
-																// passing information to new screen
-																section: card,
-															});
-														}}
-													>
-														<Card
-															title={card.title}
-															image={card.image}
-															caption={card.caption}
-															logo={card.logo}
-															type={card.type}
-															content={card.content}
-														></Card>
-													</TouchableOpacity>
-												))}
-											</CardsContainer>
-										);
-									}}
-								</Query>
-							</ScrollView>
+											return (
+												<CardsContainer>
+													{recentItems.map((card, index) => (
+														<TouchableOpacity
+															key={index}
+															onPress={() => {
+																this.props.navigation.push("Section", {
+																	// passing information to new screen
+																	section: card,
+																});
+															}}
+														>
+															<Card
+																title={card.title}
+																image={card.image}
+																caption={card.caption}
+																logo={card.logo}
+																type={card.type}
+																content={card.content}
+															></Card>
+														</TouchableOpacity>
+													))}
+												</CardsContainer>
+											);
+										}}
+									</Query>
+								</ScrollView>
+							)}
 							<Subtitle>Recommended Places</Subtitle>
 
 							<Query query={CardsQuery}>

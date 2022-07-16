@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from "react-native";
+import { Dimensions, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Alert } from "react-native";
 import { BlurView } from "@react-native-community/blur";
 import LottieView from "lottie-react-native";
 import { Divider } from "@rneui/base";
@@ -8,6 +8,8 @@ import Ionicon from "react-native-vector-icons/Ionicons";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
+
+const server = "http://39.108.191.242:10089/users/signup";
 
 class SignupScreen extends React.Component {
 	state = {
@@ -17,6 +19,7 @@ class SignupScreen extends React.Component {
 		password: "",
 		userColor: "rgba(255,255,255, 0.6)",
 		emailColor: "rgba(255,255,255, 0.6)",
+		phoneColor: "rgba(255,255,255, 0.6)",
 		passwordColor: "rgba(255,255,255, 0.6)",
 	};
 
@@ -24,6 +27,7 @@ class SignupScreen extends React.Component {
 		this.setState({
 			userColor: "#5263ff",
 			emailColor: "rgba(255,255,255, 0.6)",
+			phoneColor: "rgba(255,255,255, 0.6)",
 			passwordColor: "rgba(255,255,255, 0.6)",
 		});
 	};
@@ -32,6 +36,16 @@ class SignupScreen extends React.Component {
 		this.setState({
 			userColor: "rgba(255,255,255, 0.6)",
 			emailColor: "#5263ff",
+			phoneColor: "rgba(255,255,255, 0.6)",
+			passwordColor: "rgba(255,255,255, 0.6)",
+		});
+	};
+
+	focusPhone = () => {
+		this.setState({
+			userColor: "rgba(255,255,255, 0.6)",
+			emailColor: "rgba(255,255,255, 0.6)",
+			phoneColor: "#5263ff",
 			passwordColor: "rgba(255,255,255, 0.6)",
 		});
 	};
@@ -40,6 +54,7 @@ class SignupScreen extends React.Component {
 		this.setState({
 			userColor: "rgba(255,255,255, 0.6)",
 			emailColor: "rgba(255,255,255, 0.6)",
+			phoneColor: "rgba(255,255,255, 0.6)",
 			passwordColor: "#5263ff",
 		});
 	};
@@ -51,6 +66,45 @@ class SignupScreen extends React.Component {
 			emailColor: "rgba(255,255,255, 0.6)",
 			passwordColor: "rgba(255,255,255, 0.6)",
 		});
+	};
+
+	handleSignup = () => {
+		this.tapBackground();
+		userState = {
+			username: this.state.user,
+			password: this.state.password,
+			phone: this.state.phone,
+			email: this.state.email,
+		};
+		fetch(server, {
+			body: JSON.stringify(userState), // must match 'Content-Type' header
+			headers: { "Content-Type": "application/json" },
+			cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+			method: "POST", // *GET, POST, PUT, DELETE, etc.
+		})
+			.then(response => {
+				response
+					.json()
+					.then(data => {
+						if (data.code == "0000") {
+							// login success
+							Alert.alert("Success", "Please sign in to continue.");
+							console.log("sign up success", data);
+						} else {
+							Alert.alert("Sign Up Failed", data.msg);
+							console.log("sign up failed", data);
+						}
+					})
+					.catch(data => {
+						console.log("sign up fail", data);
+
+						//login fail
+						//json 解析错误
+					});
+			})
+			.catch(error => {
+				console.log("sign up falied", error);
+			});
 	};
 
 	render() {
@@ -108,7 +162,7 @@ class SignupScreen extends React.Component {
 						placeholder="Phone"
 						placeholderTextColor="rgba(255,255,255,0.5)"
 						keyboardType="phone-pad"
-						onFocus={this.focusEmail}
+						onFocus={this.focusPhone}
 					/>
 					<TextField
 						onChangeText={password => this.setState({ password })}
@@ -140,7 +194,7 @@ class SignupScreen extends React.Component {
 					<Ionicon
 						name="call"
 						size={24}
-						color={this.state.passwordColor}
+						color={this.state.phoneColor}
 						style={{
 							position: "absolute",
 							top: 245,
@@ -157,9 +211,11 @@ class SignupScreen extends React.Component {
 							left: 32,
 						}}
 					/>
-					<Button>
-						<ButtonText>Sign up</ButtonText>
-					</Button>
+					<TouchableOpacity onPress={this.handleSignup}>
+						<Button>
+							<ButtonText>Sign up</ButtonText>
+						</Button>
+					</TouchableOpacity>
 					<Divider
 						style={{
 							marginTop: 15,
