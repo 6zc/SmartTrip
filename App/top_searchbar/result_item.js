@@ -14,8 +14,13 @@ import { getUserPosition, calDistance } from "../utils/calculator";
 
 const Item = (props) => {
   //TODO
-  const rating = Math.random() * 5;
-  const liked = Math.random() > 0.5;
+  const [rating, setRating] = useState(0);
+  const [ liked, setLiked ] = useState(false);
+
+  useEffect(()=>{
+    setRating(Math.random() * 5);
+    setLiked(Math.random() > 0.5);
+  },[])
   const [distance ,setDis] = useState(0)
 
   const { item, navigation, setShowList } = props;
