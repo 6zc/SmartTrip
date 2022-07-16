@@ -60,6 +60,11 @@ const searchBar = (props) => {
           setShowList(false);
           fadeAnim.setValue(0);
           driftAnim.setValue(700);
+          setTimeout(() => {
+            navigation.navigate("Map",{
+              itemID: dataSource[0].sys.id,
+            });
+          }, 300)
         }}
         onChangeText={(text) => filterList(text)}
         onClearPress={() => {
