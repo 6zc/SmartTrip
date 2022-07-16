@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   Alert,
 } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
@@ -14,8 +13,13 @@ import { getUserPosition, calDistance } from "../utils/calculator";
 
 const Item = (props) => {
   //TODO
-  const rating = Math.random() * 5;
-  const liked = Math.random() > 0.5;
+  const [ rate, setRate ] = useState(0);
+  const [ liked, setLiked ] = useState(false);
+
+  useEffect(()=>{
+    setRate(Math.random() * 5);
+    setLiked(Math.random() > 0.5);
+  },[])
   const [distance ,setDis] = useState(0)
 
   const { item, navigation, setShowList } = props;
@@ -31,14 +35,6 @@ const Item = (props) => {
     position.lng = res.center.longitude;
     setDis(calDistance(position, location))
   }, 100)
-  
-
-  let rateArray = new Array(5).fill(0);
-  rateArray = rateArray.map((_item, index) => {
-    if (index < Math.floor(rating)) return 1;
-    else if (index > rating) return 0;
-    else if (index + 1 > rating) return 0.5;
-  });
 
   return (
     <View style={styles.container}>
@@ -60,10 +56,9 @@ const Item = (props) => {
           <Text style={styles.title.text}>{title}</Text>
           <Text style={styles.title.type}>{type}</Text>
         </View>
-        <View style={styles.starWrapper}>
-          {rateArray.map((item, index) => (
-            <Rating rate={item} key={index} />
-          ))}
+        <View style={styles.rateWrapper}>
+          <Text style={styles.rateType}>{'Overall Rating:'}</Text>
+          <Rating width={110} rate={rate} rateAble={false} />
         </View>
       </View>
       <View style={styles.backOpacity}></View>
@@ -99,6 +94,11 @@ const Item = (props) => {
 };
 
 const styles = StyleSheet.create({
+  rateWrapper: {
+    flexDirection:'column',
+    bottom: 10,
+    left: 10,
+  },
   distanceWrapper: {
     position: "absolute",
     flexDirection: 'row',
@@ -118,13 +118,12 @@ const styles = StyleSheet.create({
       color: "#4c4c4c",
     },
   },
-  starWrapper: {
-    zIndex: 2,
-    height: 30,
-    width: 110,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    left: 10,
+  rateType:{
+    fontSize: 12,
+    fontWeight: "bold",
+    lineHeight: 25,
+    color: "#cecece",
+    left: -1
   },
   backOpacity: {
     position: "absolute",
@@ -185,20 +184,10 @@ const styles = StyleSheet.create({
       top: 5,
       color: "#cecece",
     },
-    distance: {
-      fontSize: 12,
-      fontWeight: "bold",
-      lineHeight: 22,
-      width: 150,
-      left: 9,
-      // top: 5,
-      color: "#cecece",
-    },
   },
   container: {
     marginTop: 15,
     overflow: "hidden",
-    // backgroundColor: '#ffffff',
     height: 150,
     width: 320,
     marginBottom: 15,
