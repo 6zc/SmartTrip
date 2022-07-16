@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
+  Alert
 } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from "../utils/linking";
@@ -13,16 +14,26 @@ import { Svg, Image as ImageSvg } from "react-native-svg";
 import { BlurView } from "@react-native-community/blur";
 
 const PlaceView = (props) => {
-  const { card, coordinate, navigation } = props
+  const { card, coordinate, navigation } = props;
   const { title, type, image } = card;
-  //TODO
-  const temp = (Math.random()*40).toFixed(0)
+  const [ height, setHeight ] = useState(350);
+  const [ liked, setLiked ] = useState(false);
+
+  const temp = (Math.random()*40).toFixed(0);
   const rain = Math.random()*20;
-  const uv = Math.random()*12
+  const uv = Math.random()*12;
+  
+  //TODO
+  const handleLike = () => {
+    setLiked(!liked);
+    // fetch .......
+  }
 
   const weather = getWeatherDesc(uv, rain);
   return (
-    <View style={styles.container}>
+    <View 
+    onLayout={(e)=>{setHeight(e.nativeEvent.layout.height)}}
+    style={styles.container}>
       <View style={styles.bubble}>
         <View style={styles.group}>
           <View style={styles.group.weatherWrapper}>
@@ -75,12 +86,27 @@ const PlaceView = (props) => {
           />
         </View>
         <Text style={styles.title}>{title} </Text>
+        <TouchableOpacity
+          style={[styles.heart,{top:(height-290)/2+268}]}
+          onPressOut={()=>handleLike()}
+        >
+          {liked ? (
+            <Ionicon name="heart" size={40} color="#ff4040" />
+          ) : (
+            <Ionicon name="heart-outline" size={40} color="#4c4c4c" />
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  heart: {
+    position: "absolute",
+    right:10,
+    zIndex: 4,
+  },
   blur:{
     position: "absolute",
     top: 0,

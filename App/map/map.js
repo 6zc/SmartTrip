@@ -11,6 +11,7 @@ import MapView, { Marker, Callout } from "react-native-maps";
 import { getUserPosition, getCamera } from "../utils/calculator.js"
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { BlurView } from "@react-native-community/blur";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
 
@@ -22,14 +23,12 @@ const { width, height } = Dimensions.get("window");
 const Map = (props) => {
   const { navigation, itemList } = props;
   const itemID = navigation.state?.params?.itemID;
-  const ASPECT_RATIO = width / height;
-  const LATITUDE_DELTA = 0.2;
-  const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 	const [areaTemp, setAreaTemp] = useState([]);
 	const [humidity, setHumidity] = useState([]);
 	const [uvindex, setUvindex] = useState([]);
-  // 
-
+  // const ASPECT_RATIO = width / height;
+  // const LATITUDE_DELTA = 0.2;
+  // const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
   // const region = {
   //   latitude: 22.2745,
   //   longitude: 114.1533,
@@ -44,6 +43,17 @@ const Map = (props) => {
         refs[itemID].showCallout();
       }, 400)
     }
+
+    AsyncStorage.getItem("state").then(serializedState => {
+			const state = JSON.parse(serializedState);
+			console.log(state);
+
+			// if (state) {
+			// 	this.props.updateName(state.name);
+			// 	this.props.updateAvatar(state.avatar);
+			// }
+		});
+
   })
   useEffect(() => {
 		async function fetchData() {
