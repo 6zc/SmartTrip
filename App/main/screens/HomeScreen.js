@@ -15,6 +15,8 @@ import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import ModalLogin from "../components/ModalLogin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Favorites from "../components/Favorites";
+import Recommended from "../components/Recommanded";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -208,101 +210,10 @@ class HomeScreen extends React.Component {
 									</TouchableOpacity>
 								))}
 							</ScrollView>
-							{this.props.name != "Guest" && <Subtitle>Favorite Places</Subtitle>}
-							{this.props.name != "Guest" && (
-								<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-									<Query query={CardsQuery}>
-										{({ loading, error, data }) => {
-											if (loading) return <Message>Loading...</Message>;
-											if (error) return <Message>Error...</Message>;
 
-											var items = data.cardsCollection.items;
-											var length = items.length;
-											// console.log(items);
-											var recentItems = items.slice(length - 3, length);
+							<Favorites navigation={this.props.navigation} />
 
-											return (
-												<CardsContainer>
-													{recentItems.map((card, index) => (
-														<TouchableOpacity
-															key={index}
-															onPress={() => {
-																this.props.navigation.push("Section", {
-																	// passing information to new screen
-																	section: card,
-																});
-															}}
-														>
-															<Card
-																title={card.title}
-																image={card.image}
-																caption={card.caption}
-																logo={card.logo}
-																type={card.type}
-																content={card.content}
-															></Card>
-														</TouchableOpacity>
-													))}
-												</CardsContainer>
-											);
-										}}
-									</Query>
-								</ScrollView>
-							)}
-							<Subtitle>Recommended Places</Subtitle>
-
-							<Query query={CardsQuery}>
-								{({ loading, error, data }) => {
-									if (loading) return <Message>Loading...</Message>;
-									if (error) return <Message>Error...</Message>;
-
-									var items = data.cardsCollection.items;
-									var length = items.length;
-									// console.log(items);
-									var recomItems = items.slice(length - 7, length - 3);
-
-									return (
-										<PlacesContainer>
-											{recomItems.map((card, index) => (
-												<TouchableOpacity
-													key={index}
-													onPress={() => {
-														this.props.navigation.push("Section", {
-															// passing information to new screen
-															section: card,
-														});
-													}}
-												>
-													<Place
-														title={card.title}
-														image={card.image}
-														distance="0.5km"
-														caption={card.caption}
-														logo={card.logo}
-														type={card.type}
-														content={card.content}
-													></Place>
-												</TouchableOpacity>
-											))}
-										</PlacesContainer>
-									);
-								}}
-							</Query>
-
-							{/* <PlacesContainer>
-								{places.map((place, index) => (
-									<Place
-										key={index}
-										image={place.image}
-										title={place.title}
-										distance={place.distance}
-										logo={place.logo}
-										type={place.type}
-										avatar={place.avatar}
-										caption={place.caption}
-									/>
-								))}
-							</PlacesContainer> */}
+							<Recommended navigation={this.props.navigation} />
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
@@ -320,36 +231,9 @@ const DiscoverView = styled.View`
 	right: 20px;
 `;
 
-const PlacesContainer = styled.View`
-	flex-direction: row;
-	flex-wrap: wrap;
-	padding-left: 10px;
-`;
-
-const Message = styled.Text`
-	margin: 20px;
-	color: #b8bece;
-	font-size: 15px;
-	font-weight: 500;
-`;
-
-const CardsContainer = styled.View`
-	flex-direction: row;
-	padding-left: 10px;
-`;
-
 const RootView = styled.View`
 	background: black;
 	flex: 1;
-`;
-
-const Subtitle = styled.Text`
-	color: #b8bece;
-	font-weight: 600;
-	font-size: 15px;
-	margin-left: 20px;
-	margin-top: 20px;
-	text-transform: uppercase;
 `;
 
 const Container = styled.View`
