@@ -11,7 +11,6 @@ import MapView, { Marker, Callout } from "react-native-maps";
 import { getUserPosition, getCamera } from "../utils/calculator.js"
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { BlurView } from "@react-native-community/blur";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
 
@@ -20,12 +19,19 @@ const iOS = Platform.OS === 'ios';
 
 const { width, height } = Dimensions.get("window");
 
-const Map = (props) => {
-  const { navigation, itemList } = props;
+const Map = props => {
+  const {
+    toggleUpdate,
+    navigation,
+    itemList,
+    collection
+  } = props;
+
   const itemID = navigation.state?.params?.itemID;
 	const [areaTemp, setAreaTemp] = useState([]);
 	const [humidity, setHumidity] = useState([]);
 	const [uvindex, setUvindex] = useState([]);
+
   // const ASPECT_RATIO = width / height;
   // const LATITUDE_DELTA = 0.2;
   // const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -35,6 +41,7 @@ const Map = (props) => {
   //   latitudeDelta: LATITUDE_DELTA,
   //   longitudeDelta: LONGITUDE_DELTA,
   // };
+
   useEffect(()=>{
     if(refs[itemID]){
       refs['map'].animateCamera(getCamera(
@@ -43,20 +50,10 @@ const Map = (props) => {
         refs[itemID].showCallout();
       }, 400)
     }
+  }, [itemID]);
 
-    AsyncStorage.getItem("state").then(serializedState => {
-			const state = JSON.parse(serializedState);
-			console.log(state);
-
-			// if (state) {
-			// 	this.props.updateName(state.name);
-			// 	this.props.updateAvatar(state.avatar);
-			// }
-		});
-
-  })
   useEffect(() => {
-		async function fetchData() {
+		async function fetchWeatherData() {
 			try {
 				let response = await fetch("http://39.108.191.242:10089/api/homepage", { method: "GET" });
 				let responseJson = await response.json();
@@ -70,11 +67,13 @@ const Map = (props) => {
 				console.error(error);
 			}
 		}
-		fetchData();
+		fetchWeatherData();
+
     const Camera = getUserPosition();
     setTimeout(() => {
       refs['map'].animateCamera(Camera, { duration: 1000 })
     }, 300)
+
 	}, []);
 
   return (
@@ -133,12 +132,16 @@ const Map = (props) => {
                 <BlurView style={styles.blur} blurType="xlight" />
                 <PlaceView
                   // weather={areaTemp}
+                  toggleUpdate={toggleUpdate}
                   navigation={navigation}
                   card={card}
                   coordinate={{
                     longitude: card.location.lon,
                     latitude: card.location.lat,
                   }}
+                  liked={collection.some( value => {
+                    return value.collectId == card.sys.id
+                  })}
                 />
               </View>
             </Callout>
