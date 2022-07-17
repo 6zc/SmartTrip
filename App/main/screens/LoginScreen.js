@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const server = "http://139.155.252.3:10089/login";
+const server = "http://39.108.191.242:10089/login";
 
 function mapStateToProps(state) {
 	return { action: state.action };
@@ -80,7 +80,7 @@ class LoginScreen extends React.Component {
 		})
 			.then(response => {
 				// console.log("response message: ");
-				// console.log(response.text());
+				// console.log(response);
 				response
 					.json()
 					.then(data => {
@@ -88,7 +88,10 @@ class LoginScreen extends React.Component {
 						console.log("login success");
 						// save name and avatar
 						const name = user;
-						saveState({ name });
+						saveState({ 
+							name,
+							token: data.Authorization
+						});
 						this.props.updateName(name);
 						// animation
 						setTimeout(() => {

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React from "react";
 import "react-native-gesture-handler";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -12,51 +11,14 @@ import LoginScreen from "./main/screens/LoginScreen";
 import HomeScreen from "./main/screens/HomeScreen";
 import SectionScreen from "./main/screens/SectionScreen";
 
-import Oops from "./map/oops";
-import DynamicSearchBar from "./top_searchbar/dynamic_search_bar";
-import MapWrapper from "./map/map";
+import MapEntry from "./map/map_entry";
 
 import LoginPage from "./Personal/main";
 
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
 import { createAppContainer } from "react-navigation";
 
 const activeColor = "#4775f2";
 const inactiveColor = "#b8bece";
-
-const CardsQuery = gql`
-	{
-		cardsCollection {
-			items {
-				sys {
-					id
-				}
-				district
-				title
-				type
-				image {
-					size
-					url
-					width
-					height
-				}
-				location {
-					lat
-					lon
-				}
-				caption
-				logo {
-					size
-					url
-					width
-					height
-				}
-				content
-			}
-		}
-	}
-`;
 
 const HomeStack = createStackNavigator(
 	{
@@ -85,25 +47,10 @@ HomeStack.navigationOptions = ({ navigation }) => {
 
 const MapPage = ({ route, navigation }) => {
 	return (
-		<Query query={CardsQuery}>
-			{({ loading, error, data }) => {
-				if (loading || error) return <Oops loading={loading}></Oops>;
-				return (
-					<View>
-						<DynamicSearchBar
-							route={route}
-							navigation={navigation}
-							itemList={data.cardsCollection.items}
-						/>
-						<MapWrapper
-							route={route}
-							navigation={navigation}
-							itemList={data.cardsCollection.items}
-						/>
-					</View>
-				);
-			}}
-		</Query>
+		<MapEntry
+			route={route}
+			navigation={navigation}
+		/>
 	);
 };
 

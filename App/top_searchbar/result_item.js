@@ -10,15 +10,19 @@ import Ionicon from "react-native-vector-icons/Ionicons";
 import Rating from "./rating";
 import { Svg, Image as ImageSvg } from "react-native-svg";
 import { getUserPosition, calDistance } from "../utils/calculator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Item = (props) => {
   //TODO
+  const {
+    toggleUpdate,
+    liked = false
+  } = props;
   const [ rate, setRate ] = useState(0);
-  const [ liked, setLiked ] = useState(false);
+  const [ displayLiked, setLiked ] = useState(liked);
 
   useEffect(()=>{
     setRate(Math.random() * 5);
-    setLiked(Math.random() > 0.5);
   },[])
   const [distance ,setDis] = useState(0)
 
@@ -35,6 +39,31 @@ const Item = (props) => {
     position.lng = res.center.longitude;
     setDis(calDistance(position, location))
   }, 100)
+
+  const handleLike = id => {
+    AsyncStorage.getItem("state").then(serializedState => {
+			const state = JSON.parse(serializedState);
+			if (state && state.token) {
+        const { token } = state;
+        fetch(`http://39.108.191.242:10089/collect/${id}`, { 
+          method: liked ? "PUT":"POST",
+          headers: {
+            Authorization: token
+          },
+          redirect: "follow",
+          cache: "no-cache"
+        }).then(response => {
+          if(response.status=== 200){
+            Alert.alert("Success!")
+            toggleUpdate(Math.random())
+            setLiked(!displayLiked);
+          }else{
+            Alert.alert("Something went wrong. Try again later :(")
+          }
+        }).catch(error => console.log(error))
+			}
+		}).catch(error => console.log(error));
+  }
 
   return (
     <View style={styles.container}>
@@ -81,9 +110,9 @@ const Item = (props) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.heart}
-        onPress={() => Alert.alert("Added to Favorite")}
+        onPress={() => handleLike(item.sys.id)}
       >
-        {liked ? (
+        {displayLiked ? (
           <Ionicon name="heart" size={40} color="#ff4040" />
         ) : (
           <Ionicon name="heart-outline" size={40} color="#ffffff" />
