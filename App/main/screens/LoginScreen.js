@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const server = "http://139.155.252.3:10089/login";
+const server = "http://39.108.191.242:10089/login";
 
 function mapStateToProps(state) {
 	return { action: state.action };

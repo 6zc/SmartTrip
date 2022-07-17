@@ -45,11 +45,13 @@ class Avatar extends React.Component {
 	loadState = () => {
 		AsyncStorage.getItem("state").then(serializedState => {
 			const state = JSON.parse(serializedState);
-			console.log(state);
 
 			if (state) {
+				console.log(state);
 				this.props.updateName(state.name);
 				this.props.updateAvatar(state.avatar);
+			} else {
+				console.log("avatar: not logged in");
 			}
 		});
 	};
