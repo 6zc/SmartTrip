@@ -12,21 +12,50 @@ import Logo from "../utils/logo.js";
 import { Cal, getWeatherDesc } from "../utils/calculator";
 import { Svg, Image as ImageSvg } from "react-native-svg";
 import { BlurView } from "@react-native-community/blur";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PlaceView = (props) => {
-  const { card, coordinate, navigation } = props;
-  const { title, type, image } = card;
+  const {
+    card,
+    coordinate,
+    navigation,
+    toggleUpdate,
+    liked = false
+  } = props;
+  const { title, type, image, sys } = card;
   const [ height, setHeight ] = useState(350);
-  const [ liked, setLiked ] = useState(false);
-
+  const [ displayLiked, setLiked ] = useState(liked);
   const temp = (Math.random()*40).toFixed(0);
   const rain = Math.random()*20;
   const uv = Math.random()*12;
-  
-  //TODO
-  const handleLike = () => {
-    setLiked(!liked);
-    // fetch .......
+
+  useEffect(() => {
+    setLiked(liked)
+  },[liked])
+
+  const handleLike = id => {
+    AsyncStorage.getItem("state").then(serializedState => {
+			const state = JSON.parse(serializedState);
+			if (state && state.token) {
+        const { token } = state;
+        fetch(`http://39.108.191.242:10089/collect/${id}`, { 
+          method: liked ? "PUT":"POST",
+          headers: {
+            Authorization: token
+          },
+          redirect: "follow",
+          cache: "no-cache"
+        }).then(response => {
+          if(response.status=== 200){
+            Alert.alert("Success!")
+            toggleUpdate(Math.random())
+            setLiked(!displayLiked);
+          }else{
+            Alert.alert("Something went wrong. Try again later :(")
+          }
+        }).catch(error => console.log(error))
+			}
+		}).catch(error => console.log(error));
   }
 
   const weather = getWeatherDesc(uv, rain);
@@ -88,9 +117,9 @@ const PlaceView = (props) => {
         <Text style={styles.title}>{title} </Text>
         <TouchableOpacity
           style={[styles.heart,{top:(height-290)/2+268}]}
-          onPressOut={()=>handleLike()}
+          onPressOut={()=>handleLike(sys.id)}
         >
-          {liked ? (
+          {displayLiked ? (
             <Ionicon name="heart" size={40} color="#ff4040" />
           ) : (
             <Ionicon name="heart-outline" size={40} color="#4c4c4c" />

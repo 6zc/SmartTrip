@@ -5,7 +5,12 @@ import { BlurView } from "@react-native-community/blur";
 import ResultItem from "./result_item";
 
 const searchBar = (props) => {
-  const { itemList, navigation } = props;
+  const {
+    itemList,
+    navigation,
+    collection,
+    toggleUpdate
+  } = props;
   const dataBackup = itemList;
   const [queryText, setQueryText] = useState("");
   const [dataSource, setDataSource] = useState(itemList);
@@ -28,14 +33,21 @@ const searchBar = (props) => {
   ]);
 
   const filterList = (text) => {
-    var newData = dataBackup;
-    newData = dataBackup.filter((item) => {
-      const itemData = item.title.toLowerCase().split(" ").join("");
-      const typeData = item.type.toLowerCase().split(" ").join("");
-      const textData = text.toLowerCase().split(" ").join("");
-      return itemData.includes(textData) || typeData.includes(textData);
-    });
-    setDataSource(newData);
+    // let newData = dataBackup;
+    const textData = text.toLowerCase().split(" ").join("");
+    if(textData==='liked'){
+      setDataSource(dataBackup.filter((item) => {
+        return collection.some( value => {
+          return value.collectId == item.sys.id
+        })
+      }))
+    }else{
+      setDataSource(dataBackup.filter((item) => {
+        const itemData = item.title.toLowerCase().split(" ").join("");
+        const typeData = item.type.toLowerCase().split(" ").join("");
+        return itemData.includes(textData) || typeData.includes(textData);
+      }))
+    }
     setQueryText(text);
   };
 
@@ -50,7 +62,7 @@ const searchBar = (props) => {
         iconColor="#c6c6c6"
         shadowColor="#282828"
         cancelIconColor="#c6c6c6"
-        placeholder={ queryText || "Search here" }
+        placeholder={ queryText || "Find a place" }
         darkMode={ showList ? true : false }
         onFocus={() => {
           setShowList(true);
@@ -60,11 +72,11 @@ const searchBar = (props) => {
           setShowList(false);
           fadeAnim.setValue(0);
           driftAnim.setValue(700);
-          setTimeout(() => {
-            navigation.navigate("Map",{
-              itemID: dataSource[0].sys.id,
-            });
-          }, 300)
+          // setTimeout(() => {
+          //   navigation.navigate("Map",{
+          //     itemID: dataSource[0].sys.id,
+          //   });
+          // }, 300)
         }}
         onChangeText={(text) => filterList(text)}
         onClearPress={() => {
@@ -99,10 +111,14 @@ const searchBar = (props) => {
             renderItem={(item) => {
               return (
                 <View style={styles.result_item}>
-                  <ResultItem 
+                  <ResultItem
+                    toggleUpdate={toggleUpdate}
                     item={item.item}
                     navigation={navigation}
                     setShowList={setShowList}
+                    liked={collection.some( value => {
+                      return value.collectId == item.item.sys.id
+                    })}
                   />
                 </View>
               );

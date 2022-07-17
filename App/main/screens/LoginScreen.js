@@ -80,7 +80,7 @@ class LoginScreen extends React.Component {
 		})
 			.then(response => {
 				// console.log("response message: ");
-				// console.log(response.text());
+				// console.log(response);
 				response
 					.json()
 					.then(data => {
@@ -88,7 +88,10 @@ class LoginScreen extends React.Component {
 						console.log("login success");
 						// save name and avatar
 						const name = user;
-						saveState({ name });
+						saveState({ 
+							name,
+							token: data.Authorization
+						});
 						this.props.updateName(name);
 						// animation
 						setTimeout(() => {
