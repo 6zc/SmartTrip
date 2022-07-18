@@ -4,7 +4,7 @@ import SearchBar from "react-native-dynamic-search-bar";
 import { BlurView } from "@react-native-community/blur";
 import ResultItem from "./result_item";
 
-const searchBar = (props) => {
+const searchBar = props => {
   const {
     itemList,
     navigation,
@@ -33,7 +33,6 @@ const searchBar = (props) => {
   ]);
 
   const filterList = (text) => {
-    // let newData = dataBackup;
     const textData = text.toLowerCase().split(" ").join("");
     if(textData==='liked'){
       setDataSource(dataBackup.filter((item) => {
@@ -64,6 +63,7 @@ const searchBar = (props) => {
         cancelIconColor="#c6c6c6"
         placeholder={ queryText || "Find a place" }
         darkMode={ showList ? true : false }
+        // spinnerVisibility={true}
         onFocus={() => {
           setShowList(true);
           parallelAni.start();

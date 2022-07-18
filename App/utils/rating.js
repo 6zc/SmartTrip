@@ -1,6 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import AIcon from "react-native-vector-icons/AntDesign";
+import FontAwesome from "react-native-vector-icons/FontAwesome5";
 
 /**
  * @param {int} rate 具体评分数值
@@ -10,7 +10,8 @@ import AIcon from "react-native-vector-icons/AntDesign";
  */
 const Rating = (props) => {
   const { rate, width:fullwidth, style, rateAble } = props;
-  const face = rate < 2 ? "frown" : (rate < 4 ? 'meho' : 'smile-circle');
+  const faceArray = ['frown', 'meh','smile', 'grin','grin-beam', 'grin-hearts']
+  const face = faceArray[Math.floor(rate)]
 
   const faceWidth = (fullwidth/5)*0.8
   let rateArray = new Array(5).fill(0);
@@ -35,7 +36,8 @@ const Rating = (props) => {
         <TouchableOpacity
           onPressOut={(e)=>handleRating(_i,e)}
         >
-          <AIcon 
+          <FontAwesome
+            solid
             key={_i}
             name={face}
             size={faceWidth}
@@ -43,7 +45,8 @@ const Rating = (props) => {
           />
         </TouchableOpacity>
         :
-        <AIcon 
+        <FontAwesome
+          solid
           key={_i}
           name={face}
           size={faceWidth}

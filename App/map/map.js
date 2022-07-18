@@ -10,6 +10,7 @@ import {
 import MapView, { Marker, Callout } from "react-native-maps";
 import { getUserPosition, getCamera } from "../utils/calculator.js"
 import Ionicon from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import { BlurView } from "@react-native-community/blur";
 import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
@@ -88,7 +89,12 @@ const Map = props => {
         }}
         >
           <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
-          <Logo height={30} width={30} type={'Userlocation'} />
+          <FontAwesome
+              name={'compass'}
+              size={24}
+              color={"#4c4c4c"}
+              style={styles.goBack.logo}
+            ></FontAwesome>
         </TouchableOpacity>
       <MapView
         stopPropagation={true}
@@ -177,9 +183,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -1,
     left: -1,
-    height: '110%',
-    width: '110%',
-    zIndex:-1
+    height: '103%',
+    width: '103%',
+    zIndex:-1,
+    borderRadius: 8,
+
   },
   goBack: {
     height: 30,
@@ -193,7 +201,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "#000000",
     shadowOpacity: 0.25,
-    overflow: "hidden",
+    // overflow: "hidden",
+    logo:{ 
+      top:2.5,
+      left:3
+    },
   },
   callout: {
     width: 290,

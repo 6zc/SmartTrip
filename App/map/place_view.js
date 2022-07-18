@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
-  Alert
 } from "react-native";
-import Ionicon from "react-native-vector-icons/Ionicons";
 import Linking from "../utils/linking";
 import Logo from "../utils/logo.js";
-import { Cal, getWeatherDesc } from "../utils/calculator";
+import Collection from "../utils/collection";
+import { getWeatherDesc, getCovidDesc } from "../utils/calculator";
 import { Svg, Image as ImageSvg } from "react-native-svg";
 import { BlurView } from "@react-native-community/blur";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import FontAwesome from "react-native-vector-icons/FontAwesome5";
 
-const PlaceView = (props) => {
+const PlaceView = props => {
   const {
     card,
     coordinate,
@@ -24,54 +23,40 @@ const PlaceView = (props) => {
   } = props;
   const { title, type, image, sys } = card;
   const [ height, setHeight ] = useState(350);
-  const [ displayLiked, setLiked ] = useState(liked);
+
+  //TODO
+  const cases = (Math.random()*1000).toFixed(0);
   const temp = (Math.random()*40).toFixed(0);
   const rain = Math.random()*20;
   const uv = Math.random()*12;
 
-  useEffect(() => {
-    setLiked(liked)
-  },[liked])
-
-  const handleLike = id => {
-    AsyncStorage.getItem("state").then(serializedState => {
-			const state = JSON.parse(serializedState);
-			if (state && state.token) {
-        const { token } = state;
-        fetch(`http://39.108.191.242:10089/collect/${id}`, { 
-          method: liked ? "PUT":"POST",
-          headers: {
-            Authorization: token
-          },
-          redirect: "follow",
-          cache: "no-cache"
-        }).then(response => {
-          if(response.status=== 200){
-            Alert.alert("Success!")
-            toggleUpdate(Math.random())
-            setLiked(!displayLiked);
-          }else{
-            Alert.alert("Something went wrong. Try again later :(")
-          }
-        }).catch(error => console.log(error))
-			}
-		}).catch(error => console.log(error));
-  }
-
-  const weather = getWeatherDesc(uv, rain);
+  const [weather, icon] = getWeatherDesc(uv, rain);
+  const covidDesc = getCovidDesc(cases);
   return (
     <View 
     onLayout={(e)=>{setHeight(e.nativeEvent.layout.height)}}
     style={styles.container}>
       <View style={styles.bubble}>
         <View style={styles.group}>
-          <View style={styles.group.weatherWrapper}>
-            <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
-            <Text style={styles.group.weather}>{' '+weather+' '}</Text>
+          <View style={styles.group.wrapper}>
+            <FontAwesome
+              name={icon}
+              size={14}
+              color={"#ffffff"}
+              style={styles.group.weatherLogo}
+            >
+            </FontAwesome>
+            <Text style={styles.group.weather}>{'  '+weather+' '+temp+'°C '}</Text>
           </View>
-          <View style={[styles.group.tempWrapper,{backgroundColor:Cal(temp)}]}>
-            <Text 
-              style={styles.group.temp}>{' '+temp+'°C '}</Text>
+          <View style={styles.group.wrapper}>
+            <FontAwesome
+              name={'head-side-mask'}
+              size={13}
+              color={"#ececec"}
+              style={styles.group.covidLogo}
+            >
+            </FontAwesome>
+            <Text style={styles.group.covid}>{'  '+ covidDesc}</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -80,7 +65,6 @@ const PlaceView = (props) => {
             Linking.link2map(...Object.values(coordinate), title);
           }}
         >
-          
           <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
           <Text style={styles.navi.naviText}>GO!</Text>
         </TouchableOpacity>
@@ -115,16 +99,12 @@ const PlaceView = (props) => {
           />
         </View>
         <Text style={styles.title}>{title} </Text>
-        <TouchableOpacity
+        <Collection
           style={[styles.heart,{top:(height-290)/2+268}]}
-          onPressOut={()=>handleLike(sys.id)}
-        >
-          {displayLiked ? (
-            <Ionicon name="heart" size={40} color="#ff4040" />
-          ) : (
-            <Ionicon name="heart-outline" size={40} color="#4c4c4c" />
-          )}
-        </TouchableOpacity>
+          toggleUpdate={toggleUpdate}
+          sys={sys}
+          liked={liked}
+        />
       </View>
     </View>
   );
@@ -178,38 +158,40 @@ const styles = StyleSheet.create({
   group: {
     position: "absolute",
     zIndex: 5,
-    top: 10,
-    left: 10,
-    flexDirection: 'row',
+    top: 8,
+    left: 8,
     alignItem: 'center',
     justifyContent: 'center',
-    weatherWrapper: {
-      borderRadius: 8,
+    shadowRadius: 6,
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    wrapper: {
       height: 24,
-      overflow: "hidden",
+      flexDirection: 'row',
     },
     weather: {
-      color: "#6c6c6c",
+      color: "#ffffff",
       fontWeight: "bold",
       lineHeight: 24,
-      fontSize: 15,
+      fontSize: 17,
     },
-    tempWrapper: {
-      height: 24,
-      borderRadius: 8,
-      left: 8,
-      shadowRadius: 3,
-      shadowColor:'#000000',
-      shadowOpacity: 0.35,
-      shadowOffset: { width: 0, height: 1 },
-      opacity: 0.9,
+    weatherLogo: {
+      top: 6,
+      left: 3,
+      marginRight: 3,
     },
-    temp: {
+    covid: {
+      color: "#ececec",
       fontWeight: "bold",
       lineHeight: 24,
-      fontSize: 15,
-      color: "#4c4c4c",
+      fontSize: 14,
     },
+    covidLogo: {
+      top: 6,
+      left: 3,
+      marginRight: 6,
+    },
+    
   },
   navi: {
     position: "absolute",
