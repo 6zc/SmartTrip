@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 class SectionScreen extends React.Component {
 	state = {
 		username: "",
+		liked: false,
 	};
 
 	loadState = () => {
@@ -22,11 +23,34 @@ class SectionScreen extends React.Component {
 			if (savedState) {
 				console.log(savedState);
 				this.setState({ username: savedState.name });
+
+				if (savedState.token) {
+					const token = savedState.token;
+					fetch(`http://39.108.191.242:10089/collect/${id}`, {
+						method: liked ? "PUT" : "POST",
+						headers: {
+							Authorization: token,
+						},
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								Alert.alert("Success!");
+								toggleUpdate(Math.random());
+								setLiked(!displayLiked);
+							} else {
+								Alert.alert("Something went wrong. Try again later :(");
+							}
+						})
+						.catch(error => console.log(error));
+				}
 			} else {
 				console.log("section: not logged in");
 			}
 		});
 	};
+
 	// fade in status bar
 	componentDidMount() {
 		this.loadState();
@@ -65,6 +89,13 @@ class SectionScreen extends React.Component {
 							<Ionicon name="ios-close" size={32} color="#5263ff" />
 						</CloseView>
 					</TouchableOpacity>
+
+					<TouchableOpacity style={{ position: "absolute", top: 20, right: 70 }}>
+						<CloseView>
+							<Ionicon name="heart-outline" size={24} color="#5263ff" />
+						</CloseView>
+					</TouchableOpacity>
+
 					<TouchableOpacity
 						onPress={() => {
 							setTimeout(() => {

@@ -86,6 +86,11 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_AVATAR",
 				avatar,
 			}),
+		updateToken: token =>
+			dispatch({
+				type: "UPDATE_TOKEN",
+				token,
+			}),
 	};
 }
 
@@ -93,6 +98,41 @@ class HomeScreen extends React.Component {
 	state = {
 		scale: new Animated.Value(1),
 		opacity: new Animated.Value(1),
+		collection: [],
+	};
+
+	getCollection = () => {
+		var token = "";
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/collect", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								response.json().then(value => {
+									console.log("home: collect");
+									console.log(value.data);
+									var collection = [];
+									for (const element of value.data) {
+										collection.push(element.collectId);
+									}
+									this.setState({ collection: collection });
+									console.log(this.state.collection);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
 	};
 
 	componentDidMount() {
@@ -104,6 +144,10 @@ class HomeScreen extends React.Component {
 		StatusBar.setBarStyle("dark-content", true);
 
 		if (Platform.OS == "android") StatusBar.setBarStyle("light-content", true);
+
+		if (this.props.name != "Guest") {
+			this.getCollection();
+		}
 	}
 
 	componentDidUpdate() {
@@ -148,6 +192,7 @@ class HomeScreen extends React.Component {
 			Alert.alert("Logged Out", "You've logged out successfully!");
 			// log out
 			this.props.updateName("Guest");
+			this.props.updateToken("");
 			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 			AsyncStorage.clear();
 		} else {
@@ -211,7 +256,7 @@ class HomeScreen extends React.Component {
 								))}
 							</ScrollView>
 
-							<Favorites navigation={this.props.navigation} />
+							<Favorites navigation={this.props.navigation} collection={this.state.collection} />
 
 							<Recommended navigation={this.props.navigation} />
 						</ScrollView>

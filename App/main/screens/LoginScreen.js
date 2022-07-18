@@ -32,6 +32,11 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_AVATAR",
 				avatar,
 			}),
+		updateToken: token =>
+			dispatch({
+				type: "UPDATE_TOKEN",
+				token,
+			}),
 	};
 }
 
@@ -88,11 +93,13 @@ class LoginScreen extends React.Component {
 						console.log("login success");
 						// save name and avatar
 						const name = user;
-						saveState({ 
+						const token = data.Authorization;
+						saveState({
 							name,
-							token: data.Authorization
+							token,
 						});
 						this.props.updateName(name);
+						this.props.updateToken(token);
 						// animation
 						setTimeout(() => {
 							this.setState({ isLoading: false });

@@ -6,67 +6,88 @@ import Card from "./Card";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 
-const ids = ["4KThjrfS9cpzmX6PX87UPH", "12PUdEJqgJ9Jw6v0Vtv6ng", "52q2QvQ82QNgwyd3yQyj2M"];
-
 const idd = "4KThjrfS9cpzmX6PX87UPH";
 
-const CardsQuery = gql`
-	{
-		cardsCollection(where: { sys: { id_in: ["4KThjrfS9cpzmX6PX87UPH", "12PUdEJqgJ9Jw6v0Vtv6ng", "52q2QvQ82QNgwyd3yQyj2M"] } }) {
-			items {
-				sys {
-					id
-				}
-				title
-				type
-				image {
+function getCollection() {
+	// console.log(`${collection}`);
+	return gql`
+		{
+			cardsCollection {
+				items {
+					sys {
+						id
+					}
 					title
-					description
-					contentType
-					fileName
-					size
-					url
-					width
-					height
-				}
+					type
+					image {
+						title
+						description
+						contentType
+						fileName
+						size
+						url
+						width
+						height
+					}
 
-				caption
-				logo {
-					title
-					description
-					contentType
-					fileName
-					size
-					url
-					width
-					height
+					caption
+					logo {
+						title
+						description
+						contentType
+						fileName
+						size
+						url
+						width
+						height
+					}
+					content
 				}
-				content
 			}
 		}
-	}
-`;
+	`;
+}
 
 function mapStateToProps(state) {
 	return {
 		action: state.action,
 		name: state.name,
+		token: state.token,
+		// collection
+		// query写成函数，传入collection，在其他页面添加/删除收藏时更新collection
+		// 问题：section加入redux？ 不能 - 如何刷新favorites
+
+		// 两个方案：收藏单独做个页面 - 实现简单，跳到section再返回刷新可以用addlistener
+
+		// 根本问题：如何刷新收藏？？？？
 	};
 }
 
 class Favorites extends React.Component {
+	componentDidMount() {
+		// console.log(this.props.collection);
+	}
+
 	render() {
 		return (
 			<Container>
 				{this.props.name != "Guest" && <Subtitle>Favorite Places</Subtitle>}
 				{this.props.name != "Guest" && (
 					<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-						<Query query={CardsQuery}>
+						<Query query={getCollection()}>
 							{({ loading, error, data }) => {
 								if (loading) return <Message>Loading...</Message>;
 								if (error) return <Message>Error...</Message>;
+								var collection = this.props.collection;
+								var items = [];
 
-								var items = data.cardsCollection.items;
+								for (const element of data.cardsCollection.items) {
+									if (collection.includes(element.sys.id)) {
+										items.push(element);
+									}
+								}
+								console.log(items);
+
 								var length = items.length;
 								// console.log(items);
 

@@ -1,21 +1,36 @@
 import React from "react";
 import styled from "styled-components";
+import { TouchableOpacity } from "react-native";
+import Ionicon from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { render } from "react-dom";
 
-const Card = props => (
-	<Container style={{ elevation: 10 }}>
-		<Cover>
-			<Image source={props.image} />
-			<Caption>{props.caption}</Caption>
-		</Cover>
-		<Content>
-			<Logo source={props.logo} />
-			<Wrapper>
-				<Title>{props.title}</Title>
-				<Subtitle>{props.type}</Subtitle>
-			</Wrapper>
-		</Content>
-	</Container>
-);
+class Card extends React.Component {
+	state = {
+		liked: false,
+	};
+
+	render() {
+		return (
+			<Container style={{ elevation: 10 }}>
+				<Cover>
+					<Image source={this.props.image} />
+					<Caption>{this.props.caption}</Caption>
+					<TouchableOpacity style={{ position: "absolute", top: 10, right: 10 }}>
+						<Ionicon name="heart-outline" size={32} color="#f0f3f5" />
+					</TouchableOpacity>
+				</Cover>
+				<Content>
+					<Logo source={this.props.logo} />
+					<Wrapper>
+						<Title>{this.props.title}</Title>
+						<Subtitle>{this.props.type}</Subtitle>
+					</Wrapper>
+				</Content>
+			</Container>
+		);
+	}
+}
 
 export default Card;
 

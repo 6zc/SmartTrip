@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { Dimensions } from "react-native";
+import { Dimensions, TouchableOpacity } from "react-native";
 import { BlurView } from "@react-native-community/blur";
+import Ionicon from "react-native-vector-icons/Ionicons";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -51,6 +52,9 @@ class Place extends React.Component {
 						<Logo source={this.props.logo} resizeMode="contain" />
 						<Type>{this.props.type}</Type>
 					</Wrapper>
+					<TouchableOpacity style={{ position: "absolute", top: 10, right: 10 }}>
+						<Ionicon name="heart-outline" size={32} color="#f0f3f5" />
+					</TouchableOpacity>
 				</Cover>
 				<Content>
 					<BlurView
