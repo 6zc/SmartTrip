@@ -11,9 +11,14 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		222A46B3B022436481EF425C /* antoutline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96330DC7D5564FD885F1F9F5 /* antoutline.ttf */; };
 		4B0E36D3D3F3E334AFF1D6AB /* libPods-groupmap2-groupmap2Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 784A8C1E2E77C4A1888B9662 /* libPods-groupmap2-groupmap2Tests.a */; };
 		52E87110E8A82AE8674239E8 /* libPods-groupmap2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9712475A0F5F281696C18A7E /* libPods-groupmap2.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+<<<<<<< HEAD
+=======
+		A4E6FF4329314AC898AD83A1 /* antfill.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99FD086358CD43DDB4B6D12C /* antfill.ttf */; };
+>>>>>>> main
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,9 +62,15 @@
 		734C8BC823FCEF008BF5BD11 /* Pods-groupmap2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-groupmap2.release.xcconfig"; path = "Target Support Files/Pods-groupmap2/Pods-groupmap2.release.xcconfig"; sourceTree = "<group>"; };
 		784A8C1E2E77C4A1888B9662 /* libPods-groupmap2-groupmap2Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-groupmap2-groupmap2Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = groupmap2/LaunchScreen.storyboard; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		96330DC7D5564FD885F1F9F5 /* antoutline.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antoutline.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf"; sourceTree = "<group>"; };
 		9712475A0F5F281696C18A7E /* libPods-groupmap2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-groupmap2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		99FD086358CD43DDB4B6D12C /* antfill.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = antfill.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; };
+=======
+		96330DC7D5564FD885F1F9F5 /* antoutline.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = antoutline.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antoutline.ttf"; sourceTree = "<group>"; };
+		9712475A0F5F281696C18A7E /* libPods-groupmap2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-groupmap2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		99FD086358CD43DDB4B6D12C /* antfill.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = antfill.ttf; path = "../node_modules/@ant-design/icons-react-native/fonts/antfill.ttf"; sourceTree = "<group>"; };
+>>>>>>> main
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F4A2FDF570CDDBBA80424DCD /* Pods-groupmap2-groupmap2Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-groupmap2-groupmap2Tests.release.xcconfig"; path = "Target Support Files/Pods-groupmap2-groupmap2Tests/Pods-groupmap2-groupmap2Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */

@@ -13,8 +13,11 @@ import Avatar from "../components/Avatar";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
-import ModalLogin from "../components/ModalLogin";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import NewlyAdded from "../components/NewlyAdded";
+import Recommended from "../components/Recommanded";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -59,6 +62,7 @@ function mapStateToProps(state) {
 		action: state.action,
 		name: state.name,
 		place: state.place,
+		collection: state.collection,
 	};
 }
 
@@ -84,6 +88,16 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_AVATAR",
 				avatar,
 			}),
+		updateToken: token =>
+			dispatch({
+				type: "UPDATE_TOKEN",
+				token,
+			}),
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
 	};
 }
 
@@ -91,6 +105,8 @@ class HomeScreen extends React.Component {
 	state = {
 		scale: new Animated.Value(1),
 		opacity: new Animated.Value(1),
+
+		// toggleUpdate: 1,
 	};
 
 	componentDidMount() {
@@ -146,6 +162,8 @@ class HomeScreen extends React.Component {
 			Alert.alert("Logged Out", "You've logged out successfully!");
 			// log out
 			this.props.updateName("Guest");
+			this.props.updateToken("");
+			this.props.updateCollection([]);
 			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 			AsyncStorage.clear();
 		} else {
@@ -168,29 +186,18 @@ class HomeScreen extends React.Component {
 								{this.props.name != "Guest" && <Title>Welcome back,</Title>}
 
 								<Name>{this.props.name}</Name>
-								<DiscoverView>
-									<TouchableOpacity
-										onPress={() => {
-											this.props.navigation.push("Discover", {});
-										}}
-									>
-										<Ionicon
-											name="compass"
-											size={35}
-											color="#5263ff"
-											style={{
-												shadowColor: "#c2cbff",
-												shadowOpacity: 0.8,
-												shadowRadius: 5,
-												// iOS
-												shadowOffset: {
-													width: 0,
-													height: 1,
-												},
-											}}
-										></Ionicon>
-									</TouchableOpacity>
-								</DiscoverView>
+								<TouchableOpacity
+									onPress={() => {
+										this.props.navigation.push("Collection", {});
+									}}
+									style={{ position: "absolute", top: 5, right: 20 }}
+								>
+									<CollectionView>
+										<IconView>
+											<Ionicon name="heart" size={28} color="#5263ff"></Ionicon>
+										</IconView>
+									</CollectionView>
+								</TouchableOpacity>
 							</TitleBar>
 							<ScrollView
 								style={{ flexDirection: "row", padding: 20, paddingLeft: 12, paddingTop: 30 }}
@@ -208,105 +215,15 @@ class HomeScreen extends React.Component {
 									</TouchableOpacity>
 								))}
 							</ScrollView>
-							{this.props.name != "Guest" && <Subtitle>Favorite Places</Subtitle>}
-							{this.props.name != "Guest" && (
-								<ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-									<Query query={CardsQuery}>
-										{({ loading, error, data }) => {
-											if (loading) return <Message>Loading...</Message>;
-											if (error) return <Message>Error...</Message>;
 
-											var items = data.cardsCollection.items;
-											var length = items.length;
-											// console.log(items);
-											var recentItems = items.slice(length - 3, length);
+							{/* <ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
 
-											return (
-												<CardsContainer>
-													{recentItems.map((card, index) => (
-														<TouchableOpacity
-															key={index}
-															onPress={() => {
-																this.props.navigation.push("Section", {
-																	// passing information to new screen
-																	section: card,
-																});
-															}}
-														>
-															<Card
-																title={card.title}
-																image={card.image}
-																caption={card.caption}
-																logo={card.logo}
-																type={card.type}
-																content={card.content}
-															></Card>
-														</TouchableOpacity>
-													))}
-												</CardsContainer>
-											);
-										}}
-									</Query>
-								</ScrollView>
-							)}
-							<Subtitle>Recommended Places</Subtitle>
-
-							<Query query={CardsQuery}>
-								{({ loading, error, data }) => {
-									if (loading) return <Message>Loading...</Message>;
-									if (error) return <Message>Error...</Message>;
-
-									var items = data.cardsCollection.items;
-									var length = items.length;
-									// console.log(items);
-									var recomItems = items.slice(length - 7, length - 3);
-
-									return (
-										<PlacesContainer>
-											{recomItems.map((card, index) => (
-												<TouchableOpacity
-													key={index}
-													onPress={() => {
-														this.props.navigation.push("Section", {
-															// passing information to new screen
-															section: card,
-														});
-													}}
-												>
-													<Place
-														title={card.title}
-														image={card.image}
-														distance="0.5km"
-														caption={card.caption}
-														logo={card.logo}
-														type={card.type}
-														content={card.content}
-													></Place>
-												</TouchableOpacity>
-											))}
-										</PlacesContainer>
-									);
-								}}
-							</Query>
-
-							{/* <PlacesContainer>
-								{places.map((place, index) => (
-									<Place
-										key={index}
-										image={place.image}
-										title={place.title}
-										distance={place.distance}
-										logo={place.logo}
-										type={place.type}
-										avatar={place.avatar}
-										caption={place.caption}
-									/>
-								))}
-							</PlacesContainer> */}
+							</ScrollView> */}
+							<NewlyAdded navigation={this.props.navigation} />
+							<Recommended navigation={this.props.navigation} />
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
-				<ModalLogin navigation={this.props.navigation} />
 			</RootView>
 		);
 	}
@@ -314,42 +231,23 @@ class HomeScreen extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
-const DiscoverView = styled.View`
-	position: absolute;
-	top: 5px;
-	right: 20px;
+const IconView = styled.View`
+	margin-top: 2px;
 `;
 
-const PlacesContainer = styled.View`
-	flex-direction: row;
-	flex-wrap: wrap;
-	padding-left: 10px;
-`;
-
-const Message = styled.Text`
-	margin: 20px;
-	color: #b8bece;
-	font-size: 15px;
-	font-weight: 500;
-`;
-
-const CardsContainer = styled.View`
-	flex-direction: row;
-	padding-left: 10px;
+const CollectionView = styled.View`
+	width: 42px;
+	height: 42px;
+	background: white;
+	border-radius: 21px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+	justify-content: center;
+	align-items: center;
 `;
 
 const RootView = styled.View`
 	background: black;
 	flex: 1;
-`;
-
-const Subtitle = styled.Text`
-	color: #b8bece;
-	font-weight: 600;
-	font-size: 15px;
-	margin-left: 20px;
-	margin-top: 20px;
-	text-transform: uppercase;
 `;
 
 const Container = styled.View`
@@ -377,6 +275,11 @@ const TitleBar = styled.View`
 	width: 100%;
 	margin-top: 50px;
 	padding-left: 80px;
+`;
+
+const CardsContainer = styled.View`
+	flex-direction: row;
+	padding-left: 10px;
 `;
 
 const logos = [
