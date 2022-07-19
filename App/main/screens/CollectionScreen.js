@@ -178,7 +178,6 @@ class CollectionScreen extends React.Component {
 																logo={card.logo}
 																type={card.type}
 																content={card.content}
-																liked={true}
 															></Card>
 														</TouchableOpacity>
 													))}

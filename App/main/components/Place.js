@@ -42,7 +42,6 @@ function getPlaceWidth(screenWidth) {
 class Place extends React.Component {
 	state = {
 		cardWidth: getPlaceWidth(screenWidth),
-		liked: false,
 	};
 
 	getCollectionDB = () => {
@@ -67,9 +66,6 @@ class Place extends React.Component {
 									// console.log(value.data);
 									var collection = [];
 									for (const element of value.data) {
-										if (element.collectId == this.props.id) {
-											this.setState({ liked: true });
-										}
 										collection.push(element.collectId);
 									}
 									this.props.updateCollection(collection);
@@ -85,7 +81,7 @@ class Place extends React.Component {
 
 	handleLike = () => {
 		const id = this.props.id;
-		const liked = this.state.liked;
+		const liked = this.props.collection.includes(id);
 		AsyncStorage.getItem("state")
 			.then(serializedState => {
 				const savedState = JSON.parse(serializedState);
@@ -103,7 +99,6 @@ class Place extends React.Component {
 							if (response.status === 200) {
 								Alert.alert("Success!");
 
-								this.setState({ liked: !liked });
 								this.getCollectionDB();
 							} else {
 								Alert.alert("Something went wrong. Try again later :(");

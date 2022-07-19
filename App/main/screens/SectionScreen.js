@@ -55,9 +55,6 @@ class SectionScreen extends React.Component {
 									// console.log(value.data);
 									var collection = [];
 									for (const element of value.data) {
-										if (element.collectId == id) {
-											this.setState({ liked: true });
-										}
 										collection.push(element.collectId);
 									}
 									this.props.updateCollection(collection);
@@ -72,7 +69,7 @@ class SectionScreen extends React.Component {
 	};
 
 	handleLike = id => {
-		const liked = this.state.liked;
+		const liked = this.props.collection.includes(id);
 		AsyncStorage.getItem("state")
 			.then(serializedState => {
 				const savedState = JSON.parse(serializedState);
@@ -90,7 +87,6 @@ class SectionScreen extends React.Component {
 							if (response.status === 200) {
 								// Alert.alert("Success!");
 
-								this.setState({ liked: !liked });
 								this.getCollectionDB(id);
 							} else {
 								// Alert.alert("Something went wrong. Try again later :(");
