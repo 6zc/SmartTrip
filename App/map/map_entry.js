@@ -6,6 +6,25 @@ import MapWrapper from "./map";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { connect } from "react-redux";
+
+function mapStateToProps(state) {
+	return {
+		action: state.action,
+		username: state.name,
+		collection: state.collection,
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
+	};
+}
 
 const CardsQuery = gql`
 	{
@@ -41,11 +60,9 @@ const CardsQuery = gql`
 `;
 
 const MapEntry = props => {
-  const { route, navigation } = props;
+	const { route, navigation, collection, updateCollection} = props;
   const [ token, setToken] = useState('');
-  const [ collection, setCollection ] = useState([]);
   const [ needUpdate, toggleUpdate ] = useState(1);
-
   AsyncStorage.getItem("state").then(serializedState => {
     const state = JSON.parse(serializedState);
     if (state && state.token) {
@@ -61,10 +78,11 @@ const MapEntry = props => {
       redirect: "follow",
       cache: "no-cache"
     }).then(response => {
-      // console.log('update')
       if(response.status=== 200){
         response.json().then(value => {
-          setCollection(value.data)
+          updateCollection(value.data.map(entry=>{
+						return entry.collectId
+					}))
         });
       }
     }).catch(error => console.log(error))
@@ -98,4 +116,4 @@ const MapEntry = props => {
   )
 }
 
-export default MapEntry;
+export default connect(mapStateToProps, mapDispatchToProps)(MapEntry);

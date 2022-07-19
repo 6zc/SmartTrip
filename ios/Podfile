@@ -16,6 +16,8 @@ target 'groupmap2' do
   
 
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
+
   target 'groupmap2Tests' do
     inherit! :complete
     # Pods for testing

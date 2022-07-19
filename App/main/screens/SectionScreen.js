@@ -6,7 +6,7 @@ import Ionicon from "react-native-vector-icons/Ionicons";
 // import { setStatusBarHidden } from "expo-status-bar";
 import { WebView } from "react-native-webview";
 import Markdown from "react-native-showdown";
-import Rating from "../../top_searchbar/rating";
+import Rating from "../../utils/rating";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

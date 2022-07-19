@@ -4,26 +4,25 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
-import Rating from "./rating";
+import Rating from "../utils/rating";
 import { Svg, Image as ImageSvg } from "react-native-svg";
 import { getUserPosition, calDistance } from "../utils/calculator";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Collection from "../utils/collection";
 
-const Item = (props) => {
-  //TODO
+const Item = props => {
   const {
     toggleUpdate,
     liked = false
   } = props;
   const [ rate, setRate ] = useState(0);
-  const [ displayLiked, setLiked ] = useState(liked);
 
+  //TODO
   useEffect(()=>{
-    setRate(Math.random() * 5);
+    setRate(Math.random() * 6);
   },[])
+
   const [distance ,setDis] = useState(0)
 
   const { item, navigation, setShowList } = props;
@@ -32,38 +31,16 @@ const Item = (props) => {
     lat:undefined,
     lng:undefined,
   };
-
+  
   let res = getUserPosition();
   setTimeout(() => {
     position.lat = res.center.latitude;
     position.lng = res.center.longitude;
-    setDis(calDistance(position, location))
+    const dis = calDistance(position, location)
+    if(dis !== NaN){
+      setDis(dis)
+    }
   }, 100)
-
-  const handleLike = id => {
-    AsyncStorage.getItem("state").then(serializedState => {
-			const state = JSON.parse(serializedState);
-			if (state && state.token) {
-        const { token } = state;
-        fetch(`http://39.108.191.242:10089/collect/${id}`, { 
-          method: liked ? "PUT":"POST",
-          headers: {
-            Authorization: token
-          },
-          redirect: "follow",
-          cache: "no-cache"
-        }).then(response => {
-          if(response.status=== 200){
-            Alert.alert("Success!")
-            toggleUpdate(Math.random())
-            setLiked(!displayLiked);
-          }else{
-            Alert.alert("Something went wrong. Try again later :(")
-          }
-        }).catch(error => console.log(error))
-			}
-		}).catch(error => console.log(error));
-  }
 
   return (
     <View style={styles.container}>
@@ -108,16 +85,12 @@ const Item = (props) => {
           color="#ffffff"
         />
       </TouchableOpacity>
-      <TouchableOpacity
+      <Collection
         style={styles.heart}
-        onPress={() => handleLike(item.sys.id)}
-      >
-        {displayLiked ? (
-          <Ionicon name="heart" size={40} color="#ff4040" />
-        ) : (
-          <Ionicon name="heart-outline" size={40} color="#ffffff" />
-        )}
-      </TouchableOpacity>
+        toggleUpdate={toggleUpdate}
+        sys={item.sys}
+        liked={liked}
+      />
     </View>
   );
 };
