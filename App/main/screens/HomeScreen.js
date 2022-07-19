@@ -216,9 +216,6 @@ class HomeScreen extends React.Component {
 								))}
 							</ScrollView>
 
-							{/* <ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-
-							</ScrollView> */}
 							<NewlyAdded navigation={this.props.navigation} />
 							<Recommended navigation={this.props.navigation} />
 						</ScrollView>
@@ -275,11 +272,6 @@ const TitleBar = styled.View`
 	width: 100%;
 	margin-top: 50px;
 	padding-left: 80px;
-`;
-
-const CardsContainer = styled.View`
-	flex-direction: row;
-	padding-left: 10px;
 `;
 
 const logos = [
