@@ -37,7 +37,7 @@ const searchBar = props => {
     if(textData==='liked'){
       setDataSource(dataBackup.filter((item) => {
         return collection.some( value => {
-          return value.collectId == item.sys.id
+          return value == item.sys.id
         })
       }))
     }else{
@@ -117,7 +117,7 @@ const searchBar = props => {
                     navigation={navigation}
                     setShowList={setShowList}
                     liked={collection.some( value => {
-                      return value.collectId == item.item.sys.id
+                      return value == item.item.sys.id
                     })}
                   />
                 </View>

@@ -85,7 +85,7 @@ class Place extends React.Component {
 
 	handleLike = () => {
 		const id = this.props.id;
-		const liked = this.state.liked;
+		const liked = this.props.collection.includes(id);
 		AsyncStorage.getItem("state")
 			.then(serializedState => {
 				const savedState = JSON.parse(serializedState);

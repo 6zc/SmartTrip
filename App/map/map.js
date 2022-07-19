@@ -146,7 +146,7 @@ const Map = props => {
                     latitude: card.location.lat,
                   }}
                   liked={collection.some( value => {
-                    return value.collectId == card.sys.id
+                    return value == card.sys.id
                   })}
                 />
               </View>
