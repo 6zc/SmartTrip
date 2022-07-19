@@ -21,15 +21,14 @@ function getUserPosition() {
       longitude: undefined
     },
     altitude: 30000,
-    zoom: 5,
+    // pitch: 0,
+    zoom: 12,
   }
 
   Geolocation.getCurrentPosition(
     pos => {
-      Camera.center = {
-        latitude: pos.coords.latitude,
-        longitude: pos.coords.longitude+0.005,
-      };
+      Camera.center.latitude = pos.coords.latitude;
+      Camera.center.longitude = pos.coords.longitude+0.005;
     },
     error => {
       console.log(error.code, error.message);
@@ -54,7 +53,8 @@ function getCamera(lon = 0, lat = 0, offset = 0) {
       longitude: lon
     },
     altitude: 30000,
-    zoom: 5,
+    // pitch: 0,
+    zoom: 12,
   }
 }
 

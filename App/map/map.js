@@ -70,7 +70,7 @@ const Map = props => {
 		}
 		fetchWeatherData();
 
-    const Camera = getUserPosition();
+    let Camera = getUserPosition();
     setTimeout(() => {
       refs['map'].animateCamera(Camera, { duration: 1000 })
     }, 300)
@@ -156,6 +156,7 @@ const Map = props => {
       </MapView>
       <View style={styles.tips}>
         <View style={styles.tips.tipLeft}>
+          {/* 这里会让安卓下崩溃！！ */}
           <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
           <Ionicon name="sunny" size={18} style={styles.icons} />
           <Text style={styles.tips.tip}>
