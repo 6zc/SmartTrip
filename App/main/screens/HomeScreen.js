@@ -13,9 +13,10 @@ import Avatar from "../components/Avatar";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Ionicon from "react-native-vector-icons/Ionicons";
-import ModalLogin from "../components/ModalLogin";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Favorites from "../components/Favorites";
+
+import NewlyAdded from "../components/NewlyAdded";
 import Recommended from "../components/Recommanded";
 
 // Query to Contentful using GraphQL
@@ -61,6 +62,7 @@ function mapStateToProps(state) {
 		action: state.action,
 		name: state.name,
 		place: state.place,
+		collection: state.collection,
 	};
 }
 
@@ -91,6 +93,11 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_TOKEN",
 				token,
 			}),
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
 	};
 }
 
@@ -98,41 +105,8 @@ class HomeScreen extends React.Component {
 	state = {
 		scale: new Animated.Value(1),
 		opacity: new Animated.Value(1),
-		collection: [],
-	};
 
-	getCollection = () => {
-		var token = "";
-		AsyncStorage.getItem("state")
-			.then(serializedState => {
-				const savedState = JSON.parse(serializedState);
-
-				if (savedState && savedState.token) {
-					token = savedState.token;
-					fetch("http://39.108.191.242:10089/collect", {
-						method: "GET",
-						headers: { Authorization: token },
-						redirect: "follow",
-						cache: "no-cache",
-					})
-						.then(response => {
-							if (response.status === 200) {
-								response.json().then(value => {
-									console.log("home: collect");
-									console.log(value.data);
-									var collection = [];
-									for (const element of value.data) {
-										collection.push(element.collectId);
-									}
-									this.setState({ collection: collection });
-									console.log(this.state.collection);
-								});
-							}
-						})
-						.catch(error => console.log(error));
-				}
-			})
-			.catch(error => console.log(error));
+		// toggleUpdate: 1,
 	};
 
 	componentDidMount() {
@@ -144,10 +118,6 @@ class HomeScreen extends React.Component {
 		StatusBar.setBarStyle("dark-content", true);
 
 		if (Platform.OS == "android") StatusBar.setBarStyle("light-content", true);
-
-		if (this.props.name != "Guest") {
-			this.getCollection();
-		}
 	}
 
 	componentDidUpdate() {
@@ -193,6 +163,7 @@ class HomeScreen extends React.Component {
 			// log out
 			this.props.updateName("Guest");
 			this.props.updateToken("");
+			this.props.updateCollection([]);
 			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 			AsyncStorage.clear();
 		} else {
@@ -215,29 +186,18 @@ class HomeScreen extends React.Component {
 								{this.props.name != "Guest" && <Title>Welcome back,</Title>}
 
 								<Name>{this.props.name}</Name>
-								<DiscoverView>
-									<TouchableOpacity
-										onPress={() => {
-											this.props.navigation.push("Discover", {});
-										}}
-									>
-										<Ionicon
-											name="compass"
-											size={35}
-											color="#5263ff"
-											style={{
-												shadowColor: "#c2cbff",
-												shadowOpacity: 0.8,
-												shadowRadius: 5,
-												// iOS
-												shadowOffset: {
-													width: 0,
-													height: 1,
-												},
-											}}
-										></Ionicon>
-									</TouchableOpacity>
-								</DiscoverView>
+								<TouchableOpacity
+									onPress={() => {
+										this.props.navigation.push("Collection", {});
+									}}
+									style={{ position: "absolute", top: 5, right: 20 }}
+								>
+									<CollectionView>
+										<IconView>
+											<Ionicon name="heart" size={28} color="#5263ff"></Ionicon>
+										</IconView>
+									</CollectionView>
+								</TouchableOpacity>
 							</TitleBar>
 							<ScrollView
 								style={{ flexDirection: "row", padding: 20, paddingLeft: 12, paddingTop: 30 }}
@@ -256,13 +216,14 @@ class HomeScreen extends React.Component {
 								))}
 							</ScrollView>
 
-							<Favorites navigation={this.props.navigation} collection={this.state.collection} />
+							{/* <ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
 
+							</ScrollView> */}
+							<NewlyAdded navigation={this.props.navigation} />
 							<Recommended navigation={this.props.navigation} />
 						</ScrollView>
 					</SafeAreaView>
 				</AnimatedContainer>
-				<ModalLogin navigation={this.props.navigation} />
 			</RootView>
 		);
 	}
@@ -270,10 +231,18 @@ class HomeScreen extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
-const DiscoverView = styled.View`
-	position: absolute;
-	top: 5px;
-	right: 20px;
+const IconView = styled.View`
+	margin-top: 2px;
+`;
+
+const CollectionView = styled.View`
+	width: 42px;
+	height: 42px;
+	background: white;
+	border-radius: 21px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+	justify-content: center;
+	align-items: center;
 `;
 
 const RootView = styled.View`
@@ -306,6 +275,11 @@ const TitleBar = styled.View`
 	width: 100%;
 	margin-top: 50px;
 	padding-left: 80px;
+`;
+
+const CardsContainer = styled.View`
+	flex-direction: row;
+	padding-left: 10px;
 `;
 
 const logos = [

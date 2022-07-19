@@ -1,14 +1,106 @@
 import React from "react";
 import styled from "styled-components";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Alert } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { render } from "react-dom";
+import { connect } from "react-redux";
+
+function mapStateToProps(state) {
+	return {
+		action: state.action,
+		username: state.name,
+		collection: state.collection,
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
+	};
+}
 
 class Card extends React.Component {
 	state = {
 		liked: false,
 	};
+
+	getCollectionDB = () => {
+		var token = "";
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/collect", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							console.log(response);
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log("home: collect");
+									// console.log(value.data);
+									var collection = [];
+									for (const element of value.data) {
+										if (element.collectId == this.props.id) {
+											this.setState({ liked: true });
+										}
+										collection.push(element.collectId);
+									}
+									this.props.updateCollection(collection);
+									// console.log(this.state.collection);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
+	};
+
+	handleLike = () => {
+		const id = this.props.id;
+		const liked = this.state.liked;
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+				if (savedState && savedState.token) {
+					const token = savedState.token;
+					fetch(`http://39.108.191.242:10089/collect/${id}`, {
+						method: liked ? "PUT" : "POST",
+						headers: {
+							Authorization: token,
+						},
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								Alert.alert("Success!");
+
+								this.setState({ liked: !liked });
+								this.getCollectionDB();
+							} else {
+								Alert.alert("Something went wrong. Try again later :(");
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
+	};
+
+	componentDidMount() {
+		this.getCollectionDB();
+	}
 
 	render() {
 		return (
@@ -16,9 +108,15 @@ class Card extends React.Component {
 				<Cover>
 					<Image source={this.props.image} />
 					<Caption>{this.props.caption}</Caption>
-					<TouchableOpacity style={{ position: "absolute", top: 10, right: 10 }}>
-						<Ionicon name="heart-outline" size={32} color="#f0f3f5" />
-					</TouchableOpacity>
+					{this.props.username != "Guest" && (
+						<TouchableOpacity style={{ position: "absolute", top: 10, right: 10 }} onPress={this.handleLike}>
+							{this.props.collection.includes(this.props.id) ? (
+								<Ionicon name="heart" size={28} color="#f0f3f5" />
+							) : (
+								<Ionicon name="heart-outline" size={28} color="#f0f3f5" />
+							)}
+						</TouchableOpacity>
+					)}
 				</Cover>
 				<Content>
 					<Logo source={this.props.logo} />
@@ -32,7 +130,8 @@ class Card extends React.Component {
 	}
 }
 
-export default Card;
+export default connect(mapStateToProps, mapDispatchToProps)(Card);
+// export default Card;
 
 const Content = styled.View`
 	padding-left: 20px;

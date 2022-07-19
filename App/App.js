@@ -41,6 +41,7 @@ const client = new ApolloClient({
 const initialState = {
 	action: "",
 	name: "Guest",
+	collection: [],
 	token: "",
 	place: "",
 	avatar: "https://cl.ly/55da82beb939/download/avatar-default.jpg",
@@ -59,6 +60,8 @@ const reducer = (state = initialState, action) => {
 			return { ...state, avatar: action.avatar };
 		case "UPDATE_TOKEN":
 			return { ...state, token: action.token };
+		case "UPDATE_COLLECTION":
+			return { ...state, collection: action.collection };
 		case "OPEN_CARD":
 			return { ...state, action: "openCard" };
 		case "CLOSE_CARD":

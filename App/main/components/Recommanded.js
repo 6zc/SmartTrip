@@ -50,7 +50,7 @@ class Recommended extends React.Component {
 	render() {
 		return (
 			<Container>
-				<Subtitle>Recommended Places</Subtitle>
+				<Subtitle>Recommended</Subtitle>
 
 				<Query query={CardsQuery}>
 					{({ loading, error, data }) => {
@@ -72,6 +72,7 @@ class Recommended extends React.Component {
 										}}
 									>
 										<Place
+											id={card.sys.id}
 											title={card.title}
 											image={card.image}
 											distance="0.5km"

@@ -37,6 +37,11 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_TOKEN",
 				token,
 			}),
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
 	};
 }
 
@@ -48,6 +53,41 @@ class LoginScreen extends React.Component {
 		passwordColor: "rgba(255,255,255, 0.6)",
 		isSuccessful: false,
 		isLoading: false,
+	};
+
+	getCollectionDB = () => {
+		var token = "";
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/collect", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							console.log(response);
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log("home: collect");
+									// console.log(value.data);
+									var collection = [];
+									for (const element of value.data) {
+										collection.push(element.collectId);
+									}
+									this.props.updateCollection(collection);
+									// console.log(this.state.collection);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
 	};
 
 	// store the data
@@ -100,6 +140,7 @@ class LoginScreen extends React.Component {
 						});
 						this.props.updateName(name);
 						this.props.updateToken(token);
+						this.getCollectionDB();
 						// animation
 						setTimeout(() => {
 							this.setState({ isLoading: false });
