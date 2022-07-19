@@ -16,6 +16,7 @@ import MapEntry from "./map/map_entry";
 import LoginPage from "./Personal/main";
 
 import { createAppContainer } from "react-navigation";
+import CollectionScreen from "./main/screens/CollectionScreen";
 
 const activeColor = "#4775f2";
 const inactiveColor = "#b8bece";
@@ -27,6 +28,7 @@ const HomeStack = createStackNavigator(
 		Discover: DiscoverScreen,
 		Signup: SignupScreen,
 		Login: LoginScreen,
+		Collection: CollectionScreen,
 	},
 	{
 		mode: "modal",
@@ -46,12 +48,7 @@ HomeStack.navigationOptions = ({ navigation }) => {
 };
 
 const MapPage = ({ route, navigation }) => {
-	return (
-		<MapEntry
-			route={route}
-			navigation={navigation}
-		/>
-	);
+	return <MapEntry route={route} navigation={navigation} />;
 };
 
 const MapStack = createStackNavigator(

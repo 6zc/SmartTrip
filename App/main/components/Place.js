@@ -1,9 +1,30 @@
 import React from "react";
 import styled from "styled-components";
-import { Dimensions } from "react-native";
+import { Dimensions, TouchableOpacity, Alert } from "react-native";
 import { BlurView } from "@react-native-community/blur";
+import Ionicon from "react-native-vector-icons/Ionicons";
+import { connect } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const screenWidth = Dimensions.get("window").width;
+
+function mapStateToProps(state) {
+	return {
+		action: state.action,
+		username: state.name,
+		collection: state.collection,
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
+	};
+}
 
 // match screen sizes
 function getPlaceWidth(screenWidth) {
@@ -21,10 +42,82 @@ function getPlaceWidth(screenWidth) {
 class Place extends React.Component {
 	state = {
 		cardWidth: getPlaceWidth(screenWidth),
+		liked: false,
+	};
+
+	getCollectionDB = () => {
+		var token = "";
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/collect", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							// console.log(response);
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log("home: collect");
+									// console.log(value.data);
+									var collection = [];
+									for (const element of value.data) {
+										if (element.collectId == this.props.id) {
+											this.setState({ liked: true });
+										}
+										collection.push(element.collectId);
+									}
+									this.props.updateCollection(collection);
+									// console.log(this.state.collection);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
+	};
+
+	handleLike = () => {
+		const id = this.props.id;
+		const liked = this.state.liked;
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+				if (savedState && savedState.token) {
+					const token = savedState.token;
+					fetch(`http://39.108.191.242:10089/collect/${id}`, {
+						method: liked ? "PUT" : "POST",
+						headers: {
+							Authorization: token,
+						},
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								Alert.alert("Success!");
+
+								this.setState({ liked: !liked });
+								this.getCollectionDB();
+							} else {
+								Alert.alert("Something went wrong. Try again later :(");
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
 	};
 
 	componentDidMount() {
 		Dimensions.addEventListener("change", this.adaptLayout);
+		this.getCollectionDB();
 	}
 
 	adaptLayout = dimensions => {
@@ -38,19 +131,20 @@ class Place extends React.Component {
 			<Container style={{ width: this.state.cardWidth }}>
 				<Cover>
 					<Image source={this.props.image} />
-					{/* <BlurView
-						blurType="light"
-						blurAmount={3}
-						style={{
-							position: "absolute",
-							width: "100%",
-							height: "100%",
-						}}
-					/> */}
+
 					<Wrapper>
 						<Logo source={this.props.logo} resizeMode="contain" />
 						<Type>{this.props.type}</Type>
 					</Wrapper>
+					{this.props.username != "Guest" && (
+						<TouchableOpacity style={{ position: "absolute", top: 10, right: 10 }} onPress={this.handleLike}>
+							{this.props.collection.includes(this.props.id) ? (
+								<Ionicon name="heart" size={32} color="#f0f3f5" />
+							) : (
+								<Ionicon name="heart-outline" size={32} color="#f0f3f5" />
+							)}
+						</TouchableOpacity>
+					)}
 				</Cover>
 				<Content>
 					<BlurView
@@ -66,17 +160,12 @@ class Place extends React.Component {
 					<Subtitle>{this.props.distance}</Subtitle>
 					<Title>{this.props.title}</Title>
 				</Content>
-
-				{/* <Content>
-					<Caption>{this.props.caption}</Caption>
-					<Name>{this.props.type}</Name>
-				</Content> */}
 			</Container>
 		);
 	}
 }
 
-export default Place;
+export default connect(mapStateToProps, mapDispatchToProps)(Place);
 
 const Wrapper = styled.View`
 	flex-direction: row;

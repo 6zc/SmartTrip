@@ -6,10 +6,54 @@ import Ionicon from "react-native-vector-icons/Ionicons";
 // import { setStatusBarHidden } from "expo-status-bar";
 import { WebView } from "react-native-webview";
 import Markdown from "react-native-showdown";
+import Rating from "../../top_searchbar/rating";
+import { connect } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class SectionScreen extends React.Component {
+	state = {
+		username: "",
+		liked: false,
+	};
+
+	loadState = () => {
+		AsyncStorage.getItem("state").then(serializedState => {
+			const savedState = JSON.parse(serializedState);
+
+			if (savedState) {
+				console.log(savedState);
+				this.setState({ username: savedState.name });
+
+				if (savedState.token) {
+					const token = savedState.token;
+					fetch(`http://39.108.191.242:10089/collect/${id}`, {
+						method: liked ? "PUT" : "POST",
+						headers: {
+							Authorization: token,
+						},
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								Alert.alert("Success!");
+								toggleUpdate(Math.random());
+								setLiked(!displayLiked);
+							} else {
+								Alert.alert("Something went wrong. Try again later :(");
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			} else {
+				console.log("section: not logged in");
+			}
+		});
+	};
+
 	// fade in status bar
 	componentDidMount() {
+		this.loadState();
 		// setStatusBarHidden(true, "fade");
 		StatusBar.setBarStyle("light-content", true);
 	}
@@ -45,21 +89,29 @@ class SectionScreen extends React.Component {
 							<Ionicon name="ios-close" size={32} color="#5263ff" />
 						</CloseView>
 					</TouchableOpacity>
+
+					<TouchableOpacity style={{ position: "absolute", top: 20, right: 70 }}>
+						<CloseView>
+							<Ionicon name="heart-outline" size={24} color="#5263ff" />
+						</CloseView>
+					</TouchableOpacity>
+
 					<TouchableOpacity
 						onPress={() => {
 							setTimeout(() => {
-								this.props.navigation.navigate("Map",{
+								this.props.navigation.navigate("Map", {
 									itemID: section.sys.id,
 								});
-							}, 400)
+							}, 400);
 						}}
 						style={{ position: "absolute", top: 320, right: 0 }}
-						>
+					>
 						<MapView>
-								<Ionicon name="navigate-circle-outline" size={24} color="#5263ff" />
-								<MapText>Map</MapText>
+							<Ionicon name="navigate-circle-outline" size={24} color="#5263ff" />
+							<MapText>Map</MapText>
 						</MapView>
 					</TouchableOpacity>
+
 					<Content>
 						{/* <WebView
 						source={{ html: section.content + htmlStyles }}
@@ -75,6 +127,12 @@ class SectionScreen extends React.Component {
 							}
 						}}
 					></WebView> */}
+						<ContentTitle>Overall Rating</ContentTitle>
+						<Rating width={140} rate={4} rateAble={false} />
+						{this.state.username != "" && <ContentTitle>Your Rate</ContentTitle>}
+
+						{this.state.username != "" && <Rating width={140} rate={0} rateAble={true} />}
+
 						<Markdown
 							body={section.content}
 							pureCSS={htmlStyles}
@@ -172,6 +230,33 @@ const htmlStyles = `
 			margin-top: 20px;
 		}
 	
+`;
+const Button = styled.View`
+	background: #5263ff;
+	width: 295px;
+	height: 50px;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	box-shadow: 0 10px 20px rgba(40, 27, 90, 0.8);
+	margin-top: 20px;
+	margin-left: 20px;
+`;
+
+const ButtonText = styled.Text`
+	color: white;
+	font-weight: 600;
+	font-size: 20px;
+	text-transform: uppercase;
+`;
+
+const ContentTitle = styled.Text`
+	font-size: 20px;
+	text-transform: uppercase;
+	color: #b8bece;
+	font-weight: 600;
+	margin-top: 50px;
+	margin-bottom: 20px;
 `;
 
 const Content = styled.View`

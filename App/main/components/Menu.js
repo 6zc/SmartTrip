@@ -106,7 +106,7 @@ class Menu extends React.Component {
 			<AnimatedContainer style={{ top: this.state.top }}>
 				<Cover>
 					<Image source={require("../assets/background2.jpg")} />
-					<Title>Nearby {this.props.place}</Title>
+					<Title>{this.props.place}</Title>
 					{/* <Subtitle>Found {this.state.number} places nearby</Subtitle> */}
 				</Cover>
 				<TouchableOpacity
