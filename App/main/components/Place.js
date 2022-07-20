@@ -153,7 +153,7 @@ class Place extends React.Component {
 							height: "100%",
 						}}
 					/>
-					<Subtitle>{this.props.distance}</Subtitle>
+					{/* <Subtitle>{this.props.distance}</Subtitle> */}
 					<Title>{this.props.title}</Title>
 				</Content>
 			</Container>
@@ -240,7 +240,7 @@ const Content = styled.View`
 	bottom: 0px;
 
 	justify-content: center;
-	height: 100px;
+	height: 80px;
 	width: 100%;
 	border-bottom-left-radius: 14px;
 	border-bottom-right-radius: 14px;

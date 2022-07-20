@@ -9,6 +9,7 @@ import MenuCard from "./MenuCard";
 import { ScrollView } from "react-native-gesture-handler";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
+import LottieView from "lottie-react-native";
 
 const screenWidth = Dimensions.get("window").width;
 var cardWidth = screenWidth;
@@ -121,7 +122,8 @@ class Menu extends React.Component {
 		return (
 			<AnimatedContainer style={{ top: this.state.top }}>
 				<Cover>
-					<Image source={require("../assets/background2.jpg")} />
+					{/* <Image source={require("../assets/background2.jpg")} /> */}
+					<LottieView source={require("../assets/lottie-menubg.json")} autoPlay={true} loop={true} speed={0.1} />
 					<Title>{this.props.place}</Title>
 					{/* <Subtitle>Found {this.state.number} places nearby</Subtitle> */}
 				</Cover>
@@ -162,7 +164,13 @@ class Menu extends React.Component {
 													});
 												}}
 											>
-												<MenuCard key={index} image={card.image} title={card.title} subtitle="0.8km" />
+												<MenuCard
+													key={index}
+													type={card.type}
+													image={card.image}
+													title={card.title}
+													subtitle="0.8km"
+												/>
 											</TouchableOpacity>
 										))}
 									</CardsContainer>
@@ -189,6 +197,12 @@ const Message = styled.Text`
 	color: #b8bece;
 	font-size: 15px;
 	font-weight: 500;
+`;
+
+const LottieContainer = styled.View`
+	position: absolute;
+	width: 100%;
+	height: 100%;
 `;
 
 const Image = styled.Image`

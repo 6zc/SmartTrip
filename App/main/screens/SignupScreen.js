@@ -5,6 +5,7 @@ import { BlurView } from "@react-native-community/blur";
 import LottieView from "lottie-react-native";
 import { Divider } from "@rneui/base";
 import Ionicon from "react-native-vector-icons/Ionicons";
+import Congrat from "../components/Congrat";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -17,6 +18,7 @@ class SignupScreen extends React.Component {
 		email: "",
 		phone: "",
 		password: "",
+		isSuccessful: false,
 		userColor: "rgba(255,255,255, 0.6)",
 		emailColor: "rgba(255,255,255, 0.6)",
 		phoneColor: "rgba(255,255,255, 0.6)",
@@ -68,6 +70,17 @@ class SignupScreen extends React.Component {
 		});
 	};
 
+	handleSuccess = () => {
+		// animation
+
+		this.setState({ isSuccessful: true });
+		Alert.alert("Success", "Please sign in to continue.");
+		setTimeout(() => {
+			this.props.navigation.goBack();
+			this.setState({ isSuccessful: false });
+		}, 1300);
+	};
+
 	handleSignup = () => {
 		this.tapBackground();
 		userState = {
@@ -88,8 +101,9 @@ class SignupScreen extends React.Component {
 					.then(data => {
 						if (data.code == "0000") {
 							// login success
-							Alert.alert("Success", "Please sign in to continue.");
+
 							console.log("sign up success", data);
+							this.handleSuccess();
 						} else {
 							Alert.alert("Sign Up Failed", data.msg);
 							console.log("sign up failed", data);
@@ -248,6 +262,7 @@ class SignupScreen extends React.Component {
 						<Ionicon name="close" size={24} color={"rgba(255,255,255, 0.6)"} />
 					</CloseView>
 				</TouchableOpacity>
+				<Congrat isActive={this.state.isSuccessful} />
 			</Container>
 		);
 	}
