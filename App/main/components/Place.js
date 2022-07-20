@@ -5,6 +5,7 @@ import { BlurView } from "@react-native-community/blur";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import logoMap from "./LogoMap";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -128,7 +129,7 @@ class Place extends React.Component {
 					<Image source={this.props.image} />
 
 					<Wrapper>
-						<Logo source={this.props.logo} resizeMode="contain" />
+						<Logo source={logoMap.get(this.props.type)} resizeMode="contain" />
 						<Type>{this.props.type}</Type>
 					</Wrapper>
 					{this.props.username != "Guest" && (

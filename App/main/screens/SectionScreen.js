@@ -9,6 +9,7 @@ import Markdown from "react-native-showdown";
 import Rating from "../../utils/rating";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import logoMap from "../components/LogoMap";
 
 function mapStateToProps(state) {
 	return {
@@ -124,7 +125,7 @@ class SectionScreen extends React.Component {
 					<Cover>
 						<Image source={section.image} />
 						<Wrapper>
-							<Logo source={section.logo} />
+							<Logo source={logoMap.get(section.type)} />
 							<Subtitle>{section.type}</Subtitle>
 						</Wrapper>
 						<Title>{section.title}</Title>

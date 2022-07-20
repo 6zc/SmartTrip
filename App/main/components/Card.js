@@ -4,6 +4,7 @@ import { TouchableOpacity, Alert } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
+import logoMap from "./LogoMap";
 
 function mapStateToProps(state) {
 	return {
@@ -111,7 +112,7 @@ class Card extends React.Component {
 					)}
 				</Cover>
 				<Content>
-					<Logo source={this.props.logo} />
+					<Logo source={logoMap.get(this.props.type)} />
 					<Wrapper>
 						<Title>{this.props.title}</Title>
 						<Subtitle>{this.props.type}</Subtitle>

@@ -32,12 +32,28 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
+const typeMap = new Map();
+typeMap.set("Restaurants", "Restaurant");
+typeMap.set("Museums", "Museum");
+typeMap.set("Parks", "Park");
+typeMap.set("Theme Parks", "Theme Park");
+typeMap.set("Movies", "Movie Theater");
+typeMap.set("Bookshops", "Bookshop");
+typeMap.set("Coffee", "Coffee Shop");
+typeMap.set("Bars", "Bar");
+typeMap.set("Shopping", "Shopping Mall");
+typeMap.set("Groceries", "Grocery Store");
+typeMap.set("Zoos", "Zoo");
+
 // Query to Contentful using GraphQL
 function getContent(contentType) {
 	return gql`
 		{
-			cardsCollection(where: { contentType: "${contentType}" }) {
+			cardsCollection(where: { type: "${typeMap.get(contentType)}" }) {
 				items {
+					sys {
+						id
+					}
 					title
 					type
 					image {
