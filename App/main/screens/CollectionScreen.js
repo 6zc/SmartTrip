@@ -121,7 +121,7 @@ class CollectionScreen extends React.Component {
 					</TouchableOpacity>
 				</Cover>
 				<ScrollView>
-					{this.props.name != "Guest" || this.state.collection == [] ? (
+					{this.props.name != "Guest" && this.state.collection.length != 0 ? (
 						<Query query={getCollection()}>
 							{({ loading, error, data }) => {
 								if (loading) return <Message>Loading...</Message>;
