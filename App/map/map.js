@@ -45,11 +45,17 @@ const Map = props => {
 
   useEffect(()=>{
     if(refs[itemID]){
-      refs['map'].animateCamera(getCamera(
-        ...Object.values(refs[itemID].props.coordinate),0.03),{ duration: 400 })
+      
       setTimeout(() => {
+        refs['map'].animateCamera(getCamera(
+          ...Object.values(refs[itemID].props.coordinate),0.03),{ duration: 300 })
         refs[itemID].showCallout();
-      }, 400)
+      }, 600)
+    }else{
+      let Camera = getUserPosition();
+      setTimeout(() => {
+        refs['map'].animateCamera(Camera, { duration: 1000 })
+      }, 600)
     }
   }, [itemID]);
 
@@ -70,10 +76,10 @@ const Map = props => {
 		}
 		fetchWeatherData();
 
-    let Camera = getUserPosition();
-    setTimeout(() => {
-      refs['map'].animateCamera(Camera, { duration: 1000 })
-    }, 300)
+    // let Camera = getUserPosition();
+    // setTimeout(() => {
+    //   refs['map'].animateCamera(Camera, { duration: 1000 })
+    // }, 300)
 
 	}, []);
 

@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import Linking from "../utils/linking";
 import Logo from "../utils/logo.js";
+import Rating from "../utils/rating";
 import Collection from "../utils/collection";
 import { getWeatherDesc, getCovidDesc } from "../utils/calculator";
 import { Svg, Image as ImageSvg } from "react-native-svg";
@@ -78,9 +79,12 @@ const PlaceView = props => {
             }, 400)
           }}
         >
-            <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
-            <Text style={styles.detail.detailText}>Detail</Text>
+          <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
+          <Text style={styles.detail.detailText}>Detail</Text>
         </TouchableOpacity>
+        <Rating width={140} rate={4} rateAble={false} style={styles.rating}>
+          {/* <BlurView style={styles.blur} blurType="light" blurAmount={5} /> */}
+        </Rating>
         <Svg width={290} height={290}>
           <ImageSvg
             width={"100%"}
@@ -111,6 +115,15 @@ const PlaceView = props => {
 };
 
 const styles = StyleSheet.create({
+  rating: {
+    top: 260,
+    left: 8,
+    zIndex: 5,
+    position: "absolute",
+    shadowRadius: 6,
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+  },
   heart: {
     position: "absolute",
     right:10,

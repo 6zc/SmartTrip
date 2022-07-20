@@ -6,17 +6,20 @@ import {
 import { Svg, Image as ImageSvg } from "react-native-svg";
 
 const TYPES = {
-  "Theme Park": require("../resource/theme-park.png"),
-  Bar: require("../resource/bar.png"),
-  Museum: require("../resource/museum.png"),
-  "Movie theater": require("../resource/movie.png"),
-  Park: require("../resource/park.png"),
-  Restaurant: require("../resource/restaurant.png"),
-  Default: require("../resource/default-place.png"),
-  Userlocation: require("../resource/compass.png"),
+  "Theme Park": require("../main/assets/theme-park.png"),
+  Bar: require("../main/assets/bar.png"),
+  Museum: require("../main/assets/museum.png"),
+  "Movie Theater": require("../main/assets/movie.png"),
+  "Coffee Shop": require("../main/assets/coffee.png"),
+  Park: require("../main/assets/park.png"),
+  Restaurant: require("../main/assets/restaurant.png"),
+  "Book Shop": require("../main/assets/bookshop.png"),
+  "Grocery Store": require("../main/assets/grocery.png"),
+  "Shopping Mall": require("../main/assets/shopping.png"),
+  Default: require("../main/assets/point-of-interest.png"),
 };
 
-const Logo = (props) => {
+const Logo = props => {
   const { type, height, width, style } = props;
   let path = TYPES[type] || TYPES.Default;
   return (

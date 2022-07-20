@@ -9,7 +9,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome5";
  * @param {object} style 希望应用的style（可选）
  */
 const Rating = (props) => {
-  const { rate, width:fullwidth, style, rateAble } = props;
+  const { rate = 3, width:fullwidth, style, rateAble, children } = props;
   const faceArray = ['frown', 'meh','smile', 'grin','grin-beam', 'grin-hearts']
   const face = faceArray[Math.floor(rate)]
 
@@ -34,11 +34,11 @@ const Rating = (props) => {
       {rateArray.map((value, _i)=>(
         rateAble ?
         <TouchableOpacity
+          key={_i}
           onPressOut={(e)=>handleRating(_i,e)}
         >
           <FontAwesome
             solid
-            key={_i}
             name={face}
             size={faceWidth}
             color={value === 1?"#ffd700":"#cecece"}
@@ -53,6 +53,7 @@ const Rating = (props) => {
           color={value === 1?"#ffd700":"#cecece"}
         />
       ))}
+      {children}
     </View>
   )
 };
