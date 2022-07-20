@@ -17,7 +17,7 @@ function calDistance(coord1, coord2){
 function getUserPosition() {
   let Camera = {
     center: {
-      latitude: undefined,
+      latitude: 1,
       longitude: undefined
     },
     altitude: 30000,

@@ -44,9 +44,11 @@ const Item = props => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.distanceWrapper}>
-        <Text style={styles.distanceWrapper.distance}>{' '+distance+' KM '}</Text>
-      </View>
+      {isNaN(distance)? null :
+        <View style={styles.distanceWrapper}>
+          <Text style={styles.distanceWrapper.distance}>{' '+distance+' KM '}</Text>
+        </View>
+      }
       <View style={styles.imageWrapper}>
         <Svg style={styles.imageWrapper.image}>
           <ImageSvg

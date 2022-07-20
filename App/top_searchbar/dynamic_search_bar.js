@@ -13,8 +13,9 @@ const searchBar = props => {
   } = props;
   const dataBackup = itemList;
   const [queryText, setQueryText] = useState("");
-  const [dataSource, setDataSource] = useState(itemList);
+  const [dataSource, setDataSource] = useState([]);
   const [showList, setShowList] = useState(false);
+  // const [spinnerVisibility, setSpinner] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const driftAnim = useRef(new Animated.Value(700)).current;
@@ -32,8 +33,9 @@ const searchBar = props => {
     }),
   ]);
 
-  const filterList = (text) => {
-    const textData = text.toLowerCase().split(" ").join("");
+  const filterList = () => {
+    // setSpinner(true)
+    const textData = queryText.toLowerCase().split(" ").join("");
     if(textData==='liked'){
       setDataSource(dataBackup.filter((item) => {
         return collection.some( value => {
@@ -47,7 +49,8 @@ const searchBar = props => {
         return itemData.includes(textData) || typeData.includes(textData);
       }))
     }
-    setQueryText(text);
+    // setSpinner(false)
+    // setQueryText(text);
   };
 
   return (
@@ -58,29 +61,31 @@ const searchBar = props => {
           { backgroundColor: showList ? "#9c9c9c" : "#ffffff" },
         ]}
         fontSize={19}
-        iconColor="#c6c6c6"
-        shadowColor="#282828"
-        cancelIconColor="#c6c6c6"
         placeholder={ queryText || "Find a place" }
+        placeholderTextColor={"#9c9c9c"}
         darkMode={ showList ? true : false }
-        // spinnerVisibility={true}
+        // spinnerVisibility={spinnerVisibility}
         onFocus={() => {
           setShowList(true);
           parallelAni.start();
+          setQueryText('')
         }}
         onBlur={() => {
-          setShowList(false);
-          fadeAnim.setValue(0);
-          driftAnim.setValue(700);
+          filterList()
+          // setShowList(false);
+          // fadeAnim.setValue(0);
+          // driftAnim.setValue(700);
           // setTimeout(() => {
           //   navigation.navigate("Map",{
           //     itemID: dataSource[0].sys.id,
           //   });
           // }, 300)
         }}
-        onChangeText={(text) => filterList(text)}
+        onChangeText={(text) => setQueryText(text)}
+        onSearchPress={() => filterList()}
         onClearPress={() => {
-          filterList("");
+          // setQueryText('')
+          // filterList("");
           setShowList(false);
           fadeAnim.setValue(0);
           driftAnim.setValue(700);
