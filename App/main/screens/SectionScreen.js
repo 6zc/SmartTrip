@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { withTheme } from "styled-components";
-import { TouchableOpacity, StatusBar, Linking, ScrollView } from "react-native";
+import { TouchableOpacity, StatusBar, Linking, ScrollView, Alert } from "react-native";
 // import { Ionicons } from "@expo/vector-icons";
 import Ionicon from "react-native-vector-icons/Ionicons";
 // import { setStatusBarHidden } from "expo-status-bar";
@@ -9,22 +9,72 @@ import Markdown from "react-native-showdown";
 import Rating from "../../utils/rating";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import logoMap from "../components/LogoMap";
+
+function mapStateToProps(state) {
+	return {
+		action: state.action,
+		username: state.name,
+		collection: state.collection,
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		updateCollection: collection =>
+			dispatch({
+				type: "UPDATE_COLLECTION",
+				collection,
+			}),
+	};
+}
 
 class SectionScreen extends React.Component {
 	state = {
-		username: "",
 		liked: false,
 	};
 
-	loadState = () => {
-		AsyncStorage.getItem("state").then(serializedState => {
-			const savedState = JSON.parse(serializedState);
+	getCollectionDB = id => {
+		var token = "";
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
 
-			if (savedState) {
-				console.log(savedState);
-				this.setState({ username: savedState.name });
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/collect", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							console.log(response);
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log("home: collect");
+									// console.log(value.data);
+									var collection = [];
+									for (const element of value.data) {
+										collection.push(element.collectId);
+									}
+									this.props.updateCollection(collection);
+									// console.log(this.state.collection);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
+	};
 
-				if (savedState.token) {
+	handleLike = id => {
+		const liked = this.props.collection.includes(id);
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+				if (savedState && savedState.token) {
 					const token = savedState.token;
 					fetch(`http://39.108.191.242:10089/collect/${id}`, {
 						method: liked ? "PUT" : "POST",
@@ -36,24 +86,26 @@ class SectionScreen extends React.Component {
 					})
 						.then(response => {
 							if (response.status === 200) {
-								Alert.alert("Success!");
-								toggleUpdate(Math.random());
-								setLiked(!displayLiked);
+								// Alert.alert("Success!");
+
+								this.getCollectionDB(id);
 							} else {
-								Alert.alert("Something went wrong. Try again later :(");
+								// Alert.alert("Something went wrong. Try again later :(");
 							}
 						})
 						.catch(error => console.log(error));
 				}
-			} else {
-				console.log("section: not logged in");
-			}
-		});
+			})
+			.catch(error => console.log(error));
 	};
 
 	// fade in status bar
 	componentDidMount() {
-		this.loadState();
+		// receive data
+		const { navigation } = this.props;
+		const section = navigation.getParam("section");
+		const id = section.sys.id;
+		this.getCollectionDB(id);
 		// setStatusBarHidden(true, "fade");
 		StatusBar.setBarStyle("light-content", true);
 	}
@@ -63,9 +115,9 @@ class SectionScreen extends React.Component {
 	}
 
 	render() {
-		// receive data
 		const { navigation } = this.props;
 		const section = navigation.getParam("section");
+		const id = section.sys.id;
 		return (
 			<ScrollView style={{ backgroundColor: "white" }}>
 				<Container>
@@ -73,7 +125,7 @@ class SectionScreen extends React.Component {
 					<Cover>
 						<Image source={section.image} />
 						<Wrapper>
-							<Logo source={section.logo} />
+							<Logo source={logoMap.get(section.type)} />
 							<Subtitle>{section.type}</Subtitle>
 						</Wrapper>
 						<Title>{section.title}</Title>
@@ -90,11 +142,24 @@ class SectionScreen extends React.Component {
 						</CloseView>
 					</TouchableOpacity>
 
-					<TouchableOpacity style={{ position: "absolute", top: 20, right: 70 }}>
-						<CloseView>
-							<Ionicon name="heart-outline" size={24} color="#5263ff" />
-						</CloseView>
-					</TouchableOpacity>
+					{this.props.username != "Guest" && (
+						<TouchableOpacity
+							onPress={() => {
+								this.handleLike(id);
+							}}
+							style={{ position: "absolute", top: 20, right: 70 }}
+						>
+							<CloseView>
+								<IconView>
+									{this.props.collection.includes(id) ? (
+										<Ionicon name="heart" size={24} color="#5263ff" />
+									) : (
+										<Ionicon name="heart-outline" size={24} color="#5263ff" />
+									)}
+								</IconView>
+							</CloseView>
+						</TouchableOpacity>
+					)}
 
 					<TouchableOpacity
 						onPress={() => {
@@ -129,9 +194,9 @@ class SectionScreen extends React.Component {
 					></WebView> */}
 						<ContentTitle>Overall Rating</ContentTitle>
 						<Rating width={140} rate={4} rateAble={false} />
-						{this.state.username != "" && <ContentTitle>Your Rate</ContentTitle>}
+						{this.props.username != "Guest" && <ContentTitle>Your Rate</ContentTitle>}
 
-						{this.state.username != "" && <Rating width={140} rate={0} rateAble={true} />}
+						{this.props.username != "Guest" && <Rating width={140} rate={0} rateAble={true} />}
 
 						<Markdown
 							body={section.content}
@@ -155,7 +220,11 @@ class SectionScreen extends React.Component {
 	}
 }
 
-export default SectionScreen;
+export default connect(mapStateToProps, mapDispatchToProps)(SectionScreen);
+
+const IconView = styled.View`
+	margin-top: 2px;
+`;
 
 const MapView = styled.View`
 	flex-direction: row;

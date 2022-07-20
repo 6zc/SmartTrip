@@ -11,7 +11,7 @@ const idd = "4KThjrfS9cpzmX6PX87UPH";
 
 const CardsQuery = gql`
 	{
-		cardsCollection(where: { sys: { id_in: ["3hCqc4Bps5hbW3RHFMCWeq", "4BjlbWnAXFPNI89V2Pk0wg", "4GZu1Ih2Jqi4vPVAfu9SYN"] } }) {
+		cardsCollection(where: { sys: { id_in: ["3hCqc4Bps5hbW3RHFMCWeq", "6A6Y0Ky5BQbz5KuMxicfR", "4GZu1Ih2Jqi4vPVAfu9SYN"] } }) {
 			items {
 				sys {
 					id

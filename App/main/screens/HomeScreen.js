@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import NewlyAdded from "../components/NewlyAdded";
 import Recommended from "../components/Recommanded";
+import LogoutView from "../components/LogoutView";
 
 // Query to Contentful using GraphQL
 const CardsQuery = gql`
@@ -73,6 +74,10 @@ function mapDispatchToProps(dispatch) {
 				type: "OPEN_MENU",
 				place: place,
 			}),
+		openLogout: () =>
+			dispatch({
+				type: "OPEN_LOGOUT",
+			}),
 		openLogin: () =>
 			dispatch({
 				type: "OPEN_LOGIN",
@@ -125,7 +130,7 @@ class HomeScreen extends React.Component {
 	}
 
 	toggleMenu = () => {
-		if (this.props.action == "openMenu") {
+		if (this.props.action == "openMenu" || this.props.action == "openLogout") {
 			Animated.timing(this.state.scale, {
 				useNativeDriver: false,
 				toValue: 0.9,
@@ -141,7 +146,7 @@ class HomeScreen extends React.Component {
 			StatusBar.setBarStyle("light-content", true);
 		}
 
-		if (this.props.action == "closeMenu") {
+		if (this.props.action == "closeMenu" || this.props.action == "closeLogout") {
 			Animated.timing(this.state.scale, {
 				useNativeDriver: false,
 				toValue: 1,
@@ -159,13 +164,7 @@ class HomeScreen extends React.Component {
 
 	handleAvatar = () => {
 		if (this.props.name != "Guest") {
-			Alert.alert("Logged Out", "You've logged out successfully!");
-			// log out
-			this.props.updateName("Guest");
-			this.props.updateToken("");
-			this.props.updateCollection([]);
-			this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
-			AsyncStorage.clear();
+			this.props.openLogout();
 		} else {
 			this.props.navigation.push("Login", {});
 		}
@@ -175,6 +174,7 @@ class HomeScreen extends React.Component {
 		return (
 			<RootView>
 				<Menu navigation={this.props.navigation} />
+				<LogoutView />
 				<AnimatedContainer style={{ transform: [{ scale: this.state.scale }], opacity: this.state.opacity }}>
 					<SafeAreaView>
 						<ScrollView>
@@ -216,9 +216,6 @@ class HomeScreen extends React.Component {
 								))}
 							</ScrollView>
 
-							{/* <ScrollView horizontal={true} style={{ paddingBottom: 30 }} showsHorizontalScrollIndicator={false}>
-
-							</ScrollView> */}
 							<NewlyAdded navigation={this.props.navigation} />
 							<Recommended navigation={this.props.navigation} />
 						</ScrollView>
@@ -275,11 +272,6 @@ const TitleBar = styled.View`
 	width: 100%;
 	margin-top: 50px;
 	padding-left: 80px;
-`;
-
-const CardsContainer = styled.View`
-	flex-direction: row;
-	padding-left: 10px;
 `;
 
 const logos = [

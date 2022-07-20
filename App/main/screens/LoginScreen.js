@@ -101,71 +101,73 @@ class LoginScreen extends React.Component {
 	};
 
 	fetchUser = () => {
-		// fetch("https://randomuser.me/api/")
-		// 	// transform to json first
-		// 	.then(response => response.json())
-		// 	// using the response
-		// 	.then(response => {
-		// 		const name = response.results[0].name.first;
-		// 		const avatar = response.results[0].picture.thumbnail;
-		// 		saveState({ name, avatar });
-		// 		this.props.updateName(name);
-		// 		this.props.updateAvatar(avatar);
-		// 	});
-
-		const user = this.state.user;
-		const password = this.state.password;
-
-		fetch(server, {
-			body: JSON.stringify({ username: user, password: password }), // must match 'Content-Type' header
-			cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-			method: "POST", // *GET, POST, PUT, DELETE, etc.
-			//mode: 'cors', // no-cors, cors, *same-origin
-			redirect: "follow", // manual, *follow, error
-		})
+		var avatar = "";
+		fetch("https://randomuser.me/api/")
+			// transform to json first
+			.then(response => response.json())
+			// using the response
 			.then(response => {
-				// console.log("response message: ");
-				// console.log(response);
-				response
-					.json()
-					.then(data => {
-						// login success
-						console.log("login success");
-						// save name and avatar
-						const name = user;
-						const token = data.Authorization;
-						saveState({
-							name,
-							token,
-						});
-						this.props.updateName(name);
-						this.props.updateToken(token);
-						this.getCollectionDB();
-						// animation
-						setTimeout(() => {
-							this.setState({ isLoading: false });
-							this.setState({ isSuccessful: true });
-							setTimeout(() => {
-								// hide login
-								this.props.navigation.goBack();
-								this.setState({ isSuccessful: false });
-							}, 1000);
-						}, 400);
+				// const name = response.results[0].name.first;
+				avatar = response.results[0].picture.thumbnail;
+				// saveState({ name, avatar });
+				// this.props.updateName(name);
+				// this.props.updateAvatar(avatar);
+				const user = this.state.user;
+				const password = this.state.password;
 
-						// console.log(data);
+				fetch(server, {
+					body: JSON.stringify({ username: user, password: password }), // must match 'Content-Type' header
+					cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+					method: "POST", // *GET, POST, PUT, DELETE, etc.
+					//mode: 'cors', // no-cors, cors, *same-origin
+					redirect: "follow", // manual, *follow, error
+				})
+					.then(response => {
+						// console.log("response message: ");
+						// console.log(response);
+						response
+							.json()
+							.then(data => {
+								// login success
+								console.log("login success");
+								// save name and avatar
+								const name = user;
+								const token = data.Authorization;
+								saveState({
+									name,
+									avatar,
+									token,
+								});
+								this.props.updateName(name);
+								this.props.updateAvatar(avatar);
+								this.props.updateToken(token);
+								this.getCollectionDB();
+								// animation
+								setTimeout(() => {
+									this.setState({ isLoading: false });
+									this.setState({ isSuccessful: true });
+									setTimeout(() => {
+										// hide login
+										this.props.navigation.goBack();
+										this.setState({ isSuccessful: false });
+									}, 1000);
+								}, 400);
+
+								// console.log(data);
+							})
+							.catch(data => {
+								// login failed
+								console.log("failed");
+								// animation and alert
+								setTimeout(() => {
+									this.setState({ isLoading: false });
+									Alert.alert("Login Failed", "Wrong user name or password.");
+								}, 300);
+							});
 					})
-					.catch(data => {
-						// login failed
-						console.log("failed");
-						// animation and alert
-						setTimeout(() => {
-							this.setState({ isLoading: false });
-							Alert.alert("Login Failed", "Wrong user name or password.");
-						}, 300);
+					.catch(error => {
+						console.log(error);
 					});
-			})
-			.catch(error => {
-				console.log(error);
 			});
 	};
 

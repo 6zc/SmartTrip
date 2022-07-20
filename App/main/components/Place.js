@@ -5,6 +5,7 @@ import { BlurView } from "@react-native-community/blur";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import logoMap from "./LogoMap";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -42,7 +43,6 @@ function getPlaceWidth(screenWidth) {
 class Place extends React.Component {
 	state = {
 		cardWidth: getPlaceWidth(screenWidth),
-		liked: false,
 	};
 
 	getCollectionDB = () => {
@@ -67,9 +67,6 @@ class Place extends React.Component {
 									// console.log(value.data);
 									var collection = [];
 									for (const element of value.data) {
-										if (element.collectId == this.props.id) {
-											this.setState({ liked: true });
-										}
 										collection.push(element.collectId);
 									}
 									this.props.updateCollection(collection);
@@ -103,7 +100,6 @@ class Place extends React.Component {
 							if (response.status === 200) {
 								Alert.alert("Success!");
 
-								this.setState({ liked: !liked });
 								this.getCollectionDB();
 							} else {
 								Alert.alert("Something went wrong. Try again later :(");
@@ -133,7 +129,7 @@ class Place extends React.Component {
 					<Image source={this.props.image} />
 
 					<Wrapper>
-						<Logo source={this.props.logo} resizeMode="contain" />
+						<Logo source={logoMap.get(this.props.type)} resizeMode="contain" />
 						<Type>{this.props.type}</Type>
 					</Wrapper>
 					{this.props.username != "Guest" && (
@@ -157,7 +153,7 @@ class Place extends React.Component {
 							height: "100%",
 						}}
 					/>
-					<Subtitle>{this.props.distance}</Subtitle>
+					{/* <Subtitle>{this.props.distance}</Subtitle> */}
 					<Title>{this.props.title}</Title>
 				</Content>
 			</Container>
@@ -244,7 +240,7 @@ const Content = styled.View`
 	bottom: 0px;
 
 	justify-content: center;
-	height: 100px;
+	height: 80px;
 	width: 100%;
 	border-bottom-left-radius: 14px;
 	border-bottom-right-radius: 14px;

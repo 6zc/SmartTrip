@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 import { BlurView } from "@react-native-community/blur";
+import logoMap from "./LogoMap";
 
 const screenWidth = Dimensions.get("window").width;
 var cardWidth = screenWidth - 40;
@@ -24,7 +25,11 @@ const MenuCard = props => (
 					height: "100%",
 				}}
 			/>
-			<Subtitle>{props.subtitle}</Subtitle>
+			{/* <Subtitle>{props.subtitle}</Subtitle> */}
+			<Wrapper>
+				<Logo source={logoMap.get(props.type)} resizeMode="contain" />
+				<Type>{props.type}</Type>
+			</Wrapper>
 			<Title>{props.title}</Title>
 		</Cover>
 	</Container>
@@ -71,4 +76,23 @@ const Subtitle = styled.Text`
 	color: rgba(255, 255, 255, 0.8);
 	text-transform: uppercase;
 	margin-left: 20px;
+`;
+
+const Wrapper = styled.View`
+	flex-direction: row;
+	margin-left: 20px;
+	align-items: center;
+`;
+
+const Logo = styled.Image`
+	width: 24px;
+	height: 24px;
+`;
+
+const Type = styled.Text`
+	font-size: 15px;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.8);
+	margin-left: 5px;
+	text-transform: uppercase;
 `;

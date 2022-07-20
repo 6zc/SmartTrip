@@ -104,23 +104,23 @@ class CollectionScreen extends React.Component {
 		return (
 			<Container>
 				<StatusBar hidden />
+
+				<Cover>
+					<LottieView source={require("../assets/lottie-background.json")} autoPlay={true} loop={true} />
+					<Title>Favorites</Title>
+
+					<TouchableOpacity
+						onPress={() => {
+							this.props.navigation.goBack();
+						}}
+						style={{ position: "absolute", top: 36, right: 20 }}
+					>
+						<CloseView>
+							<Ionicon name="ios-close" size={32} color="#5263ff" />
+						</CloseView>
+					</TouchableOpacity>
+				</Cover>
 				<ScrollView>
-					<Cover>
-						<LottieView source={require("../assets/lottie-background.json")} autoPlay={true} loop={true} />
-						<Title>Favorites</Title>
-
-						<TouchableOpacity
-							onPress={() => {
-								this.props.navigation.goBack();
-							}}
-							style={{ position: "absolute", top: 36, right: 20 }}
-						>
-							<CloseView>
-								<Ionicon name="ios-close" size={32} color="#5263ff" />
-							</CloseView>
-						</TouchableOpacity>
-					</Cover>
-
 					{this.props.name != "Guest" || this.state.collection == [] ? (
 						<Query query={getCollection()}>
 							{({ loading, error, data }) => {
@@ -132,7 +132,7 @@ class CollectionScreen extends React.Component {
 
 								for (const element of data.cardsCollection.items) {
 									if (collection.includes(element.sys.id)) {
-										const type = element.contentType;
+										const type = element.type;
 										if (map.has(type)) {
 											map.get(type).push(element);
 										} else {
@@ -153,7 +153,7 @@ class CollectionScreen extends React.Component {
 									console.log(key);
 									var tempOutput = (
 										<Favorites>
-											<Subtitle>Favorite {key}</Subtitle>
+											<Subtitle>Favorite {key}s</Subtitle>
 											<ScrollView
 												horizontal={true}
 												style={{ paddingBottom: 10 }}
@@ -178,7 +178,6 @@ class CollectionScreen extends React.Component {
 																logo={card.logo}
 																type={card.type}
 																content={card.content}
-																liked={true}
 															></Card>
 														</TouchableOpacity>
 													))}
@@ -269,8 +268,9 @@ const Title = styled.Text`
 `;
 
 const Cover = styled.View`
-	height: 250px;
+	height: 230px;
 	background: black;
 	justify-content: center;
 	align-items: center;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 `;
