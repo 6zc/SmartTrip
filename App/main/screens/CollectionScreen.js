@@ -132,7 +132,7 @@ class CollectionScreen extends React.Component {
 
 								for (const element of data.cardsCollection.items) {
 									if (collection.includes(element.sys.id)) {
-										const type = element.contentType;
+										const type = element.type;
 										if (map.has(type)) {
 											map.get(type).push(element);
 										} else {
@@ -153,7 +153,7 @@ class CollectionScreen extends React.Component {
 									console.log(key);
 									var tempOutput = (
 										<Favorites>
-											<Subtitle>Favorite {key}</Subtitle>
+											<Subtitle>Favorite {key}s</Subtitle>
 											<ScrollView
 												horizontal={true}
 												style={{ paddingBottom: 10 }}
