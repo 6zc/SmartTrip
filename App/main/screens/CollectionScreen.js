@@ -104,23 +104,23 @@ class CollectionScreen extends React.Component {
 		return (
 			<Container>
 				<StatusBar hidden />
+
+				<Cover>
+					<LottieView source={require("../assets/lottie-background.json")} autoPlay={true} loop={true} />
+					<Title>Favorites</Title>
+
+					<TouchableOpacity
+						onPress={() => {
+							this.props.navigation.goBack();
+						}}
+						style={{ position: "absolute", top: 36, right: 20 }}
+					>
+						<CloseView>
+							<Ionicon name="ios-close" size={32} color="#5263ff" />
+						</CloseView>
+					</TouchableOpacity>
+				</Cover>
 				<ScrollView>
-					<Cover>
-						<LottieView source={require("../assets/lottie-background.json")} autoPlay={true} loop={true} />
-						<Title>Favorites</Title>
-
-						<TouchableOpacity
-							onPress={() => {
-								this.props.navigation.goBack();
-							}}
-							style={{ position: "absolute", top: 36, right: 20 }}
-						>
-							<CloseView>
-								<Ionicon name="ios-close" size={32} color="#5263ff" />
-							</CloseView>
-						</TouchableOpacity>
-					</Cover>
-
 					{this.props.name != "Guest" || this.state.collection == [] ? (
 						<Query query={getCollection()}>
 							{({ loading, error, data }) => {
@@ -268,8 +268,9 @@ const Title = styled.Text`
 `;
 
 const Cover = styled.View`
-	height: 250px;
+	height: 230px;
 	background: black;
 	justify-content: center;
 	align-items: center;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 `;
