@@ -20,18 +20,18 @@ const PlaceView = props => {
     coordinate,
     navigation,
     toggleUpdate,
+    weather,
+    rate,
     liked = false
   } = props;
   const { title, type, image, sys } = card;
+  const { rain, temp, uv, isNight } = weather || {rain: 0, temp: 30};
   const [ height, setHeight ] = useState(350);
 
   //TODO
   const cases = (Math.random()*1000).toFixed(0);
-  const temp = (Math.random()*40).toFixed(0);
-  const rain = Math.random()*20;
-  const uv = Math.random()*12;
 
-  const [weather, icon] = getWeatherDesc(uv, rain);
+  const [weatherDesc, icon] = getWeatherDesc(uv, rain, isNight);
   const covidDesc = getCovidDesc(cases);
   return (
     <View 
@@ -44,10 +44,11 @@ const PlaceView = props => {
               name={icon}
               size={14}
               color={"#ffffff"}
+              solid={true}
               style={styles.group.weatherLogo}
             >
             </FontAwesome>
-            <Text style={styles.group.weather}>{'  '+weather+' '+temp+'°C '}</Text>
+            <Text style={styles.group.weather}>{'  '+weatherDesc+' '+temp+'°C '}</Text>
           </View>
           <View style={styles.group.wrapper}>
             <FontAwesome
@@ -82,9 +83,13 @@ const PlaceView = props => {
           <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
           <Text style={styles.detail.detailText}>Detail</Text>
         </TouchableOpacity>
-        <Rating width={140} rate={4} rateAble={false} style={styles.rating}>
-          {/* <BlurView style={styles.blur} blurType="light" blurAmount={5} /> */}
-        </Rating>
+        <Rating
+          width={140}
+          rate={rate}
+          rateAble={false}
+          style={styles.rating}
+          id={card.sys.id}
+        />
         <Svg width={290} height={290}>
           <ImageSvg
             width={"100%"}

@@ -63,6 +63,7 @@ const MapEntry = props => {
 	const { route, navigation, collection, updateCollection} = props;
   const [ token, setToken] = useState('');
   const [ needUpdate, toggleUpdate ] = useState(1);
+	const [ rates, setRates ] = useState([])
   AsyncStorage.getItem("state").then(serializedState => {
     const state = JSON.parse(serializedState);
     if (state && state.token) {
@@ -78,7 +79,7 @@ const MapEntry = props => {
       redirect: "follow",
       cache: "no-cache"
     }).then(response => {
-      if(response.status=== 200){
+      if(response.status === 200){
         response.json().then(value => {
           updateCollection(value.data.map(entry=>{
 						return entry.collectId
@@ -88,6 +89,24 @@ const MapEntry = props => {
     }).catch(error => console.log(error))
 
   }, [token, needUpdate])
+	
+	useEffect(() => {
+		fetch("http://39.108.191.242:10089/rank", { 
+      method: "GET",
+      redirect: "follow",
+      cache: "no-cache"
+    }).then(response => {
+      if(response.status === 200){
+        response.json().then(value => {
+					const rate = [];
+					value.data.forEach(element => {
+						rate[element.place_id] = element.avgScore;
+					});
+					setRates(rate);
+        });
+      }
+    }).catch(error => console.log(error))
+	}, [])
 
   return (
     <Query query={CardsQuery}>
@@ -96,6 +115,7 @@ const MapEntry = props => {
 				return (
 					<View>
 						<DynamicSearchBar
+							rates={rates}
 							route={route}
 							navigation={navigation}
               collection={collection}
@@ -103,6 +123,7 @@ const MapEntry = props => {
               toggleUpdate={toggleUpdate}
 						/>
 						<MapWrapper
+							rates={rates}
 							route={route}
 							navigation={navigation}
               collection={collection}

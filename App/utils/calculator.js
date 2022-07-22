@@ -87,16 +87,17 @@ function getTempColor(temp) {
   }
 }
 
-function getWeatherDesc(uv, rain) {
+function getWeatherDesc(uv, rain, night) {
   if(rain===0){
-    if(uv<4) return 'Cloudy';
-    else if(uv<8) return 'Serene';
-    else return 'Sunny'
+    if(night) return ['Good Night', 'moon'];
+    if(uv<4) return ['Cloudy', 'cloud-sun'];
+    else if(uv<10) return ['Sunny', 'sun'];
+    else return ['Sunburnt', 'umbrella-beach'];
   }
   else if(rain<5) return ['Drizzling', 'umbrella'];
   else if(rain<10) return ['Raining', uv>4?'cloud-sun-rain':'cloud-rain'];
   else if(rain<20) return ['Heavily',uv>4?'cloud-sun-rain':'cloud-showers-heavy'];
-  else return 'Rainstorm'
+  else return ['Rainstorm', 'cloud-showers-heavy'];
 }
 
 function getCovidDesc(count) {

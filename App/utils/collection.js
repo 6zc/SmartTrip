@@ -35,7 +35,7 @@ const Collection = props => {
           redirect: "follow",
           cache: "no-cache"
         }).then(response => {
-          if(response.status=== 200){
+          if(response.status === 200){
             response.json().then(value => {
               if(value.msg==='success'){
                 Alert.alert("Operation success!")
