@@ -32,6 +32,27 @@ function mapDispatchToProps(dispatch) {
 class SectionScreen extends React.Component {
 	state = {
 		liked: false,
+		rate: 3,
+	};
+
+	getRating = id => {
+		fetch("http://39.108.191.242:10089/rank", {
+			method: "GET",
+			redirect: "follow",
+			cache: "no-cache",
+		})
+			.then(response => {
+				if (response.status === 200) {
+					response.json().then(value => {
+						value.data.forEach(element => {
+							if (element.place_id == id) {
+								this.setState({ rate: element.avgScore });
+							}
+						});
+					});
+				}
+			})
+			.catch(error => console.log(error));
 	};
 
 	getCollectionDB = id => {
@@ -49,7 +70,7 @@ class SectionScreen extends React.Component {
 						cache: "no-cache",
 					})
 						.then(response => {
-							console.log(response);
+							// console.log(response);
 							if (response.status === 200) {
 								response.json().then(value => {
 									// console.log("home: collect");
@@ -106,12 +127,9 @@ class SectionScreen extends React.Component {
 		const section = navigation.getParam("section");
 		const id = section.sys.id;
 		this.getCollectionDB(id);
-		// setStatusBarHidden(true, "fade");
-		StatusBar.setBarStyle("light-content", true);
-	}
-	componentWillUnmount() {
-		// setStatusBarHidden(false, "fade");
-		StatusBar.setBarStyle("dark-content", true);
+		this.getRating(id);
+
+		StatusBar.setHidden(true);
 	}
 
 	render() {
@@ -121,7 +139,6 @@ class SectionScreen extends React.Component {
 		return (
 			<ScrollView style={{ backgroundColor: "white" }}>
 				<Container>
-					<StatusBar hidden />
 					<Cover>
 						<Image source={section.image} />
 						<Wrapper>
@@ -134,8 +151,9 @@ class SectionScreen extends React.Component {
 					<TouchableOpacity
 						onPress={() => {
 							this.props.navigation.goBack();
+							StatusBar.setHidden(false);
 						}}
-						style={{ position: "absolute", top: 20, right: 20 }}
+						style={{ position: "absolute", top: 35, right: 20 }}
 					>
 						<CloseView>
 							<Ionicon name="ios-close" size={32} color="#5263ff" />
@@ -147,7 +165,7 @@ class SectionScreen extends React.Component {
 							onPress={() => {
 								this.handleLike(id);
 							}}
-							style={{ position: "absolute", top: 20, right: 70 }}
+							style={{ position: "absolute", top: 35, right: 70 }}
 						>
 							<CloseView>
 								<IconView>
@@ -193,9 +211,8 @@ class SectionScreen extends React.Component {
 						}}
 					></WebView> */}
 						<ContentTitle>Overall Rating</ContentTitle>
-						<Rating width={140} rate={4} rateAble={false} id={id} />
+						<Rating width={140} rate={this.state.rate} rateAble={false} id={id} />
 						{this.props.username != "Guest" && <ContentTitle>Your Rate</ContentTitle>}
-
 						{this.props.username != "Guest" && <Rating width={140} rate={0} rateAble={true} id={id} />}
 
 						<Markdown
