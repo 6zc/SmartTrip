@@ -75,7 +75,7 @@ UserStack.navigationOptions = {
 const TabNavigator = createBottomTabNavigator({
 	HomeStack,
 	MapStack,
-	UserStack,
+	// UserStack,
 });
 
 export default createAppContainer(TabNavigator);

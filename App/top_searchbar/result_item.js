@@ -14,14 +14,10 @@ import Collection from "../utils/collection";
 const Item = props => {
   const {
     toggleUpdate,
+    rate,
     liked = false
   } = props;
-  const [ rate, setRate ] = useState(0);
 
-  //TODO
-  useEffect(()=>{
-    setRate(Math.random() * 6);
-  },[])
 
   const [distance ,setDis] = useState(0)
 

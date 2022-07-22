@@ -193,10 +193,10 @@ class SectionScreen extends React.Component {
 						}}
 					></WebView> */}
 						<ContentTitle>Overall Rating</ContentTitle>
-						<Rating width={140} rate={4} rateAble={false} />
+						<Rating width={140} rate={4} rateAble={false} id={id} />
 						{this.props.username != "Guest" && <ContentTitle>Your Rate</ContentTitle>}
 
-						{this.props.username != "Guest" && <Rating width={140} rate={0} rateAble={true} />}
+						{this.props.username != "Guest" && <Rating width={140} rate={0} rateAble={true} id={id} />}
 
 						<Markdown
 							body={section.content}

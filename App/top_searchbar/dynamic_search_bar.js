@@ -9,7 +9,8 @@ const searchBar = props => {
     itemList,
     navigation,
     collection,
-    toggleUpdate
+    toggleUpdate,
+    rates
   } = props;
   const dataBackup = itemList;
   const [queryText, setQueryText] = useState("");
@@ -117,6 +118,7 @@ const searchBar = props => {
               return (
                 <View style={styles.result_item}>
                   <ResultItem
+                    rate={rates[item.item.sys.id] || 3}
                     toggleUpdate={toggleUpdate}
                     item={item.item}
                     navigation={navigation}

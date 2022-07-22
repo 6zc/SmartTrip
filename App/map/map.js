@@ -25,13 +25,15 @@ const Map = props => {
     toggleUpdate,
     navigation,
     itemList,
-    collection
+    collection,
+    rates
   } = props;
 
   const itemID = navigation.state?.params?.itemID;
 	const [areaTemp, setAreaTemp] = useState([]);
-	const [humidity, setHumidity] = useState([]);
-	const [uvindex, setUvindex] = useState([]);
+	const [humidity, setHumidity] = useState(0);
+	const [uvindex, setUvindex] = useState(0);
+  const [isNight, setNight] = useState(false);
 
   // const ASPECT_RATIO = width / height;
   // const LATITUDE_DELTA = 0.2;
@@ -48,14 +50,14 @@ const Map = props => {
       
       setTimeout(() => {
         refs['map'].animateCamera(getCamera(
-          ...Object.values(refs[itemID].props.coordinate),0.03),{ duration: 300 })
-        refs[itemID].showCallout();
-      }, 600)
-    }else{
-      let Camera = getUserPosition();
-      setTimeout(() => {
-        refs['map'].animateCamera(Camera, { duration: 1000 })
-      }, 600)
+          ...Object.values(refs[itemID].props.coordinate),0.03),{ duration: 400 })
+          refs[itemID].showCallout();
+        }, 1200)
+      }else{
+        let Camera = getUserPosition();
+        setTimeout(() => {
+          refs['map'].animateCamera(Camera, { duration: 1000 })
+        }, 1200)
     }
   }, [itemID]);
 
@@ -67,21 +69,26 @@ const Map = props => {
 				if (responseJson.status === 404) {
 					return;
 				}
-				setAreaTemp(responseJson.area_temp);
-				setHumidity(responseJson.humidity ? responseJson.humidity.data : []);
-				setUvindex(responseJson.uvindex ? responseJson.uvindex.data : []);
+        const area = []
+        responseJson.area_temp.forEach(element => {
+          area[element.label] = {rain:element.num, temp:element.value}
+        });
+				setAreaTemp(area);
+				setHumidity(responseJson.humidity?.data.length ? responseJson.humidity.data[0].value : 0);
+				setUvindex(responseJson.uvindex?.data.length ? responseJson.uvindex.data[0].value : 0);
 			} catch (error) {
 				console.error(error);
 			}
 		}
 		fetchWeatherData();
-
-    // let Camera = getUserPosition();
-    // setTimeout(() => {
-    //   refs['map'].animateCamera(Camera, { duration: 1000 })
-    // }, 300)
-
 	}, []);
+
+  useEffect(() => {
+    const timeNow = new Date();
+    if(timeNow.getHours()>19){
+      setNight(true);
+    }
+  })
 
   return (
     <View style={styles.container}>
@@ -143,7 +150,7 @@ const Map = props => {
               <View style={styles.placeViewWrapper}>
                 <BlurView style={styles.blur} blurType="xlight" />
                 <PlaceView
-                  // weather={areaTemp}
+                  weather={{...areaTemp[card.district], isNight, uv: uvindex || 0}}
                   toggleUpdate={toggleUpdate}
                   navigation={navigation}
                   card={card}
@@ -151,6 +158,7 @@ const Map = props => {
                     longitude: card.location.lon,
                     latitude: card.location.lat,
                   }}
+                  rate={rates[card.sys.id] || 3}
                   liked={collection.some( value => {
                     return value == card.sys.id
                   })}
@@ -166,14 +174,14 @@ const Map = props => {
           <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
           <Ionicon name="sunny" size={18} style={styles.icons} />
           <Text style={styles.tips.tip}>
-            {" UV Index: " + (uvindex.length ? uvindex[0].value : 0) + "/10"}
+            {" UV Index: " + (uvindex || 0) + "/10"}
           </Text>
         </View>
         <View style={styles.tips.tipRight}>
           <BlurView style={styles.blur} blurType="xlight" blurAmount={10} />
           <Ionicon name="thermometer" size={18} style={styles.icons} />
           <Text style={styles.tips.tip}>
-            {" Humidity: " + ( humidity.length ? humidity[0].value : 70 ) + "%"}
+            {" Humidity: " + ( humidity || 70 ) + "%"}
           </Text>
         </View>
       </View>
