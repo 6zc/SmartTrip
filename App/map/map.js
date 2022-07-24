@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
-import { getUserPosition, getCamera } from "../utils/calculator.js"
+import { getUserPosition, getCamera } from "../utils/calculator.js";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
 import { BlurView } from "@react-native-community/blur";
@@ -16,23 +16,18 @@ import PlaceView from "./place_view.js";
 import Logo from "../utils/logo.js";
 
 const refs = [];
-const iOS = Platform.OS === 'ios';
+const iOS = Platform.OS === "ios";
 
 const { width, height } = Dimensions.get("window");
 
-const Map = props => {
-  const {
-    toggleUpdate,
-    navigation,
-    itemList,
-    collection,
-    rates
-  } = props;
+const Map = (props) => {
+  const { toggleUpdate, navigation, itemList, collection, rates } = props;
 
   const itemID = navigation.state?.params?.itemID;
-	const [areaTemp, setAreaTemp] = useState([]);
-	const [humidity, setHumidity] = useState(0);
-	const [uvindex, setUvindex] = useState(0);
+  const [areaTemp, setAreaTemp] = useState([]);
+  const [covid, setCovid] = useState([]);
+  const [humidity, setHumidity] = useState(0);
+  const [uvindex, setUvindex] = useState(0);
   const [isNight, setNight] = useState(false);
 
   // const ASPECT_RATIO = width / height;
@@ -45,70 +40,99 @@ const Map = props => {
   //   longitudeDelta: LONGITUDE_DELTA,
   // };
 
-  useEffect(()=>{
-    if(refs[itemID]){
-      
+  useEffect(() => {
+    if (refs[itemID]) {
       setTimeout(() => {
-        refs['map'].animateCamera(getCamera(
-          ...Object.values(refs[itemID].props.coordinate),0.03),{ duration: 400 })
-          refs[itemID].showCallout();
-        }, 1200)
-      }else{
-        let Camera = getUserPosition();
-        setTimeout(() => {
-          refs['map'].animateCamera(Camera, { duration: 1000 })
-        }, 1200)
+        refs["map"].animateCamera(
+          getCamera(...Object.values(refs[itemID].props.coordinate), 0.03),
+          { duration: 400 }
+        );
+        refs[itemID].showCallout();
+      }, 1200);
+    } else {
+      let Camera = getUserPosition();
+      setTimeout(() => {
+        refs["map"].animateCamera(Camera, { duration: 1000 });
+      }, 1200);
     }
   }, [itemID]);
 
   useEffect(() => {
-		async function fetchWeatherData() {
-			try {
-				let response = await fetch("http://39.108.191.242:10089/api/homepage", { method: "GET" });
-				let responseJson = await response.json();
-				if (responseJson.status === 404) {
-					return;
-				}
-        const area = []
-        responseJson.area_temp.forEach(element => {
-          area[element.label] = {rain:element.num, temp:element.value}
-        });
-				setAreaTemp(area);
-				setHumidity(responseJson.humidity?.data.length ? responseJson.humidity.data[0].value : 0);
-				setUvindex(responseJson.uvindex?.data.length ? responseJson.uvindex.data[0].value : 0);
-			} catch (error) {
-				console.error(error);
-			}
-		}
-		fetchWeatherData();
-	}, []);
+
+    fetch("http://39.108.191.242:10089/coronavirus", {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          response
+            .json()
+            .then((value) => {
+              const area = [];
+              value.data.forEach((element) => {
+                area[element.district] = element.num;
+              });
+              setCovid(area);
+            })
+            .catch((error) => console.log(error));
+        }
+      })
+      .catch((error) => console.log(error));
+
+    fetch("http://39.108.191.242:10089/api/homepage", {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          response
+            .json()
+            .then((value) => {
+              const area = [];
+              value.area_temp.forEach((element) => {
+                area[element.label] = {
+                  rain: element.num,
+                  temp: element.value,
+                };
+              });
+              setAreaTemp(area);
+              setHumidity(
+                value.humidity?.data.length ? value.humidity.data[0].value : 0
+              );
+              setUvindex(
+                value.uvindex?.data.length ? value.uvindex.data[0].value : 0
+              );
+            })
+            .catch((error) => console.log(error));
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   useEffect(() => {
     const timeNow = new Date();
-    if(timeNow.getHours()>19){
+    if (timeNow.getHours() > 19) {
       setNight(true);
     }
-  })
+  });
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.goBack}
-        onPress={ e =>{
+        onPress={(e) => {
           let Camera = getUserPosition();
           setTimeout(() => {
-            refs['map'].animateCamera(Camera, { duration: 1000 })
-          }, 10)
+            refs["map"].animateCamera(Camera, { duration: 1000 });
+          }, 10);
         }}
-        >
-          <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
-          <FontAwesome
-              name={'compass'}
-              size={24}
-              color={"#4c4c4c"}
-              style={styles.goBack.logo}
-            ></FontAwesome>
-        </TouchableOpacity>
+      >
+        {iOS && <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />}
+        <FontAwesome
+          name={"compass"}
+          size={24}
+          color={"#4c4c4c"}
+          style={styles.goBack.logo}
+        ></FontAwesome>
+      </TouchableOpacity>
       <MapView
         stopPropagation={true}
         style={styles.map}
@@ -116,8 +140,9 @@ const Map = props => {
         followsUserLocation={true}
         minZoomLevel={9}
         maxZoomLevel={20}
-        ref={ref => {
-          refs['map'] = ref;
+        showsMyLocationButton={false}
+        ref={(ref) => {
+          refs["map"] = ref;
         }}
       >
         {itemList.map((card) => (
@@ -127,8 +152,8 @@ const Map = props => {
             pointerEvents={"auto"}
             tracksViewChanges={false}
             coordinate={{
-              longitude: card.location.lon + (iOS?0.0049:0),
-              latitude: card.location.lat - (iOS?0.0028:0),
+              longitude: card.location.lon + (iOS ? 0.0049 : 0),
+              latitude: card.location.lat - (iOS ? 0.0028 : 0),
             }}
           >
             <View style={styles.customMarker}>
@@ -148,9 +173,14 @@ const Map = props => {
               }}
             >
               <View style={styles.placeViewWrapper}>
-                <BlurView style={styles.blur} blurType="xlight" />
+                {iOS && <BlurView style={styles.blur} blurType="xlight" />}
                 <PlaceView
-                  weather={{...areaTemp[card.district], isNight, uv: uvindex || 0}}
+                  weather={{
+                    ...areaTemp[card.district],
+                    isNight,
+                    uv: uvindex || 0,
+                  }}
+                  cases={covid[card.district]}
                   toggleUpdate={toggleUpdate}
                   navigation={navigation}
                   card={card}
@@ -159,8 +189,8 @@ const Map = props => {
                     latitude: card.location.lat,
                   }}
                   rate={rates[card.sys.id] || 3}
-                  liked={collection.some( value => {
-                    return value == card.sys.id
+                  liked={collection.some((value) => {
+                    return value == card.sys.id;
                   })}
                 />
               </View>
@@ -171,17 +201,17 @@ const Map = props => {
       <View style={styles.tips}>
         <View style={styles.tips.tipLeft}>
           {/* 这里会让安卓下崩溃！！ */}
-          <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />
+          {iOS && <BlurView style={styles.blur} blurType="xlight" blurAmount={100} />}
           <Ionicon name="sunny" size={18} style={styles.icons} />
           <Text style={styles.tips.tip}>
             {" UV Index: " + (uvindex || 0) + "/10"}
           </Text>
         </View>
         <View style={styles.tips.tipRight}>
-          <BlurView style={styles.blur} blurType="xlight" blurAmount={10} />
+          {iOS && <BlurView style={styles.blur} blurType="xlight" blurAmount={10} /> }
           <Ionicon name="thermometer" size={18} style={styles.icons} />
           <Text style={styles.tips.tip}>
-            {" Humidity: " + ( humidity || 70 ) + "%"}
+            {" Humidity: " + (humidity || 70) + "%"}
           </Text>
         </View>
       </View>
@@ -194,32 +224,31 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: "hidden",
   },
-  blur:{
+  blur: {
     position: "absolute",
     top: -1,
     left: -1,
-    height: '103%',
-    width: '103%',
-    zIndex:-1,
+    height: "103%",
+    width: "103%",
+    zIndex: -1,
     borderRadius: 8,
-
   },
   goBack: {
+    backgroundColor: iOS? undefined:"#ffffff",
     height: 30,
     width: 30,
     position: "absolute",
-    left: '86%',
+    left: "86%",
     bottom: 83,
-    zIndex:4,
+    zIndex: 4,
     borderRadius: 8,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 0 },
     shadowColor: "#000000",
     shadowOpacity: 0.25,
-    // overflow: "hidden",
-    logo:{ 
-      top:2.5,
-      left:3
+    logo: {
+      top: 2.5,
+      left: 3,
     },
   },
   callout: {
@@ -252,20 +281,22 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
     },
     tipLeft: {
-      overflow: 'hidden',
+      overflow: "hidden",
       borderRadius: 12,
       width: 170,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: iOS? undefined:"#ffffff",
     },
     tipRight: {
-      overflow: 'hidden',
+      overflow: "hidden",
       borderRadius: 12,
       width: 170,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: iOS? undefined:"#ffffff",
     },
   },
   textWrapper: {

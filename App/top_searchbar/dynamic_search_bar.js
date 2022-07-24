@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
-import { StyleSheet, View, Platform, Animated, Easing, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Platform, Animated, Easing } from "react-native";
 import SearchBar from "react-native-dynamic-search-bar";
 import { BlurView } from "@react-native-community/blur";
 import ResultItem from "./result_item";
+
+const iOS = Platform.OS === "ios";
 
 const searchBar = props => {
   const {
@@ -82,7 +84,7 @@ const searchBar = props => {
           //   });
           // }, 300)
         }}
-        onChangeText={(text) => setQueryText(text)}
+        onChangeText={(text) => iOS && setQueryText(text)}
         onSearchPress={() => filterList()}
         onClearPress={() => {
           // setQueryText('')
@@ -96,7 +98,7 @@ const searchBar = props => {
       {showList ? (
         <View style={styles.wrapper}>
           <Animated.View style={{ ...styles.blurWrapper, opacity: fadeAnim }}>
-            <BlurView style={styles.blur} blurType="dark" blurAmount={10} />
+            {iOS && <BlurView style={styles.blur} blurType="dark" blurAmount={10} />}
           </Animated.View>
           <Animated.FlatList
             showsVerticalScrollIndicator={false}
@@ -172,9 +174,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   blurWrapper: {
-    width: 430,
-    height: 720,
+    width: 440,
+    height: 770,
+    top: iOS?undefined:-50,
+    left: iOS?undefined:-5,
     position: "absolute",
+    backgroundColor: iOS?undefined:"#4c4c4c",
   },
   flatlist: {
     // top:20,

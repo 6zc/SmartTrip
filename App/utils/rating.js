@@ -25,8 +25,9 @@ const Rating = props => {
   let face = faceArray[Math.floor(userRate)];
 
   useEffect(()=>{
+    setUserRate(rate)
     face = faceArray[Math.floor(userRate)];
-  }, [userRate])
+  }, [rate])
 
   const faceWidth = (fullwidth/5)*0.8
   let rateArray = new Array(5).fill(0);
