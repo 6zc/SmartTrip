@@ -42,6 +42,11 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_COLLECTION",
 				collection,
 			}),
+		updateRecommend: recommend =>
+			dispatch({
+				type: "UPDATE_RECOMMEND",
+				recommend,
+			}),
 	};
 }
 
@@ -81,6 +86,33 @@ class LoginScreen extends React.Component {
 									}
 									this.props.updateCollection(collection);
 									// console.log(this.state.collection);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
+	};
+
+	getRecommend = () => {
+		// get recommendation list from db
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/users/get_recommend", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log(value.recommends);
+									this.props.updateRecommend(value.recommends);
 								});
 							}
 						})
@@ -141,7 +173,10 @@ class LoginScreen extends React.Component {
 								this.props.updateName(name);
 								this.props.updateAvatar(avatar);
 								this.props.updateToken(token);
+
 								this.getCollectionDB();
+								this.getRecommend();
+
 								// animation
 								setTimeout(() => {
 									this.setState({ isLoading: false });

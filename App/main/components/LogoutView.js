@@ -46,6 +46,11 @@ function mapDispatchToProps(dispatch) {
 				type: "UPDATE_COLLECTION",
 				collection,
 			}),
+		updateRecommend: recommend =>
+			dispatch({
+				type: "UPDATE_RECOMMEND",
+				recommend,
+			}),
 	};
 }
 
@@ -61,12 +66,35 @@ class LogoutView extends React.Component {
 	handleLogout = () => {
 		// Alert.alert("Logged Out", "You've logged out successfully!");
 		// log out
+		this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
 		this.props.updateName("Guest");
 		this.props.updateToken("");
 		this.props.updateCollection([]);
-		this.props.updateAvatar("https://cl.ly/55da82beb939/download/avatar-default.jpg");
+		this.getRecommend();
+
 		AsyncStorage.clear();
 		this.props.closeLogout();
+	};
+
+	getRecommend = () => {
+		// get recommendation list from db
+		const token =
+			"Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZXN0MTEtW1Rlc3QxMV0iLCJpYXQiOjE2NTkwODYwMDAsImV4cCI6MTY1OTUxODAwMH0.VNzG9lGbLaAnrbKFZjXxwiAaONiSLpl195hO_kWJ07zHdTSToIRmPNWDtTPyNXaGGaj66oXWuSykcipZ3HKeZw";
+		fetch("http://39.108.191.242:10089/users/get_recommend", {
+			method: "GET",
+			headers: { Authorization: token },
+			redirect: "follow",
+			cache: "no-cache",
+		})
+			.then(response => {
+				if (response.status === 200) {
+					response.json().then(value => {
+						// console.log(value.recommends);
+						this.props.updateRecommend(value.recommends);
+					});
+				}
+			})
+			.catch(error => console.log(error));
 	};
 
 	componentDidMount() {

@@ -28,6 +28,8 @@ User.loadFont();
 // http://139.155.252.3:10089/api/forecast
 
 LogBox.ignoreLogs(["EventEmitter.removeListener"]);
+LogBox.ignoreLogs(["Possible Unhandled Promise Rejection"]);
+
 const Tabs = AnimatedTabBarNavigator();
 const client = new ApolloClient({
 	uri: "https://graphql.contentful.com/content/v1/spaces/z5ui7o420lkc",
@@ -42,6 +44,7 @@ const initialState = {
 	action: "",
 	name: "Guest",
 	collection: [],
+	recommend: [],
 	token: "",
 	place: "",
 	avatar: "https://cl.ly/55da82beb939/download/avatar-default.jpg",
@@ -66,6 +69,8 @@ const reducer = (state = initialState, action) => {
 			return { ...state, token: action.token };
 		case "UPDATE_COLLECTION":
 			return { ...state, collection: action.collection };
+		case "UPDATE_RECOMMEND":
+			return { ...state, recommend: action.recommend };
 		case "OPEN_CARD":
 			return { ...state, action: "openCard" };
 		case "CLOSE_CARD":
