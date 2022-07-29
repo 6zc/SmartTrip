@@ -8,7 +8,7 @@ import { Query } from "react-apollo";
 
 const CardsQuery = gql`
 	{
-		cardsCollection(limit: 4) {
+		cardsCollection(limit: 6) {
 			items {
 				sys {
 					id

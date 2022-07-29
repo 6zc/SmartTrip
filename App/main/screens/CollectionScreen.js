@@ -149,10 +149,12 @@ class CollectionScreen extends React.Component {
 								// console.log(items);
 
 								var output = [];
+								var index = 0;
 								for (const [key, value] of map) {
-									console.log(key);
+									// console.log(key);
+									index++;
 									var tempOutput = (
-										<Favorites>
+										<Favorites key={index}>
 											<Subtitle>Favorite {key}s</Subtitle>
 											<ScrollView
 												horizontal={true}

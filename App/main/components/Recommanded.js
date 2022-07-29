@@ -4,14 +4,12 @@ import styled from "styled-components";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import Place from "./Place";
-
-const ids = ["3hCqc4Bps5hbW3RHFMCWeq", "4BjlbWnAXFPNI89V2Pk0wg", "4GZu1Ih2Jqi4vPVAfu9SYN"];
-
-const idd = "4KThjrfS9cpzmX6PX87UPH";
+import { connect } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CardsQuery = gql`
 	{
-		cardsCollection(where: { sys: { id_in: ["3hCqc4Bps5hbW3RHFMCWeq", "6A6Y0Ky5BQbz5KuMxicfR", "4GZu1Ih2Jqi4vPVAfu9SYN"] } }) {
+		cardsCollection {
 			items {
 				sys {
 					id
@@ -46,7 +44,81 @@ const CardsQuery = gql`
 	}
 `;
 
+function mapStateToProps(state) {
+	return {
+		action: state.action,
+		name: state.name,
+		recommend: state.recommend,
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		updateRecommend: recommend =>
+			dispatch({
+				type: "UPDATE_RECOMMEND",
+				recommend,
+			}),
+	};
+}
+
 class Recommended extends React.Component {
+	getRecommend = () => {
+		// get recommendation list from db
+		AsyncStorage.getItem("state")
+			.then(serializedState => {
+				const savedState = JSON.parse(serializedState);
+				console.log("recommend");
+				console.log(savedState);
+
+				// if login - same as in LoginScreen
+				if (savedState && savedState.token) {
+					token = savedState.token;
+					fetch("http://39.108.191.242:10089/users/get_recommend", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log(value.recommends);
+									this.props.updateRecommend(value.recommends);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+
+				// if not login - same as in LogoutView
+				else {
+					const token =
+						"Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZXN0MTEtW1Rlc3QxMV0iLCJpYXQiOjE2NTkwODYwMDAsImV4cCI6MTY1OTUxODAwMH0.VNzG9lGbLaAnrbKFZjXxwiAaONiSLpl195hO_kWJ07zHdTSToIRmPNWDtTPyNXaGGaj66oXWuSykcipZ3HKeZw";
+					fetch("http://39.108.191.242:10089/users/get_recommend", {
+						method: "GET",
+						headers: { Authorization: token },
+						redirect: "follow",
+						cache: "no-cache",
+					})
+						.then(response => {
+							if (response.status === 200) {
+								response.json().then(value => {
+									// console.log(value.recommends);
+									this.props.updateRecommend(value.recommends);
+								});
+							}
+						})
+						.catch(error => console.log(error));
+				}
+			})
+			.catch(error => console.log(error));
+	};
+
+	componentDidMount() {
+		this.getRecommend();
+	}
+
 	render() {
 		return (
 			<Container>
@@ -57,7 +129,15 @@ class Recommended extends React.Component {
 						if (loading) return <Message>Loading...</Message>;
 						if (error) return <Message>Error...</Message>;
 
-						var items = data.cardsCollection.items;
+						var items = [];
+
+						const recommend = this.props.recommend;
+						if (!recommend) recommend = ["3hCqc4Bps5hbW3RHFMCWeq", "4BjlbWnAXFPNI89V2Pk0wg", "4GZu1Ih2Jqi4vPVAfu9SYN"];
+						for (const element of data.cardsCollection.items) {
+							if (recommend.includes(element.sys.id)) {
+								items.push(element);
+							}
+						}
 
 						return (
 							<PlacesContainer>
@@ -92,7 +172,7 @@ class Recommended extends React.Component {
 	}
 }
 
-export default Recommended;
+export default connect(mapStateToProps, mapDispatchToProps)(Recommended);
 
 const Container = styled.View`
 	flex: 1;
