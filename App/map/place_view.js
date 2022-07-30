@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Linking from "../utils/linking";
 import Logo from "../utils/logo.js";
@@ -14,6 +15,8 @@ import { Svg, Image as ImageSvg } from "react-native-svg";
 import { BlurView } from "@react-native-community/blur";
 import FontAwesome from "react-native-vector-icons/FontAwesome5";
 
+const iOS = Platform.OS === "ios";
+
 const PlaceView = props => {
   const {
     card,
@@ -22,14 +25,12 @@ const PlaceView = props => {
     toggleUpdate,
     weather,
     rate,
+    cases,
     liked = false
   } = props;
   const { title, type, image, sys } = card;
   const { rain, temp, uv, isNight } = weather || {rain: 0, temp: 30};
   const [ height, setHeight ] = useState(350);
-
-  //TODO
-  const cases = (Math.random()*1000).toFixed(0);
 
   const [weatherDesc, icon] = getWeatherDesc(uv, rain, isNight);
   const covidDesc = getCovidDesc(cases);
@@ -67,8 +68,8 @@ const PlaceView = props => {
             Linking.link2map(...Object.values(coordinate), title);
           }}
         >
-          <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
-          <Text style={styles.navi.naviText}>GO!</Text>
+          {iOS &&<BlurView style={styles.blur} blurType="xlight" blurAmount={5} />}
+          <Text style={styles.navi.naviText}>Direct</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.detail}
@@ -80,7 +81,7 @@ const PlaceView = props => {
             }, 400)
           }}
         >
-          <BlurView style={styles.blur} blurType="xlight" blurAmount={5} />
+          {iOS &&<BlurView style={styles.blur} blurType="xlight" blurAmount={5} />}
           <Text style={styles.detail.detailText}>Detail</Text>
         </TouchableOpacity>
         <Rating
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
     right: 69,
     top: 259,
     zIndex: 5,
-    width: 38,
+    width: 55,
     height: 24,
     borderRadius: 8,
     alignItems: "center",
@@ -232,6 +233,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     maxHeight: 400,
     width: 328,
+    backgroundColor: iOS? undefined:"#ffffff",
   },
   bubble: {
     width: 290,

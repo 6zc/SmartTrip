@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Ionicon from "react-native-vector-icons/Ionicons";
 import Rating from "../utils/rating";
@@ -62,7 +63,10 @@ const Item = props => {
         </View>
         <View style={styles.rateWrapper}>
           <Text style={styles.rateType}>{'Overall Rating:'}</Text>
-          <Rating width={110} rate={rate} rateAble={false} />
+          <Rating
+            width={110}
+            rate={rate}
+            rateAble={false} />
         </View>
       </View>
       <View style={styles.backOpacity}></View>
