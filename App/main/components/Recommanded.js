@@ -131,8 +131,13 @@ class Recommended extends React.Component {
 
 						var items = [];
 
+<<<<<<< HEAD
 						const recommend = this.props.recommend || ["3hCqc4Bps5hbW3RHFMCWeq", "4BjlbWnAXFPNI89V2Pk0wg", "4GZu1Ih2Jqi4vPVAfu9SYN"];
 						// if (!recommend) recommend = ["3hCqc4Bps5hbW3RHFMCWeq", "4BjlbWnAXFPNI89V2Pk0wg", "4GZu1Ih2Jqi4vPVAfu9SYN"];
+=======
+						let recommend = this.props.recommend;
+						if (!recommend) recommend = ["3hCqc4Bps5hbW3RHFMCWeq", "4BjlbWnAXFPNI89V2Pk0wg", "4GZu1Ih2Jqi4vPVAfu9SYN"];
+>>>>>>> 9ab95a41b9cf8c0ab073507e63ea1b40070fd622
 						for (const element of data.cardsCollection.items) {
 							if (recommend.includes(element.sys.id)) {
 								items.push(element);
