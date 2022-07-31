@@ -1,7 +1,4 @@
 # Smart Trip
-Full git history goto https://github.com/6zc/7506_RN
-
-The reason we started a new repo is **react-native@0.68** has serious conflict with **react-native -navigation**, which is a important library for the bottom navigation component. After 10 hours of debugging we found that there is no way to solve the conflict. Thus we started a new repo with exactly same code but based on **react-native@0.67**. 
 
 
 
