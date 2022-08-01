@@ -13,8 +13,6 @@ import SectionScreen from "./main/screens/SectionScreen";
 
 import MapEntry from "./map/map_entry";
 
-import LoginPage from "./Personal/main";
-
 import { createAppContainer } from "react-navigation";
 import CollectionScreen from "./main/screens/CollectionScreen";
 
@@ -63,19 +61,9 @@ MapStack.navigationOptions = {
 	tabBarIcon: ({ focused }) => <Ionicon name="ios-map" size={26} color={focused ? activeColor : inactiveColor} />,
 };
 
-const UserStack = createStackNavigator({
-	User: LoginPage,
-});
-
-UserStack.navigationOptions = {
-	tabBarLabel: "User",
-	tabBarIcon: ({ focused }) => <Ionicon name="ios-settings" size={26} color={focused ? activeColor : inactiveColor} />,
-};
-
 const TabNavigator = createBottomTabNavigator({
 	HomeStack,
 	MapStack,
-	// UserStack,
 });
 
 export default createAppContainer(TabNavigator);
