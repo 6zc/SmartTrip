@@ -1,5 +1,22 @@
 # Smart Trip
 
+## App Showcases
+
+### Home Page
+
+<img src="https://github.com/6zc/SmartTrip/blob/main/IMG/home/home_main.JPEG" height="500px"> <img src="https://github.com/6zc/SmartTrip/blob/main/IMG/home/home_section.JPEG" height="500px"> <img src="https://github.com/6zc/SmartTrip/blob/main/IMG/home/home_signin.JPEG" height="500px">
+
+### Map Page
+
+<img src="https://github.com/6zc/SmartTrip/blob/main/IMG/map/map_main.JPEG" height="500px"> <img src="https://github.com/6zc/SmartTrip/blob/main/IMG/map/map_search.JPEG" height="500px"> <img src="https://github.com/6zc/SmartTrip/blob/main/IMG/map/map_card.JPEG" height="500px">
+
+For more screenshots, please go to [/IMG](https://github.com/6zc/SmartTrip/tree/main/IMG).
+
+The screen recordings showcasing the usage of our app can be checked here:
+
+[Home Page Recording](https://drive.google.com/file/d/11iOwsIDpmeAUYCKR5p9xcW9_4-qz_SIw/view?usp=sharing)
+
+[Map Page Recording](https://drive.google.com/file/d/1t4CkRdCILN7GqhbdmKxY-obezfR7FQBF/view?usp=sharing)
 
 
 ## Installation
@@ -17,7 +34,7 @@ Don't run steps for compilation as dependicies are not installed.
 Under the root folder of the project, in terminal run:
 
 ```bash
-npm instal
+npm install
 cd ios && pod install && cd ..
 # For those Apple Silicon user, if pod install meet any problem, check these commands.
 # sudo arch -x86_64 gem install ffi
