@@ -27,7 +27,7 @@ const Collection = props => {
 			const state = JSON.parse(serializedState);
 			if (state && state.token) {
         const { token } = state;
-        fetch(`http://39.108.191.242:10089/collect/${id}`, { 
+        fetch(`http://120.77.255.227:10089/collect/${id}`, { 
           method: liked ? "PUT":"POST",
           headers: {
             Authorization: token

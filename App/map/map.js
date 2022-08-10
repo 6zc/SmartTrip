@@ -35,10 +35,10 @@ const Map = props => {
 
 	useEffect(() => {
 		if (refs[itemID]) {
+			refs["map"].animateCamera(getCamera(...Object.values(refs[itemID].props.coordinate), 0.03), { duration: 800 });
 			setTimeout(() => {
-				refs["map"].animateCamera(getCamera(...Object.values(refs[itemID].props.coordinate), 0.03), { duration: 400 });
 				refs[itemID].showCallout();
-			}, 1200);
+			}, 400);
 		} else {
 			let Camera = getUserPosition();
 			setTimeout(() => {
@@ -48,7 +48,7 @@ const Map = props => {
 	}, [itemID]);
 
 	useEffect(() => {
-		fetch("http://39.108.191.242:10089/coronavirus", {
+		fetch("http://120.77.255.227:10089/coronavirus", {
 			method: "GET",
 		})
 			.then(response => {
@@ -67,7 +67,7 @@ const Map = props => {
 			})
 			.catch(error => console.log(error));
 
-		fetch("http://39.108.191.242:10089/api/homepage", {
+		fetch("http://120.77.255.227:10089/api/homepage", {
 			method: "GET",
 		})
 			.then(response => {
@@ -121,7 +121,7 @@ const Map = props => {
 				minZoomLevel={9}
 				maxZoomLevel={20}
 				showsMyLocationButton={false}
-				region={region}
+				// region={region}
 				ref={ref => {
 					refs["map"] = ref;
 				}}

@@ -43,7 +43,7 @@ const Rating = props => {
 				const state = JSON.parse(serializedState);
 				if (state && state.token) {
 					const { token } = state;
-					fetch(`http://39.108.191.242:10089/rank`, {
+					fetch(`http://120.77.255.227:10089/rank`, {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",

@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const server = "http://39.108.191.242:10089/login";
+const server = "http://120.77.255.227:10089/login";
 
 function mapStateToProps(state) {
 	return { action: state.action };
@@ -68,7 +68,7 @@ class LoginScreen extends React.Component {
 
 				if (savedState && savedState.token) {
 					token = savedState.token;
-					fetch("http://39.108.191.242:10089/collect", {
+					fetch("http://120.77.255.227:10089/collect", {
 						method: "GET",
 						headers: { Authorization: token },
 						redirect: "follow",
@@ -102,7 +102,7 @@ class LoginScreen extends React.Component {
 				const savedState = JSON.parse(serializedState);
 				if (savedState && savedState.token) {
 					token = savedState.token;
-					fetch("http://39.108.191.242:10089/users/get_recommend", {
+					fetch("http://120.77.255.227:10089/users/get_recommend", {
 						method: "GET",
 						headers: { Authorization: token },
 						redirect: "follow",

@@ -101,9 +101,9 @@ function getWeatherDesc(uv, rain, night) {
 }
 
 function getCovidDesc(count) {
-  if(!count || count === 0) return 'No Risk';
+  if(count === 0) return 'No Risk';
   else if(count<100) return 'Low Risk';
-  else if(count<500) return 'Mild Risk';
+  else if(count<500 || !count) return 'Mild Risk';
   else if(count<1000) return 'High Risk';
   else return 'Very High Risk';
 }

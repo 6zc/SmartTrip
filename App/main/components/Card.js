@@ -33,7 +33,7 @@ class Card extends React.Component {
 
 				if (savedState && savedState.token) {
 					token = savedState.token;
-					fetch("http://39.108.191.242:10089/collect", {
+					fetch("http://120.77.255.227:10089/collect", {
 						method: "GET",
 						headers: { Authorization: token },
 						redirect: "follow",
@@ -68,7 +68,7 @@ class Card extends React.Component {
 				const savedState = JSON.parse(serializedState);
 				if (savedState && savedState.token) {
 					const token = savedState.token;
-					fetch(`http://39.108.191.242:10089/collect/${id}`, {
+					fetch(`http://120.77.255.227:10089/collect/${id}`, {
 						method: liked ? "PUT" : "POST",
 						headers: {
 							Authorization: token,

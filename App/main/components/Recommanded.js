@@ -74,7 +74,7 @@ class Recommended extends React.Component {
 				// if login - same as in LoginScreen
 				if (savedState && savedState.token) {
 					token = savedState.token;
-					fetch("http://39.108.191.242:10089/users/get_recommend", {
+					fetch("http://120.77.255.227:10089/users/get_recommend", {
 						method: "GET",
 						headers: { Authorization: token },
 						redirect: "follow",
@@ -95,7 +95,7 @@ class Recommended extends React.Component {
 				else {
 					const token =
 						"Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJUZXN0MTEtW1Rlc3QxMV0iLCJpYXQiOjE2NTkwODYwMDAsImV4cCI6MTY1OTUxODAwMH0.VNzG9lGbLaAnrbKFZjXxwiAaONiSLpl195hO_kWJ07zHdTSToIRmPNWDtTPyNXaGGaj66oXWuSykcipZ3HKeZw";
-					fetch("http://39.108.191.242:10089/users/get_recommend", {
+					fetch("http://120.77.255.227:10089/users/get_recommend", {
 						method: "GET",
 						headers: { Authorization: token },
 						redirect: "follow",

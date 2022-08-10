@@ -10,7 +10,7 @@ import Congrat from "../components/Congrat";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const server = "http://39.108.191.242:10089/users/signup";
+const server = "http://120.77.255.227:10089/users/signup";
 
 class SignupScreen extends React.Component {
 	state = {
